@@ -66,7 +66,9 @@ CARGO_NORM = {
     "DEPUTADO DISTRITAL": "DEPUTADO_DISTRITAL",
 }
 
-RA_SEM_ZONA = {"Park Way","SIA","Fercal","Sol Nascente/Pôr do Sol","Arniqueira"}
+# RA_SEM_ZONA descontinuado em abr/2026 — todas as 33 RAs têm dado eleitoral
+# próprio via atribuição seção→RA por point-in-polygon (fase1c_perfil_secao.py).
+RA_SEM_ZONA = set()
 
 PERSONA_TERRITORIOS = {
     "servidor":     ["Brasilia (Plano Piloto)","Lago Sul","Lago Norte","Sudoeste/Octogonal","Jardim Botanico","Park Way","Aguas Claras","Cruzeiro","Guara"],
@@ -573,7 +575,7 @@ def calcular_votos_eleitos():
     VAGAS={'DEPUTADO DISTRITAL':24,'DEPUTADO FEDERAL':8,'GOVERNADOR':1,'SENADOR':2}
     CN={'DEPUTADO DISTRITAL':'DEPUTADO_DISTRITAL','DEPUTADO FEDERAL':'DEPUTADO_FEDERAL',
         'GOVERNADOR':'GOVERNADOR','SENADOR':'SENADOR'}
-    SEM={'Arniqueira','Fercal','Park Way','SIA','Sol Nascente/P\u00f4r do Sol'}
+    SEM=set()  # descontinuado em abr/2026 \u2014 todas as RAs t\u00eam dado pr\u00f3prio via PIP
     csv_paths = [
         CACHE / "candidatos_2022_ra.csv",
         CACHE.parent / "candidatos_2022.csv",
@@ -1158,7 +1160,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
       <div class="achado"><div class="achado-lbl">O dado que muda tudo</div><div class="achado-txt">Ceilândia sozinha tem <strong>286 mil eleitores aptos</strong> — mais do que as <strong>12 menores regiões somadas</strong>. Escolher mal o território significa perder antes de começar.</div></div>
       <div class="tablewrap"><table><thead><tr>
         <th style="min-width:200px" onclick="srt(2,'nome')">Região <span class="sa" id="s2-nome"></span><input class="th-filter" id="fi2" placeholder="filtrar..." oninput="filtrar(2)" onclick="event.stopPropagation()"></th>
-        <th style="min-width:88px" onclick="srt(2,'el_aptos')"><span class="tt">Aptos<span class="tt-icon">?</span><span class="tt-box">Total de eleitores aptos na RA — fonte: TSE 2022. RAs sem zona própria (marcadas com s/zona) aparecem zeradas — TSE não desagrega o cadastro nessas regiões.</span></span> <span class="sa" id="s2-el_aptos">&#9660;</span></th>
+        <th style="min-width:88px" onclick="srt(2,'el_aptos')"><span class="tt">Aptos<span class="tt-icon">?</span><span class="tt-box">Total de eleitores aptos na RA — fonte: TSE 2022. Atribuição seção→RA via point-in-polygon dos locais de votação.</span></span> <span class="sa" id="s2-el_aptos">&#9660;</span></th>
         <th onclick="srt(2,'abstencao')"><span class="tt">Abstenção<span class="tt-icon">?</span><span class="tt-box">% de eleitores aptos que não compareceram no 1º turno do Governador 2022. Fonte: TSE.</span></span> <span class="sa" id="s2-abstencao"></span></th>
         <th style="min-width:88px" onclick="srt(2,'el_fem')"><span class="tt">Feminino<span class="tt-icon">?</span><span class="tt-box">% de eleitoras do sexo feminino no cadastro eleitoral — TSE 2022.</span></span> <span class="sa" id="s2-el_fem"></span></th>
         <th style="min-width:90px" onclick="srt(2,'el_jov')"><span class="tt">Jovens 16-24<span class="tt-icon">?</span><span class="tt-box">% do eleitorado com 16 a 24 anos — TSE 2022.</span></span> <span class="sa" id="s2-el_jov"></span></th>
@@ -1169,9 +1171,6 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
         <th onclick="srt(2,'gap_ido')"><span class="tt">Gap idosos<span class="tt-icon">?</span><span class="tt-box">Diferença pp: % idosos 60+ no eleitorado (TSE) menos % idosos 60+ na população (PDAD). Positivo = idosos sobre-representados nas urnas.</span></span> <span class="sa" id="s2-gap_ido"></span></th>
         <th style="min-width:110px" onclick="srt(2,'gap')"><span class="tt">Gap escolaridade<span class="tt-icon">?</span><span class="tt-box">Diferença em pp: % eleitores com superior (TSE) menos % moradores 16+ com superior (PDAD). Bases comparáveis — ambas usam 16+ e incluem incompleto + completo. Positivo = eleitorado mais escolarizado que a população adulta.</span></span> <span class="sa" id="s2-gap"></span></th>
       </tr></thead><tbody id="tb2"></tbody></table></div>
-      <div class="tabela-rodape-nota">
-        As regiões <strong>Park Way</strong>, <strong>SIA</strong>, <strong>Fercal</strong>, <strong>Sol Nascente/Pôr do Sol</strong> e <strong>Arniqueira</strong> não estão apresentadas nesta tabela porque <strong>não há dados de zona eleitoral no TSE 2022 para essas regiões</strong> — seus eleitores votam em zonas das RAs vizinhas. Os indicadores socioeconômicos dessas RAs (PDAD 2021) continuam disponíveis em <em>População</em>.
-      </div>
     </div>
 
     <!-- O VOTO -->
@@ -1208,9 +1207,6 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
         <th style="min-width:80px" onclick="srt(3,'outros')">Outros <span class="sa" id="s3-outros"></span></th>
         <th style="min-width:90px" onclick="srt(3,'margem_pp')"><span class="tt">Margem<span class="tt-icon">?</span><span class="tt-box">Diferença em pontos percentuais entre o 1º e o 2º colocado do cargo na RA. Margem pequena = RA disputada (a eleição vira lá). Margem grande = RA cativa.</span></span> <span class="sa" id="s3-margem_pp"></span></th>
       </tr></thead><tbody id="tb3"></tbody></table></div>
-      <div class="tabela-rodape-nota">
-        As regiões <strong>Park Way</strong>, <strong>SIA</strong>, <strong>Fercal</strong>, <strong>Sol Nascente/Pôr do Sol</strong> e <strong>Arniqueira</strong> não estão apresentadas nesta tabela porque <strong>não há dados de zona eleitoral no TSE 2022 para essas regiões</strong> — seus eleitores votam em zonas das RAs vizinhas.
-      </div>
     </div>
 
     <!-- O CANDIDATO -->
@@ -1264,9 +1260,6 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
           </div>
         </div>
       </div>
-      <div class="tabela-rodape-nota">
-        As regiões <strong>Park Way</strong>, <strong>SIA</strong>, <strong>Fercal</strong>, <strong>Sol Nascente/Pôr do Sol</strong> e <strong>Arniqueira</strong> não estão apresentadas nesta tabela porque <strong>não há dados de zona eleitoral no TSE 2022 para essas regiões</strong> — seus eleitores votam em zonas das RAs vizinhas, e os votos do candidato não são desagregáveis para elas.
-      </div>
     </div>
 
     <!-- ESTRATÉGIA — Performance × Campo (5 categorias estratégicas) — mesmo padrão do submenu Candidatos -->
@@ -1317,9 +1310,6 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
             </div>
           </div>
         </div>
-      </div>
-      <div class="tabela-rodape-nota">
-        As regiões <strong>Park Way</strong>, <strong>SIA</strong>, <strong>Fercal</strong>, <strong>Sol Nascente/Pôr do Sol</strong> e <strong>Arniqueira</strong> não estão apresentadas nesta tabela porque <strong>não há dados de zona eleitoral no TSE 2022 para essas regiões</strong> — seus eleitores votam em zonas das RAs vizinhas.
       </div>
     </div>
 
@@ -1553,9 +1543,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
         <p><strong>PDAD 2021 — Pesquisa Distrital por Amostra de Domicílios</strong><br>
         Conduzida pelo IPEDF (Instituto de Pesquisa e Estatística do Distrito Federal), a PDAD 2021 cobriu cerca de 83 mil moradores em ~30 mil domicílios amostrados nas 33 Regiões Administrativas do DF entre maio e dezembro de 2021. É a principal fonte de dados socioeconômicos do projeto: renda per capita, composição de classe, escolaridade, ocupação, origem migratória, acesso a benefícios sociais e cobertura de plano de saúde. Os dados são representativos por RA.</p>
         <p><strong>TSE 2022 — Cadastro Eleitoral e Resultados</strong><br>
-        O Tribunal Superior Eleitoral disponibiliza dois conjuntos de dados utilizados aqui. O primeiro é o cadastro de eleitores aptos por zona eleitoral, com perfil de faixa etária, gênero e escolaridade — convertido para Regiões Administrativas a partir do mapeamento de seções eleitorais. O segundo é o arquivo de votação por seção do 1º turno de 2022, que permite calcular os votos recebidos por cada candidato em cada RA.</p>
-        <p><strong>Limitações conhecidas</strong><br>
-        Cinco RAs — Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol e Arniqueira — não possuem zona eleitoral própria. Seus eleitores votam em zonas de regiões vizinhas, o que impede a desagregação precisa do perfil eleitoral. Para essas regiões, os dados de Massa e Logística são zerados e indicados explicitamente. Os dados de campo político (PDAD) são mantidos normalmente, pois não dependem de zona eleitoral.</p>
+        O Tribunal Superior Eleitoral disponibiliza o cadastro de eleitores aptos por seção eleitoral, com perfil de faixa etária, gênero e escolaridade. Cada seção é atribuída à sua Região Administrativa pelas coordenadas geográficas do local de votação cruzadas com os polígonos oficiais das RAs (point-in-polygon), o que permite agregar o perfil por RA sem dependência da zona eleitoral. O segundo conjunto é o arquivo de votação por seção do 1º turno de 2022, que dá os votos por candidato em cada RA pela mesma atribuição.</p>
       </div>
     </div>
 
@@ -2214,7 +2202,10 @@ function candRenderTab(cand){
             "AUSENCIA":"background:#FCA5A5;color:#5A1010",
             "SEM DADOS":"color:var(--muted)"};
   var STATUS_ORD={"REDUTO":5,"BASE FORTE":4,"CAMPO MEDIO":3,"CAMPO MÉDIO":3,"BASE FRACA":2,"AUSENCIA":1,"SEM DADOS":0};
-  var SEM_ZONA_SET={"Park Way":1,"SIA":1,"Fercal":1,"Sol Nascente/Pôr do Sol":1,"Arniqueira":1};
+  // SEM_ZONA_SET descontinuado em abr/2026 — todas as 33 RAs têm dado eleitoral
+  // próprio via atribuição seção→RA por point-in-polygon. Mantido vazio para
+  // manter compatibilidade com referências legadas (d.sem_zona = false sempre).
+  var SEM_ZONA_SET={};
 
   // Lista de RAs com zona TSE (com ou sem voto do candidato), aplicando filtros inline
   var fIn = document.getElementById("cand-filtro-ra");
@@ -2644,7 +2635,7 @@ function estSortBy(col){
 function estRender(){
   var tbody=document.getElementById("est-tbody");if(!tbody)return;
   var key=estCargo+"|"+estCampo;var metaObj=METAS_CAMPO[key];var meta=metaObj?metaObj.votos:0;
-  var SEM={"Arniqueira":1,"Fercal":1,"Park Way":1,"SIA":1,"Sol Nascente/Pôr do Sol":1};
+  var SEM={};  // descontinuado em abr/2026 — todas as RAs têm dado próprio via PIP
   function getRef(ra){
     if(estRef&&estRef.ras&&estRef.ras[ra])return estRef.ras[ra].v||0;
     var vd=VOTOS_ELEITOS[key];return(vd&&vd[ra]&&vd[ra].p50)||0;
@@ -2688,7 +2679,7 @@ function estRender(){
   });
   tbody.innerHTML=html;
   var nota=document.getElementById("est-nota");
-  if(nota){nota.textContent="Excluídas por ausência de zona eleitoral própria no TSE 2022: Arniqueira, Fercal, Park Way, SIA, Sol Nascente/Pôr do Sol.";nota.style.display="block";}
+  if(nota){nota.style.display="none";}  // nota legada — todas as RAs têm dado próprio via PIP
 }
 function estInit(){
   estAtualizarConf();estMetaBar();

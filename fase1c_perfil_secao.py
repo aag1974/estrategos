@@ -192,7 +192,7 @@ def comparar_pip_vs_osm(secao_ra):
 
 def calcular_abstencao_gov(secao_ra):
     """
-    Calcula ABSTENCAO_GOV por RA = 1 − comparecimento_RA / aptos_RA.
+    Calcula ABSTENCAO_GOVERNADOR por RA = 1 − comparecimento_RA / aptos_RA.
 
     aptos_RA: soma de QT_ELEITOR_SECAO de todas as seções (Principal +
               Agregada) atribuídas à RA via PIP.
@@ -232,16 +232,16 @@ def calcular_abstencao_gov(secao_ra):
 
     grp = aptos_ra.merge(comp_ra, on="RA_NOME", how="left")
     grp["comparec"] = grp["comparec"].fillna(0)
-    grp["ABSTENCAO_GOV"] = ((1 - grp["comparec"] / grp["aptos"]) * 100).round(1)
+    grp["ABSTENCAO_GOVERNADOR"] = ((1 - grp["comparec"] / grp["aptos"]) * 100).round(1)
 
     # Sanity check: nenhuma abstenção negativa nem >100%
-    bad = grp[(grp["ABSTENCAO_GOV"] < 0) | (grp["ABSTENCAO_GOV"] > 100)]
+    bad = grp[(grp["ABSTENCAO_GOVERNADOR"] < 0) | (grp["ABSTENCAO_GOVERNADOR"] > 100)]
     if len(bad):
         print(f"   ⚠ {len(bad)} RAs com abstenção fora do intervalo [0,100]:")
         print(bad.to_string(index=False))
     else:
         print(f"   ✓ Abstenção dentro do intervalo [0,100] em todas as 33 RAs")
-    return grp[["RA_NOME", "ABSTENCAO_GOV"]]
+    return grp[["RA_NOME", "ABSTENCAO_GOVERNADOR"]]
 
 
 def agregar_perfil(secao_ra):
@@ -347,6 +347,12 @@ def main():
 
     df_ra.to_csv(DIR_OUT / "perfil_eleitorado_ra.csv", index=False)
     print(f"\n   ✓ outputs_fase1/perfil_eleitorado_ra.csv → {len(df_ra)} RAs")
+
+    # Reescreve abstencao_zona_ra.csv (consumido pela fase2) com 33 RAs
+    df_abs = df_ra[["RA_NOME", "EL_total_aptos", "ABSTENCAO_GOVERNADOR"]].copy()
+    df_abs = df_abs.rename(columns={"EL_total_aptos": "EL_aptos_abs_src"})
+    df_abs.to_csv(DIR_OUT / "abstencao_zona_ra.csv", index=False)
+    print(f"   ✓ outputs_fase1/abstencao_zona_ra.csv → {len(df_abs)} RAs")
 
     print("\n=== Resumo por RA ===")
     print(df_ra[["RA_NOME", "EL_total_aptos", "EL_pct_superior",
