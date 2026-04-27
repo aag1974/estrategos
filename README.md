@@ -62,10 +62,12 @@ A cadeia de build tem 3 etapas (ordem importa):
 ```bash
 python3 fase4_v2.py            # gera dashboard_spe_df.html (base)
 python3 injeta_geopolitica.py  # gera dashboard_com_geo.html (+ Território)
-python3 injeta_candidato.py    # gera dashboard_com_candidato.html (final)
+python3 injeta_candidato.py    # gera index.html (final)
 ```
 
-Abra `dashboard_com_candidato.html` no browser.
+Abra `index.html` no browser. O nome `index.html` é exigido por
+hospedagens estáticas (GitHub Pages, Cloudflare Pages, Netlify) — basta
+publicar a pasta diretamente.
 
 ### 3. Login
 

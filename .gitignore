@@ -5,6 +5,7 @@ credenciais.json
 !.env.example
 
 # Built artifacts (regenerados pelo build chain)
+# index.html é o output FINAL — esse é versionado pra deploy via GitHub Pages.
 dashboard_spe_df.html
 dashboard_com_geo.html
 dashboard_com_candidato.html

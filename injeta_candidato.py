@@ -25,7 +25,7 @@ from collections import defaultdict
 
 DASHBOARD_IN = Path("dashboard_com_geo.html")
 CSV_IN       = Path("outputs_fase3c/votos_candidato_ra.csv")
-OUTPUT       = Path("dashboard_com_candidato.html")
+OUTPUT       = Path("index.html")
 
 MIN_VOTOS = 50
 
