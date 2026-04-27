@@ -54,13 +54,13 @@ A escolha de uma **métrica atomizada** — em vez de um índice composto com pe
 1. **Auditabilidade.** Cada número apresentado deve ser reconstrutível pelo usuário a partir das fontes públicas (PDAD e TSE). Sem caixas-pretas, sem coeficientes calibrados internamente sem documentação.
 2. **Atomicidade.** Métricas compostas com pesos arbitrários foram explicitamente rejeitadas (ver decisão de abr/2026 sobre a aposentadoria do índice SPE composto, que combinava Afinidade × Conversão × Massa × Logística com pesos editoriais). Cada indicador exposto mede uma coisa só, com escala interpretável.
 3. **Separação dado/interpretação.** O painel apresenta o dado bruto e suas derivações. A interpretação editorial (achados, leituras, recomendações) é apresentada como tal — em blocos visualmente distintos — para que o usuário possa concordar ou discordar conscientemente.
-4. **Conservadorismo na inferência.** Quando o dado não existe ou é frágil (5 RAs sem zona eleitoral TSE, por exemplo), a opção é declarar a ausência, não estimar com técnicas que escondam a incerteza.
+4. **Conservadorismo na inferência.** Quando o dado não existe ou é frágil, a opção é declarar a ausência, não estimar com técnicas que escondam a incerteza.
 
 ### 2.4 Universo coberto
 
 | Dimensão | Cobertura |
 |---|---|
-| Geografia | Distrito Federal — 33 Regiões Administrativas (28 com zona TSE direta · 5 sem) |
+| Geografia | Distrito Federal — 33 Regiões Administrativas, todas com cobertura via atribuição seção→RA por point-in-polygon |
 | Eleições de referência | TSE 2022 (cadastro eleitoral · votação por seção). Infraestrutura para TSE 2018 e PDAD 2018 disponível, uso pontual. |
 | Cargos | Governador · Senador · Deputado Federal · Deputado Distrital |
 | Campos políticos | Progressista · Moderado · Liberal/Conservador · Outros (residual) |
@@ -100,28 +100,31 @@ Toda a análise é construída tendo a **Região Administrativa do DF como unida
 2. **Coincidência com o tecido administrativo do DF.** Cada RA tem administração regional, orçamento próprio, identidade local reconhecida pelos moradores. Uma análise por RA fala a mesma língua que o consultor e o cliente já falam.
 3. **Coerência com a fonte socioeconômica.** A PDAD é desagregada exatamente por RA. Trabalhar nessa unidade evita reagrupamentos arbitrários e mantém a auditabilidade.
 
-#### Correspondência zona TSE ↔ RA
+#### Atribuição seção → RA via point-in-polygon
 
-O TSE não opera com RAs — opera com **zonas eleitorais**. As zonas do DF foram desenhadas em outro momento histórico, e a correspondência com as RAs atuais não é 1-para-1: algumas zonas atendem mais de uma RA, e algumas RAs novas (criadas após o desenho original das zonas) não têm zona própria.
+O TSE não opera com RAs — opera com **zonas eleitorais**. As zonas do DF foram desenhadas em outro momento histórico, e a correspondência zona × RA não é 1-para-1: várias zonas atendem mais de uma RA, e várias RAs (criadas posteriormente) não têm zona própria.
 
-O pipeline (Fase 1) constrói uma tabela de correspondência zona ↔ RA com base na localização dos locais de votação e na atribuição majoritária dos eleitores. O resultado:
+A solução metodológica adotada (em abr/2026, substituindo um método anterior por distribuição proporcional) é **atribuir cada seção eleitoral à RA via point-in-polygon**:
 
-- **28 RAs com cobertura direta**: a totalidade dos votos de uma ou mais zonas é atribuída à RA com baixa ambiguidade.
-- **5 RAs sem zona própria**: Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol e Arniqueira. Seus eleitores estão registrados em zonas das RAs vizinhas (Arniqueira em Águas Claras, Sol Nascente em Ceilândia, etc.) e não há como desagregar votos com precisão.
+1. O TSE disponibiliza coordenadas geográficas (LAT/LON) de cada local de votação. Cada seção pertence a um local.
+2. O governo do DF disponibiliza polígonos georreferenciados das 33 RAs (`Limite_RA_20190.json`, sem overlap entre polígonos).
+3. Para cada seção, identificamos o ponto do seu local de votação e testamos contra os polígonos das RAs. Cada seção cai em **exatamente uma** RA.
+4. O **perfil eleitoral por seção** (TSE 2022, faixa etária × gênero × escolaridade) é então agregado por RA pela atribuição PIP.
+5. Para 10 seções com coordenadas inválidas (`-1, -1` no cadastro do TSE — todas em locais bem identificados como CEUB Águas Claras, Colégio Anchieta etc.), usa-se atribuição de fallback pelo nome do bairro.
 
-#### Tratamento das 5 RAs sem zona TSE
+**Resultado:** todas as **33 RAs do DF têm dado eleitoral próprio**. As 5 RAs antes consideradas "sem zona" (Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol, Arniqueira) recebem agora seu perfil real, agregado a partir das seções cujos locais de votação caem nelas — independentemente de qual zona TSE atende essas seções.
 
-A decisão atual é **filtrar essas 5 RAs das tabelas eleitorais e indicadores derivados**, mantendo-as nas tabelas socioeconômicas (onde a PDAD funciona normalmente). Cada tabela afetada traz uma nota de rodapé canônica explicando a ausência.
+#### Cross-check de integridade
 
-**Alternativas consideradas e rejeitadas:**
+O método é validado por igualdade de totais: a soma de `EL_total_aptos` agregada por RA deve bater **exatamente** com a soma de `QT_ELEITOR_SECAO` do TSE raw (eleitorado total do DF). Verificação automática no pipeline (`fase1c_perfil_secao.py`) — qualquer divergência interrompe a geração.
 
-| Alternativa | Problema |
-|---|---|
-| Atribuir votos da RA-mãe proporcionalmente ao eleitorado | Pressupõe que o comportamento eleitoral da RA filha é idêntico ao da mãe — contradiz justamente o que a análise quer descobrir |
-| Estimar via regressão multivariada (PDAD da RA filha → voto esperado) | Modelo introduz incerteza que o painel não tem como comunicar; resultado parece tão sólido quanto dado real, mas não é |
-| Atribuir votos por vizinhança geográfica | Park Way (vizinha de Núcleo Bandeirante) e SIA (vizinha de Guará) têm perfis socioeconômicos muito distintos das vizinhas; vizinhança não é proxy de comportamento |
+Para o DF em 2022, o total é **2.203.045 eleitores**, com diferença zero entre raw e agregado.
 
-A escolha por **filtrar e declarar a ausência** é coerente com o princípio de conservadorismo na inferência (§2.3). Um toggle "incluir estimativas" foi cogitado mas permanece pendente — exigiria documentação clara do método e da incerteza, e não é prioritário no momento.
+#### Por que esse método e não distribuição proporcional
+
+O método anterior (distribuição proporcional do perfil agregado da zona entre as RAs ponderado pelo número de locais) introduzia um viés sistemático: várias RAs recebiam o mesmo `% superior`, `% jovem` etc. — porque o perfil é da zona, não da RA. Em zonas com forte heterogeneidade interna (zona 18 cobrindo Lago Sul + São Sebastião + Jardim Botânico, p. ex.), o resultado distorcia drasticamente RAs ricas (Lago Sul aparecia com 38% de superior em vez dos 73% reais) e simétricamente RAs pobres da mesma zona (SCIA aparecia com 43% em vez de 7%).
+
+A atribuição por seção via PIP elimina esse vazamento: cada seção carrega o perfil dos seus eleitores e é atribuída à sua RA real, sem mistura.
 
 ### 3.3 Cargos e campos políticos
 
@@ -154,8 +157,8 @@ Toda análise depende de premissas. As principais nesta camada:
 
 ### 3.5 Limitações conhecidas
 
-1. **As 5 RAs sem zona TSE perdem cobertura eleitoral.** Já discutido em §3.2.
-2. **Granularidade fixa na RA, não abaixo.** Algumas RAs grandes (Ceilândia, Plano Piloto, Taguatinga) abrigam realidades socioeconômicas internas muito heterogêneas. A análise por RA mascara essa heterogeneidade. Subdivisão por bairro (NUCB, Águas Lindas, Sobradinho I × II, etc.) é tecnicamente possível na PDAD mas não no TSE — e a falta de simetria invalida o cruzamento. Mantemos a RA como teto comum.
+1. **Granularidade fixa na RA, não abaixo.** Algumas RAs grandes (Ceilândia, Plano Piloto, Taguatinga) abrigam realidades socioeconômicas internas muito heterogêneas. A análise por RA mascara essa heterogeneidade. Subdivisão por bairro (NUCB, Águas Lindas, Sobradinho I × II, etc.) é tecnicamente possível na PDAD mas não no TSE — e a falta de simetria invalida o cruzamento. Mantemos a RA como teto comum.
+2. **Limites das RAs no JSON podem estar levemente desatualizados em fronteiras.** O método PIP herda os polígonos do `Limite_RA_20190.json` como verdade. Pequenas divergências entre o polígono e a percepção administrativa atual (ex.: Granja do Torto, Taquari como parte de Lago Norte e não Plano Piloto) podem ocorrer. As reatribuições foram inspecionadas e refletem a partição oficial mais recente disponível.
 3. **Classificação "Outros" perde resolução.** Quando um candidato relevante cai em "Outros" por filiação a sigla pequena, sua leitura individual fica preservada (Camada 2 atua sobre o candidato, não sobre o campo), mas ele desaparece dos cruzamentos por campo (Camada 4). Isso é aceito como custo.
 4. **Sem dado pós-2022.** Eleições municipais 2024 não se aplicam ao DF. Pesquisas qualitativas, dados de redes sociais, mobilidade urbana, séries econômicas pós-2022 — nada disso entra. O painel é uma fotografia de 2022 lida pela ótica de 2026; se houver ruptura estrutural entre os dois períodos (crise econômica grande, evento político maior), a leitura precisa ser ajustada qualitativamente fora do painel.
 5. **Inferência limitada ao território, não ao eleitor individual.** As correlações entre variáveis socioeconômicas e voto que aparecem no painel são por RA — não por pessoa. "RAs com mais classe AB votam mais progressista" **não significa** "eleitores AB votam progressista": pode ser outro perfil de morador (servidor público, por exemplo) puxando a média. A interpretação individual exige pesquisa de outro tipo (survey, grupo focal). Os blocos didáticos do painel sinalizam essa fronteira onde a leitura territorial aparece.
@@ -512,7 +515,7 @@ O cruzamento é entre **Performance do candidato A** e **Performance do candidat
 
 A primeira versão dessa análise usou correlação de Pearson (r) entre as Performances dos dois candidatos como métrica de complementaridade. **Foi rejeitada para o DF.** Razões:
 
-1. **N pequeno.** Apenas 28 RAs com cobertura TSE. Coeficientes de correlação com N tão baixo são estatisticamente instáveis — pequenas variações em uma RA mudam r significativamente.
+1. **N pequeno.** Apenas 33 RAs no DF — N baixo torna coeficientes de correlação estatisticamente instáveis: pequenas variações em uma RA mudam r significativamente.
 2. **Outliers dominam.** Plano Piloto e Ceilândia (RAs grandes e atípicas) tendem a determinar o sinal e a magnitude do r. A correlação acaba descrevendo essas duas RAs, não o comportamento conjunto dos candidatos.
 3. **Perda da leitura territorial.** Um r = 0,3 não diz onde a aliança agrega. Quadrantes preservam essa leitura — quem olha vê *quais RAs* caem em "A agrega", não só "há agregação fraca em média".
 
@@ -554,7 +557,7 @@ A ferramenta principal é o **coeficiente de correlação de Pearson (r)** entre
 r(X, Y) = covariância(X, Y) / (σ_X × σ_Y)
 ```
 
-Onde X é uma variável socioeconômica da RA (ex.: % de classe A/B, % de servidor federal, % com ensino superior) e Y é uma variável eleitoral (ex.: % de voto para o campo progressista naquele cargo). O cálculo cobre as **28 RAs com cobertura completa** (as 5 sem zona TSE são excluídas).
+Onde X é uma variável socioeconômica da RA (ex.: % de classe A/B, % de servidor federal, % com ensino superior) e Y é uma variável eleitoral (ex.: % de voto para o campo progressista naquele cargo). O cálculo cobre as **33 RAs do DF**, todas com perfil eleitoral próprio após a migração para atribuição seção→RA por PIP (§3.2). Coeficientes calculados com base no TSE 2022 anteriores ao recalculo podem diferir levemente — ver pendência de revisão das correlações no backlog.
 
 #### Por que Pearson
 
@@ -752,13 +755,13 @@ Decisões em aberto (cortes a calibrar, toggles a implementar, vocabulário a al
 
 Toda análise é em nível de RA, não de eleitor. Correlações, Performance, Força do campo, zonas estratégicas — tudo descreve comportamento agregado territorial. Conclusões sobre eleitores individuais (*"o eleitor de classe AB do DF vota progressista"*) não decorrem dos dados — exigem outro tipo de pesquisa (survey, focal). Discutido em §3.5, §5.5 e §7.6.
 
-### 9.2 N pequeno (28 RAs com cobertura)
+### 9.2 N pequeno (33 RAs)
 
-A análise correlacional opera com 28 pontos. Para magnitudes próximas dos cortes convencionais (|r| ≈ 0,3–0,5), os intervalos de confiança são amplos. Outliers — Plano Piloto, Lago Sul, Ceilândia — puxam fortemente os coeficientes. Achados muito fortes (|r| > 0,8) são robustos; achados moderados merecem cautela. Discutido em §6.3, §7.1 e §7.6.
+A análise correlacional opera com 33 pontos. Para magnitudes próximas dos cortes convencionais (|r| ≈ 0,3–0,5), os intervalos de confiança são amplos. Outliers — Plano Piloto, Lago Sul, Ceilândia — puxam fortemente os coeficientes. Achados muito fortes (|r| > 0,8) são robustos; achados moderados merecem cautela. Discutido em §6.3, §7.1 e §7.6.
 
-### 9.3 Cobertura territorial parcial
+### 9.3 Limites das RAs em fronteiras
 
-Cinco RAs ficam fora da análise eleitoral por não terem zona TSE própria: **Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol, Arniqueira**. A decisão por filtrá-las (em vez de estimar) é coerente com o conservadorismo metodológico (§2.3), mas significa que parte do território distrital não tem leitura eleitoral granular. Discutido em §3.2 e §3.5.
+A atribuição seção → RA depende dos polígonos do `Limite_RA_20190.json`. Em regiões de fronteira ou em setores que historicamente eram parte de outra RA mas foram absorvidos por reorganização administrativa (Granja do Torto, Taquari), o ponto de votação cai onde o polígono diz, não onde a percepção tradicional sugere. Pequenas divergências dessa natureza são esperadas e refletem a partição oficial vigente. Discutido em §3.2 e §3.5.
 
 ### 9.4 Linearidade e simetria dos cortes
 
@@ -798,7 +801,7 @@ A categoria "Outros" (§3.3) é residual por construção — agrega candidatos 
 
 ---
 
-**Decisões pendentes que afetam o método** — calibração estatística dos cortes, implementação dos toggles de projeção, alinhamento de vocabulário entre documentos, decisão sobre toggle de estimativa para as 5 RAs sem zona TSE — vivem no backlog do produto. Ver `STORYTELLING_SPEC.md` §5 "Pendências em aberto".
+**Decisões pendentes que afetam o método** — calibração estatística dos cortes, implementação dos toggles de projeção, alinhamento de vocabulário entre documentos — vivem no backlog do produto. Ver `STORYTELLING_SPEC.md` §5 "Pendências em aberto".
 
 ---
 
@@ -867,7 +870,7 @@ Insight estrutural do DF: Plano Piloto + Lago Sul + Lago Norte + Sudoeste/Octogo
 ### Fontes e unidades
 
 **RA — Região Administrativa**
-Unidade mínima de análise de Estrategos. O DF tem 33 RAs; 28 com cobertura TSE direta, 5 sem (Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol, Arniqueira). Camada 1.
+Unidade mínima de análise de Estrategos. O DF tem 33 RAs; todas com cobertura eleitoral via atribuição seção→RA por point-in-polygon (`Limite_RA_20190.json`). Camada 1.
 
 **Zona eleitoral**
 Unidade administrativa do TSE. Não coincide 1-para-1 com a RA — a correspondência é construída por mapeamento de locais de votação na Fase 1 do pipeline. Camada 1.

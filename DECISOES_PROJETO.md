@@ -96,11 +96,8 @@ Os candidatos são classificados em 4 campos:
 - Captions ABNT: "Tabela N – ..." acima das tabelas; "Figura N – ..." abaixo das figuras
 
 ### 4.3 Notas de rodapé das tabelas
-- Sobre as 5 RAs sem zona TSE (Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol, Arniqueira):
-  - **NÃO aparecem nas tabelas** (são filtradas)
-  - Caixa cinza neutra abaixo da tabela explicando ausência
-  - Texto canônico: "As regiões [...] não estão apresentadas nesta tabela porque não há dados de zona eleitoral no TSE 2022 para essas regiões — seus eleitores votam em zonas das RAs vizinhas."
-  - **NÃO** usar termo "estimativas" — não estimamos, são indisponíveis.
+
+**Decisão revogada em abr/2026.** A regra anterior — filtrar Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol e Arniqueira das tabelas eleitorais com nota de rodapé canônica — deixou de valer com a migração para o método de atribuição seção→RA por point-in-polygon (`fase1c_perfil_secao.py`). Todas as 33 RAs agora aparecem nas tabelas com dado eleitoral próprio. As notas de rodapé canônicas devem ser **removidas** das tabelas afetadas.
 
 ### 4.4 Ordem de candidatos no menu Candidatos
 - Caixa de busca por nome/partido vem **antes** dos botões de filtro de cargo

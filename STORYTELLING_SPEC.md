@@ -484,16 +484,16 @@ Imagens vêm da Geopolítica:
 6. **Campo do "perfil compatível PDAD × campo"** — adiado para Bloco E (Estratégia). Razão: âncoras simples não distinguem progressista de liberal no DF (Lago Norte é forte para os dois).
 7. **Cenários recalibrados** — depende de ter dados de 2018 com qualidade pros percentis empíricos. Verificar cobertura.
 8. **Aprofundamento dos achados de Campo político** — testes empíricos sobre: (i) origem da anomalia DF (estrutural × cultural via comparação 2018×2022), (ii) teto demográfico do servidor federal, (iii) servidor distrital como fiel da balança majoritária, (iv) explicações pro paradoxo Lago Sul, (v) mensagem-tipo por perfil de cliente. Discutidos no debate, agendados para revisão posterior.
-9. **5 RAs sem zona TSE (predição)** — Park Way, SIA, Fercal, Sol Nascente, Arniqueira têm PDAD próprio mas TSE só na RA-mãe. Decidir caminho (vizinha geográfica / clusters / regressão multivariada / não predizer). Provavelmente toggle de "incluir estimativas" no produto. Adiado para o final.
+9. ~~**5 RAs sem zona TSE (predição)**~~ — ✅ **resolvido em abr/2026** via novo método de atribuição seção→RA por point-in-polygon (`fase1c_perfil_secao.py`, baseado em `perfil_eleitor_secao_2022_DF` e `Limite_RA_20190.json`). Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol e Arniqueira agora têm dado eleitoral próprio agregado das suas seções reais. Cross-check com total raw TSE bate com diferença zero (2.203.045 aptos no DF).
 10. **Revisão da metodologia de Estrategos** — flagada em abr/2026, ainda não feita. Mapa em 6 camadas para varrer top-down (próxima sessão escolhe por onde começar):
-    1. **Fontes e unidade de análise** — PDAD 2021 × TSE 2022 (validação 2018 disponível mas pouco usada); 33 RAs (28 com zona direta · 5 sem); Cargo × Campo (4 campos incl. "Outros" residual).
+    1. **Fontes e unidade de análise** — PDAD 2021 × TSE 2022 (validação 2018 disponível mas pouco usada); 33 RAs com cobertura via atribuição seção→RA por PIP (resolveu o caso histórico das 5 sem zona); Cargo × Campo (4 campos incl. "Outros" residual).
     2. **Métrica central** — Sobre-índice/Performance, cortes ±15%/±30%, denominador "aptos" (não comparecimento), threshold mínimo 30 votos / 1% do total.
     3. **Métricas derivadas** — Spread → tipologia (cortes 100pp/200pp); Domínio; Margem 1º-2º; Peso eleitoral; Força do campo; Idx do Campo (pode ser todo negativo).
     4. **Cruzamentos estratégicos** — Estratégia (Performance × Força do campo, 5 zonas); Reposicionamento (origem × referência, 5 zonas com Volume baixo separado por mediana); Aliança (quadrantes categóricos, substituiu r/σ).
     5. **Achados estruturais do DF** — Eixo central × Periferia; classe alta progressista (r≈+0,86); vetor dual servidor federal/AB privada; servidor distrital como fiel da majoritária.
     6. **Projeção e Word** — Quociente, cenários (orgânico / ponte parcial / ponte construída — calibração pendente); 4 templates por tipo de candidato.
 
-    **Pontos frágeis identificados (candidatos a discussão):** (i) 5 RAs sem zona TSE — filtrar continua certo ou virar toggle? (ii) Cortes ±15/±30 — empíricos ou herdados? (iii) Aptos vs. comparecimento como denominador — escolha consciente? (iv) Cruzamento PDAD × campo (item 6 acima já adiado pra Bloco E). (v) Calibração de cenários — depende de cobertura 2018. (vi) "Outros" como campo residual — entra ou não nos cruzamentos de força?
+    **Pontos frágeis identificados (candidatos a discussão):** ~~(i) 5 RAs sem zona TSE~~ — **resolvido** (ver item 9); (ii) Cortes ±15/±30 — empíricos ou herdados? (iii) Aptos vs. comparecimento como denominador — escolha consciente? (iv) Cruzamento PDAD × campo (item 6 acima já adiado pra Bloco E). (v) Calibração de cenários — depende de cobertura 2018. (vi) "Outros" como campo residual — entra ou não nos cruzamentos de força?
 
     **Estado atual do dashboard durante a revisão:** link "Sobre o Estrategos" do rodapé do menu **comentado** em `index.html` (commit `769ad8f`, abr/2026) — modal explicativo descreve metodologia que pode mudar. Reativar quando a revisão concluir. Campo político permanece visível.
 
@@ -503,11 +503,13 @@ Imagens vêm da Geopolítica:
 
     Recomendação inicial: nível 1 + versão "leitura" no mobile com achados-âncora e remetendo pro desktop pras tabelas. Decisão pendente.
 
-12. **Gap escolaridade no menu Eleitorado** — números parecem inconsistentes; revisar fonte (cadastro TSE × declaração PDAD) e cálculo do gap. Identificado em abr/2026 durante a redação da metodologia user-facing.
+12. ~~**Gap escolaridade no menu Eleitorado**~~ — ✅ **resolvido em abr/2026** junto com o item 9. O gap absurdo (Lago Sul −47,8pp, SCIA +37,5pp etc.) era artefato da distribuição proporcional zona→RA: o perfil eleitoral do TSE só vem por zona, e várias RAs compartilhavam a mesma zona, recebendo todas a mesma média. Com o novo método PIP, cada RA recebe perfil próprio e o gap converge para faixa razoável (±5–13pp).
 
 13. **Coluna "% do candidato" no menu Candidatos** — refletir sobre adicionar coluna mostrando o quanto cada RA representou no total de votos do candidato (`votos_RA / total_cand`). Hoje a tabela mostra Votos 2022, % do campo, % do cargo, Performance e Status — falta a fatia que cada RA contribuiu pro próprio candidato. É um dos componentes da fórmula da Performance, mas tem leitura própria ("de onde vieram meus votos"). Avaliar onde encaixa sem sobrecarregar a tabela.
 
 14. **Filtro da tabela por card no Comparar candidatos** — habilitar clique nos KPI cards (Sobreposição / A agrega / B agrega / Aberto) para filtrar a tabela abaixo apenas pelas RAs daquele quadrante. Hoje os cards mostram apenas a contagem; vira atalho de leitura natural se forem clicáveis.
+
+15. **Limpeza de `dados_tse_cache/`** — redundância de ~600MB (CSVs descompactados + ZIPs do mesmo conteúdo). Após migração para `perfil_eleitor_secao_2022_DF`, `perfil_eleitorado_2022.zip` (Brasil-todo, agregado por zona) fica obsoleto pro pipeline e pode ir pra `legado/`. Adicionar `.DS_Store` ao `.gitignore`.
 
 ---
 

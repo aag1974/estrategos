@@ -53,11 +53,13 @@ Estrategos cruza duas fontes oficiais públicas.
 
 Toda análise opera no nível da RA — pequena o bastante para preservar identidade política local, grande o bastante para evitar ruído amostral. As 33 RAs do DF coincidem com a divisão administrativa oficial e a desagregação direta da PDAD.
 
-**Cobertura eleitoral parcial**
+**Como o TSE vira RA**
 
-O TSE não opera com RAs — opera com zonas eleitorais. A correspondência foi construída por mapeamento de locais de votação. **28 das 33 RAs** têm cobertura eleitoral direta. As outras cinco — Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol e Arniqueira — não têm zona própria; seus eleitores votam em zonas das RAs vizinhas e os votos não são desagregáveis com precisão. Essas RAs continuam nas leituras socioeconômicas (PDAD funciona normalmente) mas são filtradas das tabelas eleitorais, com nota de rodapé explicando.
+O TSE não opera com RAs — opera com zonas eleitorais. Para cobrir as 33 RAs com fidelidade, cada **seção eleitoral** é atribuída à sua RA pelas coordenadas geográficas do local de votação cruzadas com os polígonos oficiais das RAs (point-in-polygon). O perfil eleitoral (escolaridade, idade, gênero) vem do TSE com granularidade de seção, agregado por RA pela mesma atribuição.
 
-A escolha por **filtrar em vez de estimar** é deliberada: estimativas por vizinhança ou regressão introduziriam incerteza sem ganho real de informação.
+**Validação de integridade**
+
+A soma do eleitorado por RA bate exatamente com o total do TSE para o DF (2.203.045 eleitores aptos em 2022) — verificação automática a cada execução do pipeline.
 
 ---
 
