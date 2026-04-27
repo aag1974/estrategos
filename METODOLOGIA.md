@@ -557,7 +557,7 @@ A ferramenta principal é o **coeficiente de correlação de Pearson (r)** entre
 r(X, Y) = covariância(X, Y) / (σ_X × σ_Y)
 ```
 
-Onde X é uma variável socioeconômica da RA (ex.: % de classe A/B, % de servidor federal, % com ensino superior) e Y é uma variável eleitoral (ex.: % de voto para o campo progressista naquele cargo). O cálculo cobre as **33 RAs do DF**, todas com perfil eleitoral próprio após a migração para atribuição seção→RA por PIP (§3.2). Coeficientes calculados com base no TSE 2022 anteriores ao recalculo podem diferir levemente — ver pendência de revisão das correlações no backlog.
+Onde X é uma variável socioeconômica da RA (ex.: % de classe A/B, % de servidor federal, % com ensino superior) e Y é uma variável eleitoral (ex.: % de voto para o campo progressista naquele cargo). O cálculo cobre as **33 RAs do DF**, todas com perfil eleitoral próprio após a migração para atribuição seção→RA por PIP (§3.2). Os coeficientes neste documento foram recalculados em abr/2026 com a base completa de 33 RAs.
 
 #### Por que Pearson
 
@@ -591,8 +591,9 @@ O sinal indica o sentido: positivo (variam juntas) ou negativo (variam inverso).
 
 No DF, **renda alta vota progressista** — o oposto do padrão nacional, onde classes mais altas tendem a votar conservador.
 
-- **r ≈ +0,93** entre % com ensino superior na RA e voto progressista (todos os cargos agregados).
-- **r ≈ +0,86** entre % de classe A/B na RA e voto progressista para Deputado Federal.
+- **r ≈ +0,88** entre % com ensino superior do eleitorado na RA e voto progressista para Deputado Federal.
+- **r ≈ +0,87** entre % com ensino superior dos moradores na RA e voto progressista para Deputado Federal.
+- **r ≈ +0,83** entre % de classe A/B na RA e voto progressista para Deputado Federal.
 
 As RAs que sustentam essa correlação são Lago Sul, Plano Piloto, Sudoeste/Octogonal, Águas Claras e Jardim Botânico — as mais ricas e escolarizadas do DF — e simultaneamente as que mais entregam votos para o campo progressista no cargo Federal.
 
@@ -602,7 +603,7 @@ Esse padrão é estrutural, não conjuntural: aparece também em 2018 (com magni
 
 O paradoxo da classe alta progressista não tem **um único** mecanismo causal — tem **dois** vetores que se sobrepõem:
 
-1. **Servidor federal.** A presença de servidores federais na RA correlaciona fortemente com voto progressista para cargos federais (**r ≈ +0,83** para Deputado Federal e Senador). A interpretação é direta: identidade ideológica de carreira pública, defesa do Estado, alinhamento histórico com pautas trabalhistas.
+1. **Servidor federal.** A presença de servidores federais na RA correlaciona fortemente com voto progressista para cargos federais (**r ≈ +0,80** para Deputado Federal, **+0,75** para Senador). A interpretação é direta: identidade ideológica de carreira pública, defesa do Estado, alinhamento histórico com pautas trabalhistas.
 2. **Classe AB privada altamente escolarizada.** Mesmo onde o servidor federal **não** está concentrado, o voto progressista persiste, sustentado por escolaridade alta e perfil cosmopolita. A hipótese qualitativa — a confirmar empiricamente — é que Lago Sul ilustra esse caso: predomínio de renda alta privada com proporção comparativamente menor de servidor federal, mas voto progressista mantido.
 
 Os dois vetores são distintos e se reforçam. O "eleitor rico" do DF, na verdade, **são dois eleitores** — e ambos votam progressista, contrariando o que renda alta significa em outras capitais brasileiras.
@@ -613,13 +614,13 @@ A separação dos dois vetores é importante porque tem implicação tática: um
 
 A força da correlação servidor federal × progressista **cai com o cargo**:
 
-- Federal e Senador: **r ≈ +0,83**
-- Distrital: **r ≈ +0,43**
+- Federal: **r ≈ +0,80** · Senador: **r ≈ +0,75**
+- Distrital: **r ≈ +0,37**
 
 E o **servidor distrital** faz o movimento oposto. Sua presença correlaciona positivamente com o campo governista local:
 
-- **r ≈ +0,61** entre % servidor distrital e voto liberal/conservador para Governador.
-- **r ≈ +0,60** entre % servidor distrital e voto moderado para Senador.
+- **r ≈ +0,42** entre % servidor distrital e voto liberal/conservador para Governador.
+- **r ≈ +0,59** entre % servidor distrital e voto moderado para Senador.
 
 A leitura: o servidor distrital depende da máquina pública local e tende a votar com quem governa o DF — independentemente do campo ideológico que esse governo represente. Em ciclos com governos progressistas, o servidor distrital migra para a moderação operacional do governo. Em ciclos com governos liberais/conservadores (como 2022), ele migra para o liberal/conservador.
 
@@ -643,7 +644,7 @@ A leitura: o eixo central é onde **a política ideológica acontece**. Quem se 
 
 Brazlândia, SCIA/Estrutural, Recanto das Emas, Varjão, Itapoã, Paranoá — RAs grandes em eleitorado, baixas em escolaridade e renda — não seguem o eixo ideológico. Os candidatos que performam ali não são os ideológicos do eixo central; são candidatos com **base territorial específica**: pastor com igreja consolidada, sindicalista, vereador-virou-distrital, candidato com prestação direta (cesta básica, ambulância, vale-luz, mediação com administração regional).
 
-A correlação % superior × voto progressista, que vale +0,93 quando se olha o DF inteiro, **cai a praticamente zero** se filtrar para a periferia. Lá não há padrão ideológico — há padrão de presença local.
+A correlação % superior × voto progressista, que vale aproximadamente +0,87 quando se olha o DF inteiro, **cai a praticamente zero** se filtrar para a periferia. Lá não há padrão ideológico — há padrão de presença local.
 
 #### Implicação metodológica
 
