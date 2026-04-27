@@ -18,7 +18,7 @@ Atualizado em **abr/2026**.
 6. [Camada 4 — Cruzamentos estratégicos](#6-camada-4--cruzamentos-estratégicos)
 7. [Camada 5 — Achados estruturais do DF](#7-camada-5--achados-estruturais-do-df)
 8. [Camada 6 — Projeção 2026](#8-camada-6--projeção-2026)
-9. [Limitações conhecidas e decisões pendentes](#9-limitações-conhecidas-e-decisões-pendentes)
+9. [Limitações conhecidas](#9-limitações-conhecidas)
 10. [Glossário técnico](#10-glossário-técnico)
 
 ---
@@ -742,9 +742,147 @@ A intenção arquitetural é que a ativação seja automática (detectada pela d
 
 ---
 
-## 9. Limitações conhecidas e decisões pendentes
+## 9. Limitações conhecidas
 
-*[a escrever]*
+Esta seção sintetiza as **limitações estruturais** que apareceram ao longo das seis camadas — fragilidades inerentes ao método que vão continuar existindo mesmo depois que decisões pendentes forem resolvidas. Não substitui a leitura das limitações específicas em cada camada; sumariza-as em categorias para facilitar a leitura crítica do produto.
+
+Decisões em aberto (cortes a calibrar, toggles a implementar, vocabulário a alinhar) não estão aqui — vivem no backlog (ver ponteiro ao final).
+
+### 9.1 Inferência ecológica (corte de raiz)
+
+Toda análise é em nível de RA, não de eleitor. Correlações, Performance, Força do campo, zonas estratégicas — tudo descreve comportamento agregado territorial. Conclusões sobre eleitores individuais (*"o eleitor de classe AB do DF vota progressista"*) não decorrem dos dados — exigem outro tipo de pesquisa (survey, focal). Discutido em §3.5, §5.5 e §7.6.
+
+### 9.2 N pequeno (28 RAs com cobertura)
+
+A análise correlacional opera com 28 pontos. Para magnitudes próximas dos cortes convencionais (|r| ≈ 0,3–0,5), os intervalos de confiança são amplos. Outliers — Plano Piloto, Lago Sul, Ceilândia — puxam fortemente os coeficientes. Achados muito fortes (|r| > 0,8) são robustos; achados moderados merecem cautela. Discutido em §6.3, §7.1 e §7.6.
+
+### 9.3 Cobertura territorial parcial
+
+Cinco RAs ficam fora da análise eleitoral por não terem zona TSE própria: **Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol, Arniqueira**. A decisão por filtrá-las (em vez de estimar) é coerente com o conservadorismo metodológico (§2.3), mas significa que parte do território distrital não tem leitura eleitoral granular. Discutido em §3.2 e §3.5.
+
+### 9.4 Linearidade e simetria dos cortes
+
+Duas suposições embutidas no aparato quantitativo:
+
+- **Linearidade do Pearson.** Detecta apenas dependência linear entre variáveis. Relações em U, em S ou com saturação podem ter |r| baixo sem serem informativas. Inspeção visual do scatter mitiga, mas não elimina.
+- **Simetria dos cortes da Performance.** ±15% e ±30% tratam ganhar e perder na mesma magnitude como equivalentes. Estrategicamente, +30% e −30% representam situações qualitativamente distintas (força vs. vulnerabilidade); o método não pondera essa assimetria — é a leitura editorial que faz isso.
+
+### 9.5 Método descritivo, não causal nem preditivo
+
+- **Performance descreve onde, não por quê.** Por que uma RA é reduto de um candidato, ou por que uma RA é progressista — exige interpretação que não decorre dos números.
+- **Correlações apontam padrões, não mecanismos.** Que renda alta correlacione com voto progressista não significa que renda alta cause voto progressista (§7.6).
+- **Projeções são cenários condicionais.** Não há intervalos de confiança formais — são bandas qualitativas calibradas editorialmente. Quem ler precisa saber disso (§8.6).
+
+### 9.6 Dependência de escolhas editoriais
+
+Várias decisões metodológicas são tomadas pelo consultor, não por algoritmo:
+
+- Classificação de cada candidato em campo político (§3.3) — com ajuste manual em casos limítrofes.
+- Escolha da referência na projeção (§8.6) — uma má escolha invalida o diagnóstico inteiro.
+- Cortes (±15%, ±30%, 100pp/200pp, 0% no Reposicionamento) — fixados editorialmente, não calibrados estatisticamente.
+- Lista de RAs do "eixo central" e da "periferia" (§7.5) — interpretação editorial, não classificação formal.
+
+Essas escolhas são **auditáveis** (ficam visíveis no produto e podem ser questionadas) mas não automatizadas. O método **depende do consultor**.
+
+### 9.7 Aliança ignora dimensões não-territoriais
+
+A análise de aliança eleitoral (§6.3) responde apenas onde há sobreposição/complementaridade *territorial*. Lealdade política, alinhamento ideológico, capacidade real de transferência de voto, química pessoal entre candidatos — nada disso entra. Decisão de aliança no mundo real exige leitura política externa que o painel não substitui.
+
+### 9.8 Sensibilidade ao período-base (TSE 2022)
+
+A análise toma 2022 como fotografia. Se entre 2022 e 2026 ocorrer ruptura estrutural — mudança radical no panorama nacional, crise local grave, candidato carismático fora do espectro mapeado — o método não tem como detectar nem ajustar. A leitura de ruptura precisa ser feita externamente pelo consultor, e a interpretação dos números do painel deve ser temperada por essa leitura.
+
+### 9.9 "Outros" como campo é frágil em todos os cruzamentos
+
+A categoria "Outros" (§3.3) é residual por construção — agrega candidatos heterogêneos de siglas pequenas. Em cruzamentos que envolvem Força do campo (Camada 4), análises de aliança ou projeções pelo lado do campo, qualquer presença de "Outros" exige cautela na leitura. Não é erro do método — é honestidade sobre o que a categoria representa.
+
+---
+
+**Decisões pendentes que afetam o método** — calibração estatística dos cortes, implementação dos toggles de projeção, alinhamento de vocabulário entre documentos, decisão sobre toggle de estimativa para as 5 RAs sem zona TSE — vivem no backlog do produto. Ver `STORYTELLING_SPEC.md` §5 "Pendências em aberto".
+
+---
+
+## 10. Glossário técnico
+
+Definições compactas dos termos técnicos usados nesta metodologia. Para o vocabulário canônico de produto e UX (rótulos da interface, regras editoriais), ver `DECISOES_PROJETO.md`.
+
+### Métricas
+
+**Sobre-índice (Performance)**
+`(votos_RA / total_cand) / (aptos_RA / aptos_DF)`. Razão entre a fração dos votos do candidato que vieram de uma RA e a fração do eleitorado do DF que mora nela. Apresentado como delta `+X% / −X%` (= ratio − 1, em percentual). Camada 2.
+
+**Spread**
+`max(Performance) − min(Performance)` para o candidato. Mede a amplitude da Performance entre RAs. Em pontos percentuais. Camada 3.
+
+**Domínio do campo**
+`votos_campo_RA / votos_totais_cargo_RA`. Fatia de mercado bruta do campo na RA × cargo. Camada 3.
+
+**Margem 1º–2º**
+Diferença em pontos percentuais entre o 1º e o 2º colocado do cargo na RA. Mede competitividade local. Camada 3.
+
+**Peso eleitoral da RA**
+`votos_totais_cargo_RA / votos_totais_cargo_DF`. Fatia da decisão eleitoral total que a RA carrega. Camada 3.
+
+**Força do campo**
+Sobre-índice aplicado ao campo (não ao candidato individual). Mesma forma matemática e mesma escala da Performance, agregando todos os candidatos do campo. Camada 3.
+
+**Coeficiente de correlação de Pearson (r)**
+Mede dependência linear entre duas variáveis. Varia de −1 a +1; sinal indica sentido, módulo indica força. Cortes convencionais de leitura: |r| < 0,3 fraca, 0,3–0,6 moderada, 0,6–0,8 forte, > 0,8 muito forte. Camada 5.
+
+### Categorizações
+
+**5 faixas da Performance**
+Reduto (≥ +30%) · Base forte (+15 a +30%) · Esperado (−15 a +15%) · Base fraca (−15 a −30%) · Ausência (≤ −30%). Aplicam-se ao candidato individual e — com a mesma escala — à Força do campo.
+
+**Perfil de votação**
+Classificação do candidato pelo spread: **Distribuído** (< 100pp) · **Híbrido** (100–200pp) · **Concentrado** (> 200pp). Diagnostica o tipo de campanha. Camada 3.
+
+**5 zonas estratégicas (Estratégia)**
+Cruzamento Performance × Força do campo, ambos com corte ±15%:
+Reduto consolidado · Voto pessoal · Esperado · Espaço a conquistar · Sem espaço pelo campo. Camada 4.
+
+**5 zonas do Reposicionamento**
+Cruzamento Performance do candidato (cargo origem) × Performance da referência (cargo destino), com corte ≥ 0%:
+Base compartilhada · Voto pessoal · Espaço a conquistar · Terreno aberto · Volume baixo. Última distinção via mediana de aptos das RAs em análise. Camada 4.
+
+**4 quadrantes da Aliança eleitoral**
+Cruzamento Performance candidato A × Performance candidato B, com corte ≥ +15% (Reduto + Base forte):
+Sobreposição · A agrega · B agrega · Aberto. Camada 4.
+
+### Conceitos do produto
+
+**Patamar de eleição**
+Volume de votos típico para se eleger no cargo, calibrado pela observação dos eleitos de 2022:
+Governador ~700 mil · Senador ~550 mil · Deputado Federal ~30 mil · Deputado Distrital ~18 mil. Aproximações, não pisos formais. Camada 6.
+
+**Aliança eleitoral**
+Termo guarda-chuva para arranjos entre candidatos (mesmo cargo ou cross-cargo). Distinto de "coligação" (proibida em proporcional desde 2017). Camada 4.
+
+**Dobradinha**
+Caso específico de aliança cross-cargo com candidatos do mesmo campo (Federal × Distrital, Senador × Federal etc.). Camada 4.
+
+**Eixo central × Periferia**
+Insight estrutural do DF: Plano Piloto + Lago Sul + Lago Norte + Sudoeste/Octogonal + Águas Claras + Jardim Botânico = ringue ideológico (qualquer extremo se elege ali). Periferia (Brazlândia, SCIA, Recanto, Varjão, Itapoã, Paranoá) opera com lógica de política local não-ideológica. Não é classificação formal — é lente interpretativa. Camada 5.
+
+### Fontes e unidades
+
+**RA — Região Administrativa**
+Unidade mínima de análise de Estrategos. O DF tem 33 RAs; 28 com cobertura TSE direta, 5 sem (Park Way, SIA, Fercal, Sol Nascente/Pôr do Sol, Arniqueira). Camada 1.
+
+**Zona eleitoral**
+Unidade administrativa do TSE. Não coincide 1-para-1 com a RA — a correspondência é construída por mapeamento de locais de votação na Fase 1 do pipeline. Camada 1.
+
+**Eleitor apto**
+Eleitor registrado no cadastro TSE da zona/RA. Distinto de **comparecimento** (eleitores que efetivamente votaram). A Performance usa aptos no denominador; o Peso eleitoral usa votos efetivos. Camadas 2 e 3.
+
+**PDAD (Pesquisa Distrital por Amostra de Domicílios)**
+Levantamento socioeconômico oficial do DF, conduzido pelo IPEDF (ex-CODEPLAN). Edição 2021 com cobertura censitária por RA. Camada 1.
+
+**Cargo**
+Os quatro disputados no DF: Governador, Senador, Deputado Federal, Deputado Distrital. Camada 1.
+
+**Campo político**
+Classificação descritiva em 4 categorias: Progressista, Moderado, Liberal/Conservador, Outros (residual). Baseada em filiação partidária e padrão histórico. Camada 1.
 
 ---
 
