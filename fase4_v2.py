@@ -1681,19 +1681,21 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
 
 
 <!-- MODAL COMPARAÇÃO CANDIDATOS -->
-<div id="cmp-overlay" onclick="if(event.target===this){this.style.display='none';document.body.style.overflow=''}" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-start;justify-content:center;padding-top:40px;overflow-y:auto">
-  <div style="background:var(--s1);border-radius:12px;width:min(800px,95vw);display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.25);margin-bottom:40px">
+<div id="cmp-overlay" onclick="if(event.target===this){cmpFechar()}" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
+  <div style="background:var(--s1);border-radius:12px;width:min(1100px,95vw);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.25)">
     <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:0.5px solid var(--bd);flex-shrink:0">
+      <span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);font-weight:700;flex-shrink:0">Alianças políticas</span>
+      <span style="color:var(--bd2);flex-shrink:0">|</span>
       <div style="display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap">
         <div id="cmp-a-dot" style="width:10px;height:10px;border-radius:50%;flex-shrink:0"></div>
         <span id="cmp-a-nome" style="font-size:14px;font-weight:500"></span>
         <span id="cmp-a-badge" style="font-size:9px;padding:2px 7px;border-radius:10px"></span>
         <span id="cmp-a-sub" style="font-size:11px;color:var(--muted)"></span>
       </div>
-      <button onclick="document.getElementById('cmp-overlay').style.display='none';document.body.style.overflow=''" style="font-size:20px;line-height:1;background:none;border:none;cursor:pointer;color:var(--muted);padding:0 4px">×</button>
+      <button onclick="cmpFechar()" style="font-size:20px;line-height:1;background:none;border:none;cursor:pointer;color:var(--muted);padding:0 4px">×</button>
     </div>
     <div style="padding:10px 18px;border-bottom:0.5px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <span style="font-size:12px;color:var(--muted);flex-shrink:0">Comparar com</span>
+      <span style="font-size:12px;color:var(--muted);flex-shrink:0">Aliar com</span>
       <div style="position:relative;flex:1;min-width:200px;max-width:380px">
         <input id="cmp-b-search" placeholder="Buscar candidato (qualquer cargo)..." style="width:100%;box-sizing:border-box;padding:6px 10px;border:0.5px solid var(--bd2);border-radius:6px;font-size:12px;background:var(--s1);color:var(--txt);font-family:inherit" oninput="cmpBuscar(this.value)">
         <div id="cmp-b-results" style="display:none;position:absolute;top:34px;left:0;right:0;background:var(--s1);border:0.5px solid var(--bd2);border-radius:8px;z-index:10;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.12)"></div>
@@ -1708,7 +1710,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
       <!-- 4 KPI cards de quadrantes -->
       <div id="cmp-quad-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px"></div>
       <!-- Tabela com coluna Padrão -->
-      <div style="overflow:auto;max-height:380px;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px"><table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px"><thead id="cmp-thead" style="position:sticky;top:0;z-index:4;background:var(--s1)"></thead><tbody id="cmp-tbody"></tbody></table></div>
+      <div style="overflow:auto;max-height:60vh;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px"><table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px"><thead id="cmp-thead" style="position:sticky;top:0;z-index:4;background:var(--s1)"></thead><tbody id="cmp-tbody"></tbody></table></div>
       <!-- Scatter como visual de apoio -->
       <details style="border-top:0.5px solid var(--bd);padding-top:10px">
         <summary style="font-size:11px;color:var(--muted);cursor:pointer;letter-spacing:.5px;text-transform:uppercase">Distribuição (% do total) · scatter</summary>
@@ -2101,8 +2103,7 @@ function candSel(cand) {
     +(totalStr?"<span style='font-size:11px;color:var(--muted)'>· "+totalStr+"</span>":"")
     +campoBadgeHtml
     +votoBadgeHtml
-    +"<span style='"+PREFIX_STYLE+";margin-left:auto'>Testar aliança</span>"
-    +"<button onclick='candComparar()' style='font-size:11px;padding:4px 12px;border-radius:6px;border:0;background:var(--amber);color:white;cursor:pointer;white-space:nowrap;flex-shrink:0;font-weight:500'>Comparar com...</button>";
+    +"<button onclick='candComparar()' style='margin-left:auto;font-size:11px;padding:4px 12px;border-radius:6px;border:0;background:var(--amber);color:white;cursor:pointer;white-space:nowrap;flex-shrink:0;font-weight:500;letter-spacing:0.5px;text-transform:uppercase'>Alianças políticas</button>";
   candRenderTab(cand);
   _candResetScroll();
 }
@@ -3305,10 +3306,29 @@ irSec("populacao");
 estInit();
 
 var cmpCandB = null;
+var cmpFiltroPad = null;  // null = mostrar todas; "SOBREPOE"/"AGREGA_A"/"AGREGA_B"/"ABERTO" = filtra
+
+function cmpToggleFiltro(pad){
+  cmpFiltroPad = (cmpFiltroPad === pad) ? null : pad;
+  cmpRenderTabela();
+  // Atualiza outline visual dos cards
+  ["SOBREPOE","AGREGA_B","AGREGA_A","ABERTO"].forEach(function(p){
+    var el = document.getElementById("cmp-card-"+p);
+    if(el){
+      el.style.outline = (cmpFiltroPad === p) ? "2px solid var(--amber)" : "none";
+      el.style.outlineOffset = "2px";
+    }
+  });
+}
 
 function candComparar() {
   if(!candSelecionado) return;
   cmpCandB = null;
+  cmpFiltroPad = null;
+  // Reset visual do candidato B (caso tenha sido aberto antes)
+  var _bTag = document.getElementById("cmp-b-tag");
+  if(_bTag){ _bTag.style.display = "none"; _bTag.innerHTML = ""; }
+  document.getElementById("cmp-b-search").style.display = "";
   document.getElementById("cmp-a-nome").textContent = candSelecionado.nome;
   var CC3={progressista:"#A32D2D",moderado:"#0F6E56",liberal_conservador:"#854F0B",outros:"#6B7280"};
   var CN3={progressista:"Progressista",moderado:"Moderado",liberal_conservador:"Liberal/Cons.",outros:"Outros"};
@@ -3539,33 +3559,41 @@ function cmpRenderizar(cA, cB) {
   }
   document.getElementById("cmp-veredito").innerHTML = veredito;
 
-  // KPI cards
+  // KPI cards (clicáveis — filtram a tabela abaixo)
   function _qpct(n){ return qTot ? Math.round(n/qTot*100)+"%" : "0%"; }
-  var kpiBase = "background:var(--s1);border:0.5px solid var(--bd2);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0";
+  var kpiBase = "background:var(--s1);border:0.5px solid var(--bd2);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0;cursor:pointer;transition:background .12s";
   var kpiNum = "font-size:22px;font-weight:600;line-height:1";
   var kpiLbl = "font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px";
   var kpiSub = "font-size:9px;color:var(--muted);line-height:1.3;margin-top:2px";
   document.getElementById("cmp-quad-cards").innerHTML =
-    "<div style='"+kpiBase+";border-left:3px solid #B45309'>"
+    "<div id='cmp-card-SOBREPOE' onclick='cmpToggleFiltro(\"SOBREPOE\")' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid #B45309'>"
       +"<div style='"+kpiLbl+"'>Sobreposição</div>"
       +"<div style='"+kpiNum+";color:#B45309'>"+nSob+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nSob)+"</span></div>"
-      +"<div style='"+kpiSub+"'>Ambos fortes (Reduto/Base forte)</div>"
+      +"<div style='"+kpiSub+"'>Ambos com Performance ≥ +15%</div>"
     +"</div>"
-    +"<div style='"+kpiBase+";border-left:3px solid "+corA+"'>"
+    +"<div id='cmp-card-AGREGA_B' onclick='cmpToggleFiltro(\"AGREGA_B\")' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid "+corA+"'>"
       +"<div style='"+kpiLbl+"'>"+nA+" agrega</div>"
       +"<div style='"+kpiNum+";color:"+corA+"'>"+nAggB+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nAggB)+"</span></div>"
-      +"<div style='"+kpiSub+"'>"+nA+" forte, "+nB+" não</div>"
+      +"<div style='"+kpiSub+"'>"+nA+" Performance ≥ +15%, "+nB+" abaixo</div>"
     +"</div>"
-    +"<div style='"+kpiBase+";border-left:3px solid "+corB+"'>"
+    +"<div id='cmp-card-AGREGA_A' onclick='cmpToggleFiltro(\"AGREGA_A\")' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid "+corB+"'>"
       +"<div style='"+kpiLbl+"'>"+nB+" agrega</div>"
       +"<div style='"+kpiNum+";color:"+corB+"'>"+nAggA+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nAggA)+"</span></div>"
-      +"<div style='"+kpiSub+"'>"+nB+" forte, "+nA+" não</div>"
+      +"<div style='"+kpiSub+"'>"+nB+" Performance ≥ +15%, "+nA+" abaixo</div>"
     +"</div>"
-    +"<div style='"+kpiBase+";border-left:3px solid var(--muted)'>"
+    +"<div id='cmp-card-ABERTO' onclick='cmpToggleFiltro(\"ABERTO\")' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid var(--muted)'>"
       +"<div style='"+kpiLbl+"'>Terreno aberto</div>"
       +"<div style='"+kpiNum+";color:var(--muted)'>"+nAb+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nAb)+"</span></div>"
-      +"<div style='"+kpiSub+"'>Nenhum dos dois é forte</div>"
+      +"<div style='"+kpiSub+"'>Nenhum com Performance ≥ +15%</div>"
     +"</div>";
+  // Reaplicar outline do filtro ativo (caso esteja)
+  ["SOBREPOE","AGREGA_B","AGREGA_A","ABERTO"].forEach(function(p){
+    var el = document.getElementById("cmp-card-"+p);
+    if(el){
+      el.style.outline = (cmpFiltroPad === p) ? "2px solid var(--amber)" : "none";
+      el.style.outlineOffset = "2px";
+    }
+  });
 
   // Scatter SVG
   var minP = Math.min.apply(null, ppA.concat(ppB)) * 0.9;
@@ -3655,10 +3683,11 @@ function cmpRenderTabela(){
   var nA = cmpNomesCache.nA, nB = cmpNomesCache.nB;
   function fpt2(v){ return v.toFixed(1).replace(".",","); }
 
-  // Filtro inline
+  // Filtro inline (busca por RA + filtro por padrão dos cards)
   var fIn = document.getElementById("cmp-filtro-ra");
   var qRA = (fIn && fIn.value || "").trim().toLowerCase();
   var lista = deltas.slice();
+  if(cmpFiltroPad){ lista = lista.filter(function(d){ return d.padrao === cmpFiltroPad; }); }
   if(qRA) lista = lista.filter(function(d){ return d.ra.toLowerCase().indexOf(qRA) >= 0; });
 
   // Sort
