@@ -3320,6 +3320,17 @@ function abrirAliancas(cand){
   candAtivoCmp = cand;
   cmpCandB = null;
   cmpFiltroPad = null;
+  // Limpa caches da renderização anterior (evita labels stale ao trocar A)
+  cmpDeltasCache = null;
+  cmpNomesCache = {nA:"A", nB:"B"};
+  var _tbody = document.getElementById("cmp-tbody");
+  var _thead = document.getElementById("cmp-thead");
+  var _quad  = document.getElementById("cmp-quad-cards");
+  var _vere  = document.getElementById("cmp-veredito");
+  if(_tbody) _tbody.innerHTML = "";
+  if(_thead) _thead.innerHTML = "";
+  if(_quad)  _quad.innerHTML  = "";
+  if(_vere)  _vere.innerHTML  = "";
   // Reset visual do candidato B (caso tenha sido aberto antes)
   var _bTag = document.getElementById("cmp-b-tag");
   if(_bTag){ _bTag.style.display = "none"; _bTag.innerHTML = ""; }
@@ -3570,27 +3581,18 @@ function cmpRenderizar(cA, cB) {
   var kpiNum = "font-size:22px;font-weight:600;line-height:1";
   var kpiLbl = "font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px";
   var kpiSub = "font-size:9px;color:var(--muted);line-height:1.3;margin-top:2px";
-  document.getElementById("cmp-quad-cards").innerHTML =
-    "<div id='cmp-card-SOBREPOE' onclick='cmpToggleFiltro(&quot;SOBREPOE&quot;)' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid #B45309'>"
-      +"<div style='"+kpiLbl+"'>Sobreposição</div>"
-      +"<div style='"+kpiNum+";color:#B45309'>"+nSob+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nSob)+"</span></div>"
-      +"<div style='"+kpiSub+"'>Ambos com Performance ≥ +15%</div>"
-    +"</div>"
-    +"<div id='cmp-card-AGREGA_B' onclick='cmpToggleFiltro(&quot;AGREGA_B&quot;)' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid "+corA+"'>"
-      +"<div style='"+kpiLbl+"'>"+nA+" agrega</div>"
-      +"<div style='"+kpiNum+";color:"+corA+"'>"+nAggB+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nAggB)+"</span></div>"
-      +"<div style='"+kpiSub+"'>"+nA+" Performance ≥ +15%, "+nB+" abaixo</div>"
-    +"</div>"
-    +"<div id='cmp-card-AGREGA_A' onclick='cmpToggleFiltro(&quot;AGREGA_A&quot;)' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid "+corB+"'>"
-      +"<div style='"+kpiLbl+"'>"+nB+" agrega</div>"
-      +"<div style='"+kpiNum+";color:"+corB+"'>"+nAggA+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nAggA)+"</span></div>"
-      +"<div style='"+kpiSub+"'>"+nB+" Performance ≥ +15%, "+nA+" abaixo</div>"
-    +"</div>"
-    +"<div id='cmp-card-ABERTO' onclick='cmpToggleFiltro(&quot;ABERTO&quot;)' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid var(--muted)'>"
-      +"<div style='"+kpiLbl+"'>Terreno aberto</div>"
-      +"<div style='"+kpiNum+";color:var(--muted)'>"+nAb+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(nAb)+"</span></div>"
-      +"<div style='"+kpiSub+"'>Nenhum com Performance ≥ +15%</div>"
+  function _kpiHtml(id, pad, label, n, color, sub){
+    return "<div id='cmp-card-"+id+"' onclick='cmpToggleFiltro(&quot;"+pad+"&quot;)' title='Clique para filtrar a tabela' style='"+kpiBase+";border-left:3px solid "+color+"'>"
+      +"<div style='"+kpiLbl+"'>"+label+"</div>"
+      +"<div style='"+kpiNum+";color:"+color+"'>"+n+" <span style='font-size:11px;font-weight:400;color:var(--muted)'>RAs · "+_qpct(n)+"</span></div>"
+      +"<div style='"+kpiSub+"'>"+sub+"</div>"
     +"</div>";
+  }
+  document.getElementById("cmp-quad-cards").innerHTML =
+    _kpiHtml("SOBREPOE","SOBREPOE","Sobreposição", nSob, "#B45309", "Ambos com Performance ≥ +15%")
+    + _kpiHtml("AGREGA_B","AGREGA_B", nA+" agrega", nAggB, corA, nA+" forte, "+nB+" abaixo")
+    + _kpiHtml("AGREGA_A","AGREGA_A", nB+" agrega", nAggA, corB, nB+" forte, "+nA+" abaixo")
+    + _kpiHtml("ABERTO","ABERTO","Terreno aberto", nAb, "#6B7280", "Nenhum com Performance ≥ +15%");
   // Reaplicar outline do filtro ativo (caso esteja)
   ["SOBREPOE","AGREGA_B","AGREGA_A","ABERTO"].forEach(function(p){
     var el = document.getElementById("cmp-card-"+p);
