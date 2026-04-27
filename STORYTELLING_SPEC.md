@@ -505,7 +505,7 @@ Imagens vêm da Geopolítica:
 
 12. ~~**Gap escolaridade no menu Eleitorado**~~ — ✅ **resolvido em abr/2026** junto com o item 9. O gap absurdo (Lago Sul −47,8pp, SCIA +37,5pp etc.) era artefato da distribuição proporcional zona→RA: o perfil eleitoral do TSE só vem por zona, e várias RAs compartilhavam a mesma zona, recebendo todas a mesma média. Com o novo método PIP, cada RA recebe perfil próprio e o gap converge para faixa razoável (±5–13pp).
 
-13. **Coluna "% do candidato" no menu Candidatos** — refletir sobre adicionar coluna mostrando o quanto cada RA representou no total de votos do candidato (`votos_RA / total_cand`). Hoje a tabela mostra Votos 2022, % do campo, % do cargo, Performance e Status — falta a fatia que cada RA contribuiu pro próprio candidato. É um dos componentes da fórmula da Performance, mas tem leitura própria ("de onde vieram meus votos"). Avaliar onde encaixa sem sobrecarregar a tabela.
+13. ~~**Coluna "% do candidato" no menu Candidatos**~~ — ✅ **resolvido em abr/2026** com nova coluna **% dos votos** (frequência relativa: `votos_RA / total_cand × 100`). Decisão integrada: Performance e Status saíram da tabela de Candidatos (que virou puramente descritiva — fotografia eleitoral) e os indicadores estratégicos vivem só em Estratégia.
 
 14. **Filtro da tabela por card no Comparar candidatos** — habilitar clique nos KPI cards (Sobreposição / A agrega / B agrega / Aberto) para filtrar a tabela abaixo apenas pelas RAs daquele quadrante. Hoje os cards mostram apenas a contagem; vira atalho de leitura natural se forem clicáveis.
 

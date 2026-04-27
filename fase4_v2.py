@@ -478,6 +478,7 @@ def montar_candidatos():
         vt_campo = int(total_campo_ra.get((r["DS_CARGO"], ra, campo), 1) or 1)
         cands[key]["ras"][ra] = {
             "v":  votos,
+            "pe": round(votos / total_c * 100, 2) if total_c else 0,
             "pc": round(votos / vt_cargo * 100, 2),
             "pp": round(votos / vt_campo * 100, 2),
         }
@@ -542,6 +543,7 @@ def _montar_candidatos_csv(csv_path):
         vt_campo = int(total_campo_ra.get((r["DS_CARGO"], ra, campo), 1) or 1)
         cands[key]["ras"][ra] = {
             "v":  votos,
+            "pe": round(votos / total_c * 100, 2) if total_c else 0,
             "pc": round(votos / vt_cargo * 100, 2),
             "pp": round(votos / vt_campo * 100, 2),
         }
@@ -1214,16 +1216,15 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
       <div class="sec-head">
         <div class="sec-kicker" style="color:var(--muted)">Contexto</div>
         <div class="sec-titulo">Candidatos <span style="font-size:13px;color:var(--muted);font-weight:400">· TSE 2022</span></div>
-        <div class="sec-lead">Fotografia eleitoral de 2022: todos os candidatos que disputaram no DF, com os votos recebidos em cada região. Selecione um candidato para ver onde foi forte, onde foi fraco e onde há espaço para crescer em 2026.</div>
+        <div class="sec-lead">Fotografia eleitoral de 2022: todos os candidatos que disputaram no DF, com os votos recebidos em cada região. Esta seção é descritiva — para a leitura estratégica (Performance, Status, zonas), ver <em>Estratégia</em>.</div>
       </div>
       <div class="achado" style="margin:10px 22px 0">
         <div class="achado-lbl">Como ler esta tabela</div>
         <div class="achado-txt">
           <strong>Votos 2022</strong>: total de votos recebidos na região.
-          <strong>% do cargo</strong>: penetração no total de votos válidos do cargo naquela RA.
+          <strong>% dos votos</strong>: frequência relativa — que fração dos votos do candidato no DF veio desta RA. Soma 100% no total. Mostra de onde vieram os votos dele.
           <strong>% do campo</strong>: fatia do campo político que o candidato capturou na RA.
-          <strong>Performance</strong>: mostra se a região entrega mais ou menos votos do que esperado pelo tamanho dela. Plano Piloto tem cerca de 9% do eleitorado do DF — se o candidato fosse perfeitamente proporcional, deveria ter 9% dos votos dele lá.
-          <strong>Status</strong>: classificação em cinco faixas — <em>Reduto</em> (≥ +30%), <em>Base forte</em> (+15% a +30%), <em>No esperado</em> (−15% a +15%), <em>Base fraca</em> (−15% a −30%) e <em>Ausência</em> (≤ −30%). Compara o candidato com ele mesmo, não entre candidatos.
+          <strong>% do cargo</strong>: penetração no total de votos válidos do cargo naquela RA.
         </div>
       </div>
       <div class="cand-search-bar">
@@ -1249,10 +1250,9 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
                 <thead><tr>
                   <th onclick="candSrt('nome')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:6;border-bottom:0.5px solid var(--bd2);text-align:left;left:0;min-width:230px;cursor:pointer;user-select:none">Região <span class="sa" id="cand-s-nome"></span><input class="th-filter" id="cand-filtro-ra" placeholder="filtrar..." oninput="candFiltrarRA()" onclick="event.stopPropagation()"></th>
                   <th onclick="candSrt('v')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:left;min-width:90px;cursor:pointer;user-select:none">Votos 2022 <span class="sa" id="cand-s-v">▼</span></th>
+                  <th onclick="candSrt('pe')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:left;min-width:110px;cursor:pointer;user-select:none"><span class="tt">% dos votos<span class="tt-icon">?</span><span class="tt-box">Frequência relativa: que fração do total de votos que o candidato teve no DF veio desta RA. Soma 100% no total. Mostra de onde vieram os votos do candidato.</span></span> <span class="sa" id="cand-s-pe"></span></th>
                   <th onclick="candSrt('pp')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:left;min-width:110px;cursor:pointer;user-select:none">% do campo <span class="sa" id="cand-s-pp"></span></th>
                   <th onclick="candSrt('pc')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:left;min-width:90px;cursor:pointer;user-select:none">% do cargo <span class="sa" id="cand-s-pc"></span></th>
-                  <th onclick="candSrt('idx')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:right;min-width:80px;cursor:pointer;user-select:none"><span class="tt">Performance<span class="tt-icon">?</span><span class="tt-box">Mostra se a região entrega mais ou menos votos do que esperado pelo seu tamanho. Plano Piloto tem cerca de 9% do eleitorado do DF — se o candidato fosse perfeitamente proporcional, deveria ter 9% dos votos dele lá. +30% ou mais = reduto; +15% a +30% = base forte; −15% a +15% = no esperado; −15% a −30% = base fraca; ≤ −30% = ausência. Compara o candidato com ele mesmo, não entre candidatos.</span></span> <span class="sa" id="cand-s-idx"></span></th>
-                  <th onclick="candSrt('s')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:left;min-width:200px;cursor:pointer;user-select:none">Status <span class="sa" id="cand-s-s"></span><select class="th-filter" id="cand-filtro-status" onchange="candFiltrarStatus()" onclick="event.stopPropagation()"><option value="all">Todos</option><option value="REDUTO">Reduto</option><option value="BASE FORTE">Base forte</option><option value="CAMPO MEDIO">Esperado</option><option value="BASE FRACA">Base fraca</option><option value="AUSENCIA">Ausência</option></select></th>
                 </tr></thead>
                 <tbody id="cand-tb"></tbody>
               </table>
@@ -2234,10 +2234,9 @@ function candRenderTab(cand){
     var va, vb;
     if(candSortCol==="nome"){ return candSortAsc? a.localeCompare(b) : b.localeCompare(a); }
     if(candSortCol==="v"){ va=ra.v||0; vb=rb.v||0; }
+    else if(candSortCol==="pe"){ va=ra.pe||0; vb=rb.pe||0; }
     else if(candSortCol==="pp"){ va=ra.pp||0; vb=rb.pp||0; }
     else if(candSortCol==="pc"){ va=ra.pc||0; vb=rb.pc||0; }
-    else if(candSortCol==="idx"){ va=(ra.idx!=null?ra.idx:-9999); vb=(rb.idx!=null?rb.idx:-9999); }
-    else if(candSortCol==="s"){ va=STATUS_ORD[ra.s]||0; vb=STATUS_ORD[rb.s]||0; }
     else { va=ra.v||0; vb=rb.v||0; }
     return candSortAsc? va-vb : vb-va;
   });
@@ -2252,25 +2251,21 @@ function candRenderTab(cand){
     var r=ras[n];
     if(!r){
       html+="<tr><td style='font-size:12px;font-weight:500'>"+n+"</td>"
-        +"<td colspan='5' style='color:var(--muted);font-size:11px;padding:7px 10px'>sem voto</td></tr>";
+        +"<td colspan='4' style='color:var(--muted);font-size:11px;padding:7px 10px'>sem voto</td></tr>";
       return;
     }
-    var idxDelta=(r.idx!=null)?Math.round((r.idx-1)*100):null;
-    var idxTxt=(idxDelta==null)?"—":((idxDelta>=0?"+":"")+idxDelta+"%");
-    var idxColor=(idxDelta==null)?"var(--muted)":(idxDelta>=0?"#085041":"#791F1F");
     html+="<tr>"
       +"<td style='font-size:12px;font-weight:500'>"+n+"</td>"
       +"<td style='font-size:12px;font-weight:500;color:#185FA5;padding:7px 10px'>"+(r.v||0).toLocaleString("pt-BR")+"</td>"
+      +bar(r.pe||0,"#185FA5",fp(r.pe||0))
       +bar(r.pp||0,cc[cand.campo]||"#6B7280",fp(r.pp||0))
       +bar(r.pc||0,"#6B7280",fp(r.pc||0))
-      +"<td style='font-size:12px;font-weight:500;text-align:right;padding:7px 10px;font-variant-numeric:tabular-nums;color:"+idxColor+"'>"+idxTxt+"</td>"
-      +"<td style='padding:5px 8px'><span style='font-size:10px;padding:2px 7px;border-radius:10px;"+(smap[r.s]||"color:var(--muted)")+"'>"+(slbl[r.s]||r.s||"—")+"</span></td>"
       +"</tr>";
   });
   document.getElementById("cand-tb").innerHTML=html;
 
   // Atualizar setas das colunas
-  ["nome","v","pp","pc","idx","s"].forEach(function(c){
+  ["nome","v","pe","pp","pc"].forEach(function(c){
     var el=document.getElementById("cand-s-"+c);
     if(el) el.textContent = candSortCol===c ? (candSortAsc?"▲":"▼") : "";
   });
