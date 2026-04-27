@@ -503,6 +503,12 @@ Imagens vêm da Geopolítica:
 
     Recomendação inicial: nível 1 + versão "leitura" no mobile com achados-âncora e remetendo pro desktop pras tabelas. Decisão pendente.
 
+12. **Gap escolaridade no menu Eleitorado** — números parecem inconsistentes; revisar fonte (cadastro TSE × declaração PDAD) e cálculo do gap. Identificado em abr/2026 durante a redação da metodologia user-facing.
+
+13. **Coluna "% do candidato" no menu Candidatos** — refletir sobre adicionar coluna mostrando o quanto cada RA representou no total de votos do candidato (`votos_RA / total_cand`). Hoje a tabela mostra Votos 2022, % do campo, % do cargo, Performance e Status — falta a fatia que cada RA contribuiu pro próprio candidato. É um dos componentes da fórmula da Performance, mas tem leitura própria ("de onde vieram meus votos"). Avaliar onde encaixa sem sobrecarregar a tabela.
+
+14. **Filtro da tabela por card no Comparar candidatos** — habilitar clique nos KPI cards (Sobreposição / A agrega / B agrega / Aberto) para filtrar a tabela abaixo apenas pelas RAs daquele quadrante. Hoje os cards mostram apenas a contagem; vira atalho de leitura natural se forem clicáveis.
+
 ---
 
 ## 6. Glossário
