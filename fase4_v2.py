@@ -1710,7 +1710,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
       <!-- 4 KPI cards de quadrantes -->
       <div id="cmp-quad-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px"></div>
       <!-- Tabela com coluna Padrão -->
-      <div style="overflow:auto;max-height:60vh;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px"><table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px"><thead id="cmp-thead" style="position:sticky;top:0;z-index:4;background:var(--s1)"></thead><tbody id="cmp-tbody"></tbody></table></div>
+      <div style="overflow-y:scroll;overflow-x:auto;max-height:60vh;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px;scrollbar-gutter:stable"><table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px"><thead id="cmp-thead" style="position:sticky;top:0;z-index:4;background:var(--s1)"></thead><tbody id="cmp-tbody"></tbody></table></div>
     </div>
   </div>
 </div>
