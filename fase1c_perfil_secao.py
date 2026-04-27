@@ -190,6 +190,29 @@ def comparar_pip_vs_osm(secao_ra):
             print(f"     {osm:>25} → {pip_:<25}  {c}")
 
 
+def regerar_enriched(secao_ra):
+    """
+    Reescreve dados_tse_cache/locais_votacao_2022_enriched.csv com a
+    atribuição RA via PIP. Esse arquivo é consumido pela fase4_v2 para
+    atribuir votos de candidatos por seção à RA correta — sem essa
+    correção, votos das 5 RAs antes "sem zona" não chegam até elas.
+    """
+    print("\n=== Regerando locais_votacao_2022_enriched.csv com PIP ===")
+    enr = secao_ra.dropna(subset=["RA_NOME_FINAL"]).copy()
+    enr = enr.rename(columns={
+        "NR_LOCAL_VOTACAO": "NR_LOCAL",
+        "NM_LOCAL_VOTACAO": "NM_LOCAL",
+        "RA_NOME_FINAL": "RA_NOME",
+        "RA_COD_FINAL": "RA_COD",
+    })
+    cols_out = ["NR_ZONA", "NR_SECAO", "NR_LOCAL", "NM_LOCAL",
+                "NM_BAIRRO", "DS_ENDERECO", "LAT", "LON",
+                "RA_COD", "RA_NOME"]
+    cols_out = [c for c in cols_out if c in enr.columns]
+    enr[cols_out].to_csv(CACHE / "locais_votacao_2022_enriched.csv", index=False)
+    print(f"   ✓ dados_tse_cache/locais_votacao_2022_enriched.csv → {len(enr):,} seções (atribuição PIP)")
+
+
 def calcular_abstencao_gov(secao_ra):
     """
     Calcula ABSTENCAO_GOVERNADOR por RA = 1 − comparecimento_RA / aptos_RA.
@@ -325,6 +348,7 @@ def main():
     print(f"   ✓ outputs_fase1/secao_ra_pip.csv → {len(secao_ra):,} seções")
 
     comparar_pip_vs_osm(secao_ra)
+    regerar_enriched(secao_ra)
 
     df_ra = agregar_perfil(secao_ra)
 
