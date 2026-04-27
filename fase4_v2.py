@@ -2812,7 +2812,7 @@ function rT2(){
     var gap=(d.el_super!=null&&d.pct_super!=null)?parseFloat((d.el_super-d.pct_super).toFixed(1)):null;
     var gapJov=(d.el_jov!=null&&d.pct_jov_mor!=null)?parseFloat((d.el_jov-d.pct_jov_mor).toFixed(1)):null;
     var gapIdo=(d.el_ido!=null&&d.pct_ido_mor!=null)?parseFloat((d.el_ido-d.pct_ido_mor).toFixed(1)):null;
-    d.gap_jov=gapJov; d.gap_ido=gapIdo;
+    d.gap=gap; d.gap_jov=gapJov; d.gap_ido=gapIdo;
     function fmtGap(g){
       if(g==null)return "--";
       if(g>2)return "<span style='background:#E1F5EE;color:#085041;font-size:10px;padding:1px 6px;border-radius:10px'>+"+f1(g)+"pp</span>";
