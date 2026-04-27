@@ -1157,7 +1157,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
         <div class="sec-titulo">Eleitorado <span style="font-size:13px;color:var(--muted);font-weight:400">· TSE 2022</span></div>
         <div class="sec-lead"><strong>Eleitor não é morador.</strong> A população (PDAD) inclui crianças, residentes sem título e estrangeiros; o eleitorado é apenas quem pode votar. O cadastro TSE 2022 revela quantos eleitores aptos cada região tem e qual o perfil por idade, gênero e escolaridade — diferenças que o cliente precisa enxergar antes de decidir onde investir.</div>
       </div>
-      <div class="achado"><div class="achado-lbl">O dado que muda tudo</div><div class="achado-txt">Ceilândia sozinha tem <strong>286 mil eleitores aptos</strong> — mais do que as <strong>12 menores regiões somadas</strong>. Escolher mal o território significa perder antes de começar.</div></div>
+      <div class="achado"><div class="achado-lbl">O dado que muda tudo</div><div class="achado-txt">Ceilândia sozinha tem <strong>302 mil eleitores aptos</strong> — mais do que as <strong>15 menores regiões somadas</strong>. Escolher mal o território significa perder antes de começar.</div></div>
       <div class="tablewrap"><table><thead><tr>
         <th style="min-width:200px" onclick="srt(2,'nome')">Região <span class="sa" id="s2-nome"></span><input class="th-filter" id="fi2" placeholder="filtrar..." oninput="filtrar(2)" onclick="event.stopPropagation()"></th>
         <th style="min-width:88px" onclick="srt(2,'el_aptos')"><span class="tt">Aptos<span class="tt-icon">?</span><span class="tt-box">Total de eleitores aptos na RA — fonte: TSE 2022. Atribuição seção→RA via point-in-polygon dos locais de votação.</span></span> <span class="sa" id="s2-el_aptos">&#9660;</span></th>
@@ -1597,7 +1597,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
         <em>Interpretação: massa alta significa que a região vale em volume absoluto — mesmo uma penetração modesta gera muitos votos. Ignorar regiões de alta Massa é abrir mão de votos que estão disponíveis.</em></p>
 
         <p><strong>4. Logística — a eficiência operacional</strong><br>
-        Mede o custo relativo de campanha por voto. RAs menores, com eleitorado mais concentrado geograficamente, têm logística mais eficiente. Calculada como o logaritmo do inverso do número de eleitores aptos — escala log para evitar que a diferença entre a maior (Ceilândia, 285k eleitores) e a menor (Varjão, 7k) seja desproporcional.<br>
+        Mede o custo relativo de campanha por voto. RAs menores, com eleitorado mais concentrado geograficamente, têm logística mais eficiente. Calculada como o logaritmo do inverso do número de eleitores aptos — escala log para evitar que a diferença entre a maior (Ceilândia, 302k eleitores) e a menor (Varjão, 4k) seja desproporcional.<br>
         <em>Interpretação: logística alta não significa que a região é prioritária, mas que o custo por voto é menor. Para candidaturas com orçamento limitado, regiões de alta Logística oferecem o melhor retorno por real investido.</em></p>
 
         <div style="background:var(--s2);border-radius:10px;padding:16px 18px;margin-top:20px">
@@ -1799,13 +1799,13 @@ var PERS=[
   {id:"gestor",campo:"moderado",nome:"O Gestor das Satélites",cargo:"Governador",
    frase:"Meu eleitor não quer ideologia. Ele quer asfalto, hospital e segurança.",
    tags:["Base volumosa","Alta fidelidade","Periferia"],
-   stats:[{v:"56%",l:"campo mod. no Recanto 2022"},{v:"285k",l:"eleitores em Ceilândia"},{v:"R$ 1.200",l:"renda média"},{v:"20%",l:"benefício social"}],
+   stats:[{v:"56%",l:"campo mod. no Recanto 2022"},{v:"302k",l:"eleitores em Ceilândia"},{v:"R$ 1.200",l:"renda média"},{v:"20%",l:"benefício social"}],
    desafio:"Campo moderado dominou a periferia, mas perdeu para o liberal no total do DF.",
    cor:"#0F6E56",bg:"#E1F5EE"},
   {id:"territorial",campo:"moderado",nome:"O Deputado Territorial",cargo:"Dep. Distrital ou Dep. Federal",
    frase:"Não preciso ganhar o DF inteiro. Preciso ser o mais votado em 2 ou 3 regiões.",
    tags:["Profundidade local","2 a 3 RAs","Enraizado"],
-   stats:[{v:"52%",l:"campo mod. em Samambaia"},{v:"169k",l:"eleitores em Samambaia"},{v:"16%",l:"funcionalismo"},{v:"R$ 1.700",l:"renda média"}],
+   stats:[{v:"52%",l:"campo mod. em Samambaia"},{v:"159k",l:"eleitores em Samambaia"},{v:"16%",l:"funcionalismo"},{v:"R$ 1.700",l:"renda média"}],
    desafio:"A logística importa mais que o volume total. Cada real fora do território é desperdiçado.",
    cor:"#0F6E56",bg:"#E1F5EE"},
   {id:"nicho",campo:"liberal",nome:"O Liberal de Nicho",cargo:"Dep. Federal ou Dep. Distrital",
@@ -1817,7 +1817,7 @@ var PERS=[
   {id:"desafiante",campo:"liberal",nome:"O Conservador Majoritário",cargo:"Governador ou Senador",
    frase:"O campo tem 32% dos votos, mas ninguém uniu. Se resolver esse problema, posso vencer.",
    tags:["Campo fragmentado","Unificação","Majoritário"],
-   stats:[{v:"32%",l:"campo lib./cons. no DF 2022"},{v:"1 lugar",l:"maior campo no DF em 2022"},{v:"249k",l:"eleitores em Taguatinga"},{v:"48%",l:"moderado em Tag."}],
+   stats:[{v:"32%",l:"campo lib./cons. no DF 2022"},{v:"1 lugar",l:"maior campo no DF em 2022"},{v:"213k",l:"eleitores em Taguatinga"},{v:"48%",l:"moderado em Tag."}],
    desafio:"Precisa somar 32% do campo mais fatia do moderado nas satélites consolidadas.",
    cor:"#854F0B",bg:"#FAEEDA"},
 ];

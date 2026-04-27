@@ -209,7 +209,7 @@ Mini-gráfico horizontal mostrando os índices do candidato ordenados, do reduto
 1. **População — enxugar tabela** de 17 → 6-7 colunas core (Renda · Superior · Classe AB · Classe DE · Funcionalismo · Idosos · Jovens) com botão "Ver mais variáveis" expandindo as outras.
 2. **População — destacar visualmente** as 3 colunas-chave (Renda, Classe AB/DE, Funcionalismo).
 3. **NÃO** agrupar por PED-DF (rejeitado: agrupamento DIEESE não conecta com objetivo eleitoral).
-4. **Eleitorado — somar 2 achados** além do "Ceilândia 285K":
+4. **Eleitorado — somar 2 achados** além do "Ceilândia 302K":
    - "Idosos sobre-representam +Xpp na urna" (sobre-representação etária)
    - "Em RA Z, abstenção foi 25%+ — base potencial de virada"
 5. **Costurar População ↔ Eleitorado** com achado-âncora explícito sobre gap morador × eleitor (ex.: "Em SCIA/Estrutural, 1% dos moradores tem superior, mas 8% do eleitorado declara ter").

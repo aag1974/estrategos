@@ -179,7 +179,7 @@ A classificação é feita pelos dois primeiros dígitos do `NR_VOTAVEL` para ca
 **No DF, o voto progressista cresce com renda e escolaridade — o inverso do padrão nacional.** A correlação entre escolaridade do eleitorado e voto progressista para Deputado Federal em 2022 é r = 0,93. Regiões de alta renda (Plano Piloto, Lago Norte) votam à esquerda; periferias votam à direita ou centro.
 
 ### 7.4 Outros achados-âncora
-- **Ceilândia tem 285 mil eleitores aptos** — mais do que os 7 menores territórios somados.
+- **Ceilândia tem 302 mil eleitores aptos** — mais do que as 15 menores regiões somadas.
 - **Campo moderado dominou as periferias** mas perdeu para o liberal no total do DF.
 - **Campo liberal/conservador chegou a 32% no DF** em 2022 — maior fatia, mas fragmentada.
 - **48% de moderado em Taguatinga** — território de disputa real.
