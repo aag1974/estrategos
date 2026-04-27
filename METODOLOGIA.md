@@ -660,7 +660,85 @@ Estrategos não codifica essa dualidade como métrica formal (não há um indica
 
 ## 8. Camada 6 — Projeção 2026
 
-*[a escrever]*
+Camadas 2 a 5 olham para o passado: descrevem o território conforme se expressou em 2022, com seus padrões estruturais. Camada 6 olha para frente — propõe **cenários condicionais** sobre o que pode acontecer em 2026, dada uma escolha de referência.
+
+A diferença tonal é importante: o que vem antes é **descritivo** (dados públicos auditáveis), o que vem aqui é **prospectivo** (cenários sob premissas declaradas). Por isso a fronteira entre as camadas é dura — projeção é apresentada com sinalização clara de que é projeção, não fotografia.
+
+### 8.1 Princípio do modelo
+
+A pergunta que a projeção responde é simples: *dado que escolhi um candidato de 2022 como referência (porque seu perfil é análogo ao do candidato em análise), e dado um cenário sobre como esse candidato cresce ou encolhe, quantos votos ele faria em cada RA em 2026?*
+
+A resposta, em forma:
+
+```
+Votos_2026(RA) = Votos_referência_2022(RA) × cenário_multiplicador
+```
+
+A escolha por **multiplicação direta** sobre uma referência empírica é deliberada. Substituiu, em abr/2026, um modelo composto anterior (índice SPE) que combinava Afinidade × Conversão × Massa × Logística com pesos editoriais ponderados por cargo. Esse modelo composto foi aposentado por três motivos:
+
+1. **Pesos arbitrários.** Os coeficientes que combinavam as quatro dimensões eram fixados editorialmente, não calibrados estatisticamente. O resultado era defensável apenas por construção interna — não por evidência.
+2. **Cobertura furada.** "SPE não disponível" aparecia em metade das combinações cargo × campo, porque o modelo dependia de candidatos análogos em todas as dimensões — o que raramente se materializava.
+3. **Sem ação prática.** O número composto agregado escondia o que estava por trás. Um SPE 8,2 não dizia se o candidato era forte por afinidade ou por logística — e a campanha não tem como agir num agregado.
+
+A multiplicação direta sobre uma referência conhecida é mais auditável: o consultor escolhe a referência, sabe por que, e o cenário é apenas um ajuste sobre dados reais.
+
+### 8.2 Os cenários
+
+A arquitetura prevê **três cenários** sobre a multiplicação base, cobrindo uma banda de "menos do que a referência" a "mais do que a referência". Os nomes específicos dos cenários e os multiplicadores numéricos estão em definição — não há ainda vocabulário canônico fixado nem calibração estatística aplicada no painel.
+
+A versão anterior do produto, baseada no índice SPE composto (aposentado em abr/2026), usava multiplicadores editoriais de **50% / 75% / 100%** como âncoras didáticas. Esses valores **não são** os do modelo atual: eram parte de uma arquitetura que foi descartada. A nova calibração é decisão pendente — depende de dados de 2018 com qualidade suficiente para gerar percentis empíricos por cargo × campo (p.ex.: pior decil / mediana / top decil dos eleitos).
+
+Enquanto a calibração não estiver feita, qualquer cenário apresentado no painel deve ser entendido como **âncora didática**, não como estimativa estatística.
+
+### 8.3 Toggles opcionais (ajustes sobre a multiplicação base)
+
+Sobre o modelo base (multiplicação direta), dois ajustes opcionais foram desenhados — para serem ativados ou não pelo consultor, conforme o caso:
+
+**Ajuste demográfico (PDAD).**
+Quando há razão para acreditar que o candidato em análise tem afinidade demográfica diferente da referência (perfil socioeconômico distinto do eleitorado-alvo), o ajuste pondera a multiplicação pelo grau de compatibilidade entre o perfil PDAD da RA e o perfil teórico do eleitor-tipo do candidato. **Status atual:** modelo conceitual definido; calibração e implementação em aberto. Substituiria a antiga "Afinidade" do SPE.
+
+**Ajuste por tendência histórica 2018→2022.**
+Quando o campo do candidato cresceu ou encolheu sistematicamente entre os dois ciclos numa RA específica, o ajuste aplica essa tendência ao multiplicador local. Captura a noção de que algumas RAs estão num movimento direcional que provavelmente continua. **Status atual:** mesmo do ajuste anterior — definido conceitualmente, calibração pendente.
+
+Ambos os toggles são **opcionais e desligados por padrão**. O modelo base funciona sem eles; eles são refinamentos para casos específicos.
+
+### 8.4 Patamar de eleição
+
+A projeção por RA não responde sozinha à pergunta estratégica final: *isso é suficiente para eleger?* Para responder isso é preciso comparar o total de votos projetado com um **patamar de eleição** — o volume de votos que candidatos individuais costumam atingir para serem eleitos no cargo.
+
+O patamar varia significativamente por cargo:
+
+| Cargo | Tipo de eleição | Patamar aproximado |
+|---|---|---|
+| **Governador** | Majoritária (vaga única) | ~**700 mil** votos |
+| **Senador** | Majoritária (1 a 2 vagas) | ~**550 mil** votos |
+| **Deputado Federal** | Proporcional (8 vagas no DF) | ~**30 mil** votos |
+| **Deputado Distrital** | Proporcional (24 vagas no DF) | ~**18 mil** votos |
+
+Federal e Distrital têm patamares **distintos**, ainda que ambos sejam proporcionais — o quociente eleitoral é diferente porque o número de cadeiras e o tamanho do eleitorado total do cargo são diferentes. Os valores são aproximações calibradas pela observação dos eleitos de 2022, não pisos formais — eleitos podem entrar abaixo via legenda e sobras, e candidatos fortes podem ultrapassar substancialmente. Valores são recalculados a partir dos dados oficiais a cada ciclo.
+
+A projeção apresenta o total de votos lado a lado com a faixa de patamar — a leitura "cobertura: X% do patamar" é o que conecta a leitura territorial à decisão estratégica.
+
+### 8.5 Modo Reposicionamento
+
+Quando a referência selecionada está em **cargo diferente** do candidato em análise (Distrital → Federal, p. ex.), a leitura prevista pela arquitetura é o **modo Reposicionamento**. Isso muda duas coisas:
+
+1. A leitura territorial passa a usar as **cinco zonas do Reposicionamento** (Camada 4, §6.2) em vez das cinco zonas estratégicas — porque a pergunta deixa de ser "onde meu campo é forte" e passa a ser "quanto da base da referência eu posso herdar".
+2. Os cenários são reformulados para refletir grau de transferência:
+   - **Substituto orgânico** — herda apenas onde origem e referência se sobrepõem (Base compartilhada).
+   - **Com ponte parcial** — herda também o Espaço a conquistar onde a referência foi forte.
+   - **Com ponte construída** — herda parte do Terreno aberto onde há volume relevante.
+
+A intenção arquitetural é que a ativação seja automática (detectada pela diferença de cargo entre análise e referência), sem configuração manual do usuário. O grau de implementação atual no painel está em revisão e pode ser parcial — esta seção descreve o desenho-alvo, não necessariamente o estado vigente.
+
+### 8.6 Premissas e limitações
+
+1. **A projeção depende inteiramente da referência.** Uma referência mal escolhida gera projeção mal calibrada. A escolha é editorial, não detectada — exige conhecimento sobre análogos perfeitos e quase-perfeitos.
+2. **Multiplicadores ainda são editoriais.** A calibração estatística (percentis empíricos) é pendente. Hoje os cenários ancoram com 50%, 75%, 100% como pontos didáticos.
+3. **Toggles em construção.** Os ajustes demográfico e histórico estão definidos conceitualmente mas não implementados/calibrados. O modelo base hoje é a multiplicação direta crua.
+4. **Não é predição estatística.** Não há intervalos de confiança formais. Os cenários são bandas qualitativas (conservador / esperado / otimista) com calibração editorial. Quem ler precisa saber disso — a apresentação é deliberada para não dar a impressão de inferência probabilística.
+5. **Não captura ruptura estrutural.** Se entre 2022 e 2026 ocorrer evento que mude estruturalmente o eleitorado (mudança radical no panorama nacional, crise local grave, candidato carismático fora do espectro mapeado), a projeção subjacente ao painel **não tem como ajustar automaticamente**. O consultor precisa fazer essa leitura externamente.
+6. **Performance × patamar é leitura, não receita.** Cobertura de 80% do patamar não significa "vai perder por 20%". Significa "se o cenário se confirmar e o patamar histórico for o teto efetivo, faltam 20% pra entrar na faixa de eleitos típicos". A interpretação editorial fecha o que a aritmética abre.
 
 ---
 
