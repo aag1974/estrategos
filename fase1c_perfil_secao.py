@@ -213,6 +213,72 @@ def regerar_enriched(secao_ra):
     print(f"   ✓ dados_tse_cache/locais_votacao_2022_enriched.csv → {len(enr):,} seções (atribuição PIP)")
 
 
+def regerar_locais_geo(secao_ra):
+    """
+    Reescreve outputs_fase1/locais_votacao_geo.csv com atribuição PIP,
+    deduplicado por (NR_ZONA, NR_LOCAL). Consumido pela fase3c (Campo
+    Político), entre outras.
+    """
+    print("\n=== Regerando outputs_fase1/locais_votacao_geo.csv com PIP ===")
+    enr = secao_ra.dropna(subset=["RA_NOME_FINAL"]).copy()
+    enr = enr.rename(columns={
+        "NR_LOCAL_VOTACAO": "NR_LOCAL",
+        "NM_LOCAL_VOTACAO": "NM_LOCAL",
+        "RA_NOME_FINAL": "RA_NOME",
+        "RA_COD_FINAL": "RA_COD",
+    })
+    geo = enr.drop_duplicates(subset=["NR_ZONA", "NR_LOCAL"]).copy()
+    geo["METODO_GEO"] = "PIP"
+    geo["ZONA_PROPRIA"] = "SIM"  # legado: todas as RAs têm dado próprio
+    cols_out = ["NR_ZONA", "NR_LOCAL", "NM_LOCAL", "NM_BAIRRO",
+                "DS_ENDERECO", "LAT", "LON", "RA_COD", "RA_NOME",
+                "METODO_GEO", "ZONA_PROPRIA"]
+    cols_out = [c for c in cols_out if c in geo.columns]
+    geo[cols_out].to_csv(DIR_OUT / "locais_votacao_geo.csv", index=False)
+    print(f"   ✓ outputs_fase1/locais_votacao_geo.csv → {len(geo):,} locais ({geo['RA_NOME'].nunique()} RAs)")
+
+
+def regerar_votos_por_ra(secao_ra):
+    """
+    Reescreve outputs_fase1/votos_por_ra.csv com atribuição PIP.
+    Schema: RA_NOME, TSE_<CARGO>_total_votos (4 colunas), RA_COD,
+    FONTE_DADOS_ELEITORAIS.
+    """
+    print("\n=== Regerando outputs_fase1/votos_por_ra.csv com PIP ===")
+    chave_to_ra = dict(zip(
+        secao_ra["NR_ZONA"].astype(str) + "_" + secao_ra["NR_SECAO"].astype(str),
+        secao_ra["RA_NOME_FINAL"]))
+
+    votos = pd.read_csv(CACHE / "votacao_secao_2022_DF.csv",
+                        encoding="latin-1", sep=";",
+                        usecols=["NR_TURNO", "DS_CARGO", "NR_ZONA", "NR_SECAO",
+                                 "QT_VOTOS"], low_memory=False)
+    votos = votos[votos["NR_TURNO"] == 1].copy()
+    votos["chave"] = votos["NR_ZONA"].astype(str) + "_" + votos["NR_SECAO"].astype(str)
+    votos["RA_NOME"] = votos["chave"].map(chave_to_ra)
+    votos = votos.dropna(subset=["RA_NOME"])
+
+    # Normalizar nome do cargo
+    cargo_norm = {
+        "GOVERNADOR": "GOVERNADOR", "SENADOR": "SENADOR",
+        "DEPUTADO FEDERAL": "DEPUTADO_FEDERAL",
+        "DEPUTADO DISTRITAL": "DEPUTADO_DISTRITAL",
+    }
+    votos["DS_CARGO_NORM"] = votos["DS_CARGO"].map(cargo_norm).fillna(votos["DS_CARGO"])
+
+    pivot = votos.pivot_table(index="RA_NOME", columns="DS_CARGO_NORM",
+                              values="QT_VOTOS", aggfunc="sum",
+                              fill_value=0).reset_index()
+    pivot.columns.name = None
+    rename_cols = {c: f"TSE_{c}_total_votos" for c in pivot.columns if c != "RA_NOME"}
+    pivot = pivot.rename(columns=rename_cols)
+    pivot["RA_COD"] = pivot["RA_NOME"].map(RA_COD_MAP)
+    pivot["FONTE_DADOS_ELEITORAIS"] = "MEDIDO"  # PIP, todas as RAs têm dado próprio
+    pivot = pivot.sort_values("RA_COD").reset_index(drop=True)
+    pivot.to_csv(DIR_OUT / "votos_por_ra.csv", index=False)
+    print(f"   ✓ outputs_fase1/votos_por_ra.csv → {len(pivot)} RAs")
+
+
 def calcular_abstencao_gov(secao_ra):
     """
     Calcula ABSTENCAO_GOVERNADOR por RA = 1 − comparecimento_RA / aptos_RA.
@@ -349,6 +415,8 @@ def main():
 
     comparar_pip_vs_osm(secao_ra)
     regerar_enriched(secao_ra)
+    regerar_locais_geo(secao_ra)
+    regerar_votos_por_ra(secao_ra)
 
     df_ra = agregar_perfil(secao_ra)
 
