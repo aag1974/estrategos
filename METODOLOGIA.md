@@ -164,7 +164,129 @@ Toda análise depende de premissas. As principais nesta camada:
 
 ## 4. Camada 2 — Métrica central (Performance · sobre-índice)
 
-*[a escrever]*
+### 4.1 Definição formal
+
+A métrica central de Estrategos é o **sobre-índice** — chamado **Performance** na interface. Para um candidato C numa RA R:
+
+```
+sobre-índice(C, R) = (votos_RA / total_cand) / (aptos_RA / aptos_DF)
+```
+
+Onde:
+- `votos_RA` = votos do candidato C na RA R
+- `total_cand` = votos totais do candidato C em todo o DF
+- `aptos_RA` = eleitores aptos na RA R (cadastro TSE)
+- `aptos_DF` = eleitores aptos no DF inteiro
+
+O numerador é a **fração dos votos do candidato** que vieram daquela RA. O denominador é a **fração do eleitorado total** que mora na RA. A razão entre os dois mede se a RA entregou mais (ou menos) votos do que entregaria se o candidato performasse de modo perfeitamente proporcional ao tamanho do território.
+
+#### Apresentação
+
+O ratio bruto é convertido em delta percentual antes de ser exibido:
+
+```
+Performance = (sobre-índice − 1) × 100
+```
+
+Assim:
+- ratio 1,00 → **0%** (RA proporcional)
+- ratio 1,50 → **+50%** (RA entrega 50% acima do esperado)
+- ratio 0,70 → **−30%** (RA entrega 30% abaixo do esperado)
+
+A interface sempre exibe o delta (`+50%` / `−30%`), nunca o ratio (`1,5×`). O ratio existe internamente no pipeline e nas memórias técnicas, mas é traduzido na saída — `+X%` é mais imediatamente interpretável para quem não está acostumado a razões.
+
+#### Exemplo concreto
+
+Plano Piloto concentra cerca de **9% do eleitorado do DF**. Se um candidato tem performance perfeitamente proporcional, esperaríamos que ~9% dos seus votos viessem dali. Suponha um candidato com 100 mil votos no DF e 18 mil em Plano Piloto:
+
+- share de votos do candidato em PP: 18.000 / 100.000 = **18%**
+- share de aptos PP no DF: **9%**
+- sobre-índice: 18% / 9% = **2,0**
+- Performance: **+100%**
+
+Plano Piloto entregou o dobro do que seu tamanho sugeria — é um reduto desse candidato.
+
+### 4.2 Por que essa escolha (vs. alternativas)
+
+A pergunta que a métrica central precisa responder é: *onde o candidato performa acima ou abaixo do que seu tamanho relativo no território sugeriria?* Quatro alternativas foram consideradas e rejeitadas:
+
+| Alternativa | Por que rejeitada |
+|---|---|
+| **Voto absoluto na RA** | Não considera tamanho. Um candidato com 100 mil votos em Ceilândia (RA grande) pode estar performando abaixo do esperado; 5 mil em Park Way pode ser reduto. Voto bruto confunde escala com força. |
+| **% do voto do cargo na RA** (penetração local) | Mede outra coisa — fatia de mercado naquele território, não força do candidato relativa a si próprio. Útil como indicador secundário (ver Camada 3), não como métrica central. |
+| **Z-score (desvio em sigmas)** | Sensível à dispersão do próprio candidato. Um z-score de +1 significa coisas diferentes para um candidato concentrado vs. distribuído. O sobre-índice é absoluto: +30% sempre quer dizer "30% acima da proporção esperada", independente da forma da distribuição. |
+| **Diferença bruta entre shares (em pp)** | Insensível à magnitude. Uma RA com 1% do eleitorado tem teto matemático de +99pp; uma RA com 10% tem teto de +90pp. Não comparável entre RAs de tamanhos distintos. |
+
+A escolha pelo sobre-índice não é arbitrária: é a única transformação simples que torna RAs de tamanhos diferentes diretamente comparáveis e cuja escala (`+30%`, `−15%`) tem leitura imediata.
+
+### 4.3 Aptos como denominador (vs. comparecimento)
+
+O denominador `aptos_RA / aptos_DF` usa o **eleitorado registrado** (cadastro TSE), não o **comparecimento** (eleitores que efetivamente votaram). Essa escolha tem consequência metodológica relevante.
+
+**Por que aptos:**
+
+1. Aptos é estável entre eleições — corresponde ao tamanho potencial do mercado eleitoral da RA. Comparecimento varia por eleição e por mobilização local, e usá-lo no denominador embaralharia "candidato cresceu por captura" com "eleição teve menos abstenção".
+2. A abstenção, no nosso modelo, é uma **variável independente** (pode indicar oportunidade de mobilização). Misturá-la no denominador da métrica central esconde o que ela tem a dizer.
+3. A pergunta "como o candidato performa em relação ao tamanho do território" é mais bem respondida usando o tamanho potencial (aptos) do que o tamanho efetivo (comparecimento).
+
+**Implicação aceita:** Performance pode estar levemente inflada em RAs com baixa abstenção e deflada em RAs com alta abstenção. Isso é assumido como custo da escolha. A abstenção entra na análise pelo lado do **diagnóstico territorial** (variável visível em outras camadas), não como ruído escondido na métrica central.
+
+### 4.4 Os cinco cortes (±15% / ±30%)
+
+A Performance é classificada em cinco faixas descritivas:
+
+| Faixa | Performance | Leitura |
+|---|---|---|
+| **Reduto** | ≥ +30% | RA entrega substancialmente acima do esperado |
+| **Base forte** | +15% a +30% | RA entrega acima do esperado |
+| **Esperado** | −15% a +15% | RA trata o candidato como genérico (proporcional) |
+| **Base fraca** | −15% a −30% | RA entrega abaixo do esperado |
+| **Ausência** | ≤ −30% | RA entrega substancialmente abaixo do esperado |
+
+#### Por que esses cortes
+
+A escolha é **editorial, não estatística**. Os cortes ±15% e ±30% foram fixados com base em observação empírica sobre os candidatos do TSE 2022:
+
+- ±15% delimita a faixa onde a maior parte das RAs cai para um candidato "típico" do cargo. Dentro dessa banda, a variação é ruidosa o suficiente para não merecer leitura editorial.
+- ±30% marca o limite onde o desvio é qualitativamente diferente — a RA tem comportamento próprio em relação ao candidato, não apenas variação de fundo.
+
+#### Por que cinco faixas (e não três)
+
+Três faixas (forte / esperado / fraco) perderiam a distinção narrativa entre **Reduto** (uma RA que carrega votos desproporcionalmente) e **Base forte** (uma RA aliada mas sem ser o coração da campanha). Essa distinção importa para decisão tática — onde concentrar recursos vs. onde apenas defender.
+
+#### Por que simétrico
+
+Cortes simétricos (mesmo módulo nos dois lados) refletem a natureza linear da métrica. A perda de "30% abaixo" e o ganho de "30% acima" são tratados como equivalentes em magnitude — ainda que estrategicamente representem situações distintas (uma é sinal de vulnerabilidade, a outra de força).
+
+#### Termos descartados para a faixa central
+
+"Médio", "Média", "No esperado", "Intermediário", "Estável", "Neutro" (este último colidiria com "Outros" do campo político), "Proporcional", "Padrão". O canônico é **Esperado** — neutro o bastante, descritivo o bastante, sem peso valorativo.
+
+### 4.5 Threshold mínimo (proteção contra microRAs)
+
+Performance é uma razão. Em RAs muito pequenas (poucos aptos) e/ou candidatos com poucos votos na RA, o numerador e o denominador ficam instáveis — pequenas variações absolutas geram deltas percentuais enormes que não significam nada estratégico.
+
+Para fins de ranking e cards de "regiões principais", aplicamos um **threshold mínimo**:
+
+```
+votos_RA ≥ max(30, 1% × total_cand)
+```
+
+RAs abaixo desse limite têm sua Performance calculada e exibida na tabela completa, mas ficam **fora** dos rankings curados (top 3 redutos, top 3 ausências) e dos blocos editoriais. Isso evita que o painel destaque, p. ex., "principal reduto: SIA com +480%" quando a base é 12 votos numa RA com 800 aptos.
+
+### 4.6 Premissas embutidas
+
+1. **Aptos é o denominador correto.** Discutido em §4.3.
+2. **A linearidade do delta é interpretável.** +30% e −30% são tratados como simétricos em magnitude. Estrategicamente são situações diferentes (força vs. vulnerabilidade), mas a métrica não pondera isso — quem pondera é a leitura editorial.
+3. **A Performance compara o candidato consigo mesmo.** Indicador é interno ao candidato, não entre candidatos. Falar "candidato A tem mais reduto que candidato B" porque A tem mais RAs em ≥+30% é leitura possível mas tangencial — o desenho da métrica é para responder *onde* o candidato performa, não *quanto* ele performa em comparação.
+
+### 4.7 Limitações conhecidas
+
+1. **Cortes editoriais não calibrados estatisticamente.** Os ±15% e ±30% são empíricos no sentido de "olhamos a distribuição e fixamos onde fazia sentido", não "fizemos teste de sensibilidade formal". Existe a hipótese de que o corte ideal varie por cargo (Distrital tende a maior dispersão; Governador a menor) — não foi testada. Pendência registrada no backlog.
+2. **Sensibilidade à abstenção.** Como discutido em §4.3, RAs com abstenção atípica deslocam a métrica. Aceito como custo.
+3. **Threshold mínimo é heurístico.** O `max(30, 1%)` foi calibrado por observação, não por análise formal de variância. Funciona bem para os candidatos do TSE 2022; pode precisar ajuste para outras eleições ou outros tipos de candidato.
+4. **Ratio indefinido em casos extremos.** Quando `aptos_RA = 0` (não ocorre no DF, mas teórico) ou `votos_RA = 0` (Performance = −100% ou ratio zero), o pipeline trata com regras numéricas explícitas no código.
+5. **Performance é descritiva, não causal.** Diz onde a RA está acima ou abaixo do esperado. Não diz por quê. A explicação fica para a Camada 5 (achados estruturais) e para a leitura editorial caso a caso.
 
 ---
 
