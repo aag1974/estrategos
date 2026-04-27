@@ -439,7 +439,104 @@ A leitura estratégica de Estrategos depende da combinação dessas métricas �
 
 ## 6. Camada 4 — Cruzamentos estratégicos
 
-*[a escrever]*
+Camadas 2 e 3 descrevem cada RA isoladamente. Camada 4 é o salto da **descrição** para a **orientação tática** — cruza duas métricas para responder *o que fazer naquela RA*. Três cruzamentos compõem o núcleo estratégico de Estrategos:
+
+1. **Estratégia** — Performance × Força do campo (5 zonas)
+2. **Reposicionamento** — candidato origem × candidato referência (5 zonas)
+3. **Aliança eleitoral** — candidato A × candidato B (4 quadrantes)
+
+Estratégia e Aliança usam **±15% como ponto de corte** — o mesmo limite que separa "Base forte" de "Esperado" na escala da Performance. Reposicionamento usa um corte mais permissivo (Performance ≥ 0%, ratio ≥ 1,0); a justificativa está em §6.2.
+
+### 6.1 Estratégia: Performance × Força do campo (5 zonas)
+
+A pergunta que responde: *o candidato é forte na RA por mérito próprio, ou porque o campo dele é forte ali? E onde o campo dele tem espaço que ele ainda não ocupou?*
+
+| Zona | Performance | Força do campo | Leitura tática |
+|---|---|---|---|
+| **Reduto consolidado** | ≥ +15% | ≥ +15% | Candidato e campo fortes — território a defender com prioridade |
+| **Voto pessoal** | ≥ +15% | < +15% | Sucesso individual em terreno neutro/hostil — vulnerável, depende do candidato |
+| **Esperado** | −15% a +15% | qualquer | Território neutro — baixa prioridade tática |
+| **Espaço a conquistar** | < −15% | ≥ +15% | Campo já ganhou ali, candidato não — oportunidade clara de captura |
+| **Sem espaço pelo campo** | < −15% | < +15% | Território hostil estrutural — não atirar |
+
+#### Como ler cada zona
+
+- **Reduto consolidado** combina força pessoal e força do campo — base afetiva e ideológica caminham juntas. É a zona de defesa prioritária, onde queda significa perda dupla (de voto pessoal e de identidade do campo).
+- **Voto pessoal** sinaliza captura atípica. O candidato performa onde o campo dele não ganha — bom indicador de capacidade pessoal, mas alerta de fragilidade: o voto pode evaporar se o candidato sair de cena ou se a campanha perder tração.
+- **Esperado** ocupa a banda central. O candidato performa próximo ao tamanho da RA, e o campo também. Não há informação tática diferencial — investir aqui rende proporcional ao esforço, sem alavancagem.
+- **Espaço a conquistar** é a zona de oportunidade mais informativa. O campo do candidato já mostrou que ganha ali (Força do campo ≥ +15%), mas o candidato específico não converteu — há demanda latente que outro candidato do bloco capturou e ele não.
+- **Sem espaço pelo campo** é território hostil em duas camadas: nem o candidato, nem o bloco dele performam ali. Investir contra o vento custa caro e rende pouco; a recomendação é ignorar.
+
+### 6.2 Reposicionamento: origem × referência (5 zonas)
+
+Aplica-se quando um candidato muda de cargo (Distrital → Federal, p. ex.) e quer entender quanto pode herdar de uma **referência** — outro candidato do mesmo campo que disputou o cargo destino numa eleição anterior.
+
+O cruzamento é entre a **Performance do candidato no cargo origem** (em 2022) e a **Performance da referência no cargo destino** (também em 2022, ou ciclo histórico relevante). As cinco zonas:
+
+| Zona | Origem forte? | Referência forte? | Volume na RA |
+|---|---|---|---|
+| **Base compartilhada** | sim (Performance ≥ 0%) | sim (Performance ≥ 0%) | — |
+| **Voto pessoal** | sim | não | — |
+| **Espaço a conquistar** | não | sim | — |
+| **Terreno aberto** | não | não | aptos ≥ mediana |
+| **Volume baixo** | não | não | aptos < mediana |
+
+A última distinção (Terreno aberto vs. Volume baixo) usa a **mediana dos aptos entre as RAs em análise** como tiebreaker. RAs sem força de origem nem de referência se dividem em duas: as que ainda têm eleitorado relevante (terreno disputável onde a campanha pode investir do zero) e as pequenas demais para justificar prioridade.
+
+#### Por que o corte aqui é Performance ≥ 0% (e não ≥ +15%)
+
+Reposicionamento já cruza **duas dimensões** (origem e referência). Exigir Performance ≥ +15% em ambas tornaria a zona "Base compartilhada" muito restrita — pouquíssimas RAs satisfariam o duplo critério, e o diagnóstico perderia poder informativo. O corte em 0% é pragmático: pega RAs onde o candidato e a referência performaram **acima da proporção esperada pelo tamanho do território**, mesmo que apenas marginalmente. Isso preserva uma leitura mais ampla e útil para a decisão de mudança de cargo, ao custo de aceitar uma fronteira mais frouxa.
+
+#### Vocabulário compartilhado com Estratégia
+
+Duas zonas têm o mesmo nome em Estratégia e em Reposicionamento, com mesmo significado conceitual: **Voto pessoal** (força individual em território onde o agregado é fraco) e **Espaço a conquistar** (agregado favorável que o foco da análise não capturou). A consistência de vocabulário entre os dois cruzamentos é deliberada — ajuda o usuário a transferir intuição de um contexto ao outro.
+
+#### Limitação central
+
+O Reposicionamento depende da **escolha da referência**. Uma referência mal escolhida (candidato que não é análogo, ou cuja eleição teve dinâmica atípica) compromete todo o diagnóstico. A escolha é editorial e deve ser justificada caso a caso — não é detectada automaticamente pelo painel.
+
+### 6.3 Aliança eleitoral: quadrantes (Comparar com…)
+
+Aplica-se quando se compara dois candidatos para avaliar viabilidade de aliança — onde os dois se sobrepõem, onde um agrega o outro, onde há terreno aberto.
+
+O cruzamento é entre **Performance do candidato A** e **Performance do candidato B** na mesma RA × cargo (ou cargos compatíveis, em caso de aliança cross-cargo / dobradinha). Considera-se "forte" qualquer Performance ≥ +15% (Reduto + Base forte). Os quatro quadrantes:
+
+| Padrão | A forte? | B forte? | Leitura |
+|---|---|---|---|
+| **Sobreposição** | sim | sim | Ambos têm reduto ali — sobreposição de bases, eficiência baixa |
+| **A agrega** | sim | não | A traz sua base; aliança soma território |
+| **B agrega** | não | sim | B traz sua base; aliança soma território |
+| **Aberto** | não | não | Território não amarrado por nenhum — campo neutro de captura conjunta |
+
+#### Por que quadrantes e não correlação
+
+A primeira versão dessa análise usou correlação de Pearson (r) entre as Performances dos dois candidatos como métrica de complementaridade. **Foi rejeitada para o DF.** Razões:
+
+1. **N pequeno.** Apenas 28 RAs com cobertura TSE. Coeficientes de correlação com N tão baixo são estatisticamente instáveis — pequenas variações em uma RA mudam r significativamente.
+2. **Outliers dominam.** Plano Piloto e Ceilândia (RAs grandes e atípicas) tendem a determinar o sinal e a magnitude do r. A correlação acaba descrevendo essas duas RAs, não o comportamento conjunto dos candidatos.
+3. **Perda da leitura territorial.** Um r = 0,3 não diz onde a aliança agrega. Quadrantes preservam essa leitura — quem olha vê *quais RAs* caem em "A agrega", não só "há agregação fraca em média".
+
+A escolha por quadrantes categóricos é coerente com o princípio de auditabilidade (§2.3): cada RA fica visível em uma zona específica, e a interpretação é local, não agregada num número que esconde a heterogeneidade.
+
+#### Aplicação cross-cargo
+
+A análise de aliança suporta dobradinhas (Federal × Distrital, Senador × Federal, etc.) do mesmo campo. O cruzamento usa a Performance de cada candidato em seu cargo respectivo na mesma RA. A leitura é a mesma — quadrantes idênticos —, com a ressalva de que cargos diferentes têm dinâmicas diferentes (proporcional vs. majoritário) e a sobreposição de redutos pode significar coisas distintas.
+
+### 6.4 Os cortes nos cruzamentos
+
+**Estratégia e Aliança usam ±15% como fronteira entre forte e fraco** — o mesmo limite que separa Base forte de Esperado na escala da Performance. Manter o corte estável entre esses dois cruzamentos é deliberado: o usuário aprende uma fronteira (+15%) e ela mantém significado consistente nesses contextos.
+
+**Reposicionamento, por outro lado, usa Performance ≥ 0% como corte de "forte"** — justificado em §6.2 pela natureza do duplo cruzamento (origem × referência), que ficaria restritivo demais com o limite ±15%.
+
+A inconsistência é assumida e tem custo cognitivo: "forte" significa coisas levemente diferentes em contextos distintos do produto. A alternativa — alinhar Reposicionamento ao ±15% também — está em aberto como decisão a revisitar; nesta versão, a leitura mais ampla foi privilegiada sobre a uniformidade absoluta do vocabulário.
+
+### 6.5 Limitações conhecidas
+
+1. **Cruzamentos são descritivos.** Mostram o estado atual do território conforme uma fotografia eleitoral. Não predizem se a configuração se mantém em 2026.
+2. **Efeito de fronteira.** Uma RA com Performance +14,9% e outra com +15,1% caem em zonas diferentes. A leitura discreta esconde a continuidade do dado. Esse custo é aceito em nome da clareza categórica; a tabela completa com o número contínuo permanece visível.
+3. **Reposicionamento depende da referência.** Discutido em §6.2.
+4. **Aliança ignora dimensões não-territoriais.** Lealdade política, alinhamento ideológico, capacidade real de transferência de voto, química pessoal entre candidatos — nada disso entra. O cruzamento responde apenas onde há sobreposição/complementaridade *territorial*. A decisão final exige leitura política externa.
+5. **"Outros" como campo é frágil em todos os cruzamentos.** Já discutido em §5.5; vale lembrar que análises envolvendo Força do campo ou Aliança onde um dos candidatos cai em "Outros" devem ser lidas com cautela.
 
 ---
 
