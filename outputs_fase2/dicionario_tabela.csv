@@ -1,0 +1,44 @@
+COLUNA,DESCRICAO,TIPO,N_VALIDOS,N_MISSING
+RA_COD,Código da Região Administrativa,int64,33,0
+RA_NOME,Nome da Região Administrativa,object,33,0
+DOM_renda_media,Renda domiciliar média (R$) — ponderada,float64,33,0
+DOM_renda_pc_media,Renda per capita domiciliar média (R$) — ponderada,float64,33,0
+DOM_pct_classe_AB,% domicílios Classe A ou B (Critério Brasil),float64,33,0
+DOM_pct_classe_C,% domicílios Classe C (Critério Brasil),float64,33,0
+DOM_pct_classe_DE,% domicílios Classe D-E (Critério Brasil),float64,33,0
+DOM_pct_inseg_alimentar,% domicílios com insegurança alimentar (leve/mod/grave),float64,33,0
+DOM_pct_alugado,% domicílios alugados,float64,33,0
+DOM_total_estimado,Total estimado de domicílios (expansão amostral),float64,33,0
+MOR_idade_media,Idade média dos moradores,float64,33,0
+MOR_pct_feminino,% moradores do sexo feminino,float64,33,0
+MOR_pct_nativo_df,% moradores nascidos no DF,float64,33,0
+MOR_pct_migrante,% moradores migrantes (nascidos fora do DF),float64,33,0
+EL_pct_jovem_1624_x,Ver dicionário PDAD/TSE,float64,33,0
+EL_pct_adulto_2544,% eleitores potenciais adultos (25–44 anos),float64,33,0
+EL_pct_adulto_4559,% eleitores potenciais adultos maduros (45–59 anos),float64,33,0
+EL_pct_idoso_60mais_x,Ver dicionário PDAD/TSE,float64,33,0
+MOR_escolaridade_media,Nível de escolaridade médio (1–8),float64,33,0
+MOR_pct_superior,% moradores com ensino superior (completo ou incompleto),float64,33,0
+MOR_pct_sem_fund,% moradores sem ensino fundamental completo,float64,33,0
+MOR_pct_ocupado,% moradores ocupados no mercado de trabalho,float64,33,0
+MOR_pct_desocupado,% moradores desocupados (desempregados),float64,33,0
+MOR_pct_servidor_fed,% moradores servidores públicos federais,float64,33,0
+MOR_pct_servidor_dist,% moradores servidores públicos distritais,float64,33,0
+MOR_pct_servidor_total,% moradores no serviço público total (incl. militares),float64,33,0
+MOR_pct_conta_propria,% moradores trabalhadores por conta própria,float64,33,0
+MOR_pct_privado,% moradores empregados no setor privado,float64,33,0
+MOR_renda_ind_media,Renda individual média declarada (R$),float64,33,0
+MOR_pct_plano_saude,% moradores com plano de saúde privado,float64,33,0
+MOR_pct_beneficio_social,% moradores que recebem Bolsa Família / Auxílio Brasil,float64,33,0
+TSE_DEPUTADO_DISTRITAL_total_votos,Ver dicionário PDAD/TSE,float64,28,5
+TSE_DEPUTADO_FEDERAL_total_votos,Ver dicionário PDAD/TSE,float64,28,5
+TSE_GOVERNADOR_total_votos,Ver dicionário PDAD/TSE,float64,28,5
+TSE_SENADOR_total_votos,Ver dicionário PDAD/TSE,float64,28,5
+ZONA_PROPRIA,Ver dicionário PDAD/TSE,object,28,5
+EL_total_aptos,Ver dicionário PDAD/TSE,float64,28,5
+EL_pct_jovem_1624_y,Ver dicionário PDAD/TSE,float64,28,5
+EL_pct_idoso_60mais_y,Ver dicionário PDAD/TSE,float64,28,5
+EL_pct_feminino,Ver dicionário PDAD/TSE,float64,28,5
+EL_pct_superior,Ver dicionário PDAD/TSE,float64,28,5
+EL_pct_sem_fund,Ver dicionário PDAD/TSE,float64,28,5
+NOTA,Ver dicionário PDAD/TSE,object,0,33

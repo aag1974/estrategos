@@ -1,0 +1,81 @@
+# Credenciais e segredos
+credenciais.json
+.env
+.env.*
+!.env.example
+
+# Built artifacts (regenerados pelo build chain)
+dashboard_spe_df.html
+dashboard_com_geo.html
+dashboard_com_candidato.html
+relatorio_*.html
+relatorio_*.docx
+relatorio_ipe_df_2026.docx
+
+# Dados brutos pesados (público mas grandes; documentar fonte no README)
+TSE/
+PDAD2021/
+dados_tse_cache/
+perfil_comparecimento_*.zip
+*.zip
+
+# Materiais privados/clientes — não versionar
+briefing_*.docx
+plano_*.docx
+Etapa1_Cliente_Secreto.docx
+diag_config_*.json
+
+# Outputs intermediários (somente outputs_fase2, fase3, fase3c são curados e versionados)
+outputs_candidato/
+outputs_fase0/
+outputs_fase0b/
+outputs_fase1/
+outputs_fase3b/
+
+# Versões antigas/debug (mantidas localmente, não públicas)
+fase0_historico.py
+fase0b_pdad2018.py
+fase1_correspondencia_zona_ra.py
+fase1_fix_aptos.py
+fase2_tabela_mestre.py
+fase2_tabela_mestre_v2.py
+fase3_ipe.py
+fase3b_comparacao.py
+fase4_dashboard.py
+fase4_v2_16.py
+fase_candidato.py
+geopolitica.py
+geopolitica_df.html
+injeta_geopolitica_0.py
+gerar_relatorio.js
+gerar_relatorio_candidato.js
+gerar_narrativas_ra.py
+classificacao_base.py
+diagnostico_abstencao.py
+gerar_relatorio_diag.py
+servidor_diag.py
+inspecionar_pdad.py
+valida_beneficio.py
+debug_*.py
+simulador_quociente.html
+
+# Backups
+*.bak
+*.bak_*
+
+# Sistema
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+node_modules/
+package*.json
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Claude Code internal
+.claude/

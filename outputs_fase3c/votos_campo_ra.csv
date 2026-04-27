@@ -1,0 +1,449 @@
+RA_COD,RA_NOME,DS_CARGO,CAMPO,QT_VOTOS,TOTAL,PCT
+1.0,Brasília (Plano Piloto),DEPUTADO_DISTRITAL,liberal_conservador,52136,158603,32.87
+1.0,Brasília (Plano Piloto),DEPUTADO_DISTRITAL,moderado,27280,158603,17.2
+1.0,Brasília (Plano Piloto),DEPUTADO_DISTRITAL,outros,15666,158603,9.88
+1.0,Brasília (Plano Piloto),DEPUTADO_DISTRITAL,progressista,63521,158603,40.05
+1.0,Brasília (Plano Piloto),DEPUTADO_FEDERAL,liberal_conservador,65509,158603,41.3
+1.0,Brasília (Plano Piloto),DEPUTADO_FEDERAL,moderado,12344,158603,7.78
+1.0,Brasília (Plano Piloto),DEPUTADO_FEDERAL,outros,13185,158603,8.31
+1.0,Brasília (Plano Piloto),DEPUTADO_FEDERAL,progressista,67565,158603,42.6
+1.0,Brasília (Plano Piloto),GOVERNADOR,liberal_conservador,19092,158603,12.04
+1.0,Brasília (Plano Piloto),GOVERNADOR,moderado,63771,158603,40.21
+1.0,Brasília (Plano Piloto),GOVERNADOR,outros,9837,158603,6.2
+1.0,Brasília (Plano Piloto),GOVERNADOR,progressista,65903,158603,41.55
+1.0,Brasília (Plano Piloto),SENADOR,liberal_conservador,89236,158603,56.26
+1.0,Brasília (Plano Piloto),SENADOR,moderado,2782,158603,1.75
+1.0,Brasília (Plano Piloto),SENADOR,outros,14047,158603,8.86
+1.0,Brasília (Plano Piloto),SENADOR,progressista,52538,158603,33.13
+2.0,Gama,DEPUTADO_DISTRITAL,liberal_conservador,39148,104759,37.37
+2.0,Gama,DEPUTADO_DISTRITAL,moderado,24191,104759,23.09
+2.0,Gama,DEPUTADO_DISTRITAL,outros,11267,104759,10.76
+2.0,Gama,DEPUTADO_DISTRITAL,progressista,30153,104759,28.78
+2.0,Gama,DEPUTADO_FEDERAL,liberal_conservador,46975,104759,44.84
+2.0,Gama,DEPUTADO_FEDERAL,moderado,16266,104759,15.53
+2.0,Gama,DEPUTADO_FEDERAL,outros,13700,104759,13.08
+2.0,Gama,DEPUTADO_FEDERAL,progressista,27818,104759,26.55
+2.0,Gama,GOVERNADOR,liberal_conservador,10520,104759,10.04
+2.0,Gama,GOVERNADOR,moderado,53509,104759,51.08
+2.0,Gama,GOVERNADOR,outros,10273,104759,9.81
+2.0,Gama,GOVERNADOR,progressista,30457,104759,29.07
+2.0,Gama,SENADOR,liberal_conservador,66677,104759,63.65
+2.0,Gama,SENADOR,moderado,1202,104759,1.15
+2.0,Gama,SENADOR,outros,14070,104759,13.43
+2.0,Gama,SENADOR,progressista,22810,104759,21.77
+3.0,Taguatinga,DEPUTADO_DISTRITAL,liberal_conservador,60172,185586,32.42
+3.0,Taguatinga,DEPUTADO_DISTRITAL,moderado,52257,185586,28.16
+3.0,Taguatinga,DEPUTADO_DISTRITAL,outros,21355,185586,11.51
+3.0,Taguatinga,DEPUTADO_DISTRITAL,progressista,51802,185586,27.91
+3.0,Taguatinga,DEPUTADO_FEDERAL,liberal_conservador,87166,185586,46.97
+3.0,Taguatinga,DEPUTADO_FEDERAL,moderado,22814,185586,12.29
+3.0,Taguatinga,DEPUTADO_FEDERAL,outros,19366,185586,10.44
+3.0,Taguatinga,DEPUTADO_FEDERAL,progressista,56240,185586,30.3
+3.0,Taguatinga,GOVERNADOR,liberal_conservador,17463,185586,9.41
+3.0,Taguatinga,GOVERNADOR,moderado,103517,185586,55.78
+3.0,Taguatinga,GOVERNADOR,outros,13713,185586,7.39
+3.0,Taguatinga,GOVERNADOR,progressista,50893,185586,27.42
+3.0,Taguatinga,SENADOR,liberal_conservador,120772,185586,65.08
+3.0,Taguatinga,SENADOR,moderado,2648,185586,1.43
+3.0,Taguatinga,SENADOR,outros,21115,185586,11.38
+3.0,Taguatinga,SENADOR,progressista,41051,185586,22.12
+4.0,Brazlândia,DEPUTADO_DISTRITAL,liberal_conservador,8888,30764,28.89
+4.0,Brazlândia,DEPUTADO_DISTRITAL,moderado,12534,30764,40.74
+4.0,Brazlândia,DEPUTADO_DISTRITAL,outros,3313,30764,10.77
+4.0,Brazlândia,DEPUTADO_DISTRITAL,progressista,6029,30764,19.6
+4.0,Brazlândia,DEPUTADO_FEDERAL,liberal_conservador,13567,30764,44.1
+4.0,Brazlândia,DEPUTADO_FEDERAL,moderado,7571,30764,24.61
+4.0,Brazlândia,DEPUTADO_FEDERAL,outros,3114,30764,10.12
+4.0,Brazlândia,DEPUTADO_FEDERAL,progressista,6512,30764,21.17
+4.0,Brazlândia,GOVERNADOR,liberal_conservador,2782,30764,9.04
+4.0,Brazlândia,GOVERNADOR,moderado,17928,30764,58.28
+4.0,Brazlândia,GOVERNADOR,outros,3022,30764,9.82
+4.0,Brazlândia,GOVERNADOR,progressista,7032,30764,22.86
+4.0,Brazlândia,SENADOR,liberal_conservador,21109,30764,68.62
+4.0,Brazlândia,SENADOR,moderado,251,30764,0.82
+4.0,Brazlândia,SENADOR,outros,3998,30764,13.0
+4.0,Brazlândia,SENADOR,progressista,5406,30764,17.57
+5.0,Sobradinho,DEPUTADO_DISTRITAL,liberal_conservador,23839,88540,26.92
+5.0,Sobradinho,DEPUTADO_DISTRITAL,moderado,19603,88540,22.14
+5.0,Sobradinho,DEPUTADO_DISTRITAL,outros,8071,88540,9.12
+5.0,Sobradinho,DEPUTADO_DISTRITAL,progressista,37027,88540,41.82
+5.0,Sobradinho,DEPUTADO_FEDERAL,liberal_conservador,37715,88540,42.6
+5.0,Sobradinho,DEPUTADO_FEDERAL,moderado,15977,88540,18.04
+5.0,Sobradinho,DEPUTADO_FEDERAL,outros,8905,88540,10.06
+5.0,Sobradinho,DEPUTADO_FEDERAL,progressista,25943,88540,29.3
+5.0,Sobradinho,GOVERNADOR,liberal_conservador,9050,88540,10.22
+5.0,Sobradinho,GOVERNADOR,moderado,45276,88540,51.14
+5.0,Sobradinho,GOVERNADOR,outros,7070,88540,7.99
+5.0,Sobradinho,GOVERNADOR,progressista,27144,88540,30.66
+5.0,Sobradinho,SENADOR,liberal_conservador,54667,88540,61.74
+5.0,Sobradinho,SENADOR,moderado,1114,88540,1.26
+5.0,Sobradinho,SENADOR,outros,10536,88540,11.9
+5.0,Sobradinho,SENADOR,progressista,22223,88540,25.1
+6.0,Planaltina,DEPUTADO_DISTRITAL,liberal_conservador,41726,116104,35.94
+6.0,Planaltina,DEPUTADO_DISTRITAL,moderado,40399,116104,34.8
+6.0,Planaltina,DEPUTADO_DISTRITAL,outros,10895,116104,9.38
+6.0,Planaltina,DEPUTADO_DISTRITAL,progressista,23084,116104,19.88
+6.0,Planaltina,DEPUTADO_FEDERAL,liberal_conservador,51022,116104,43.95
+6.0,Planaltina,DEPUTADO_FEDERAL,moderado,25583,116104,22.03
+6.0,Planaltina,DEPUTADO_FEDERAL,outros,12686,116104,10.93
+6.0,Planaltina,DEPUTADO_FEDERAL,progressista,26813,116104,23.09
+6.0,Planaltina,GOVERNADOR,liberal_conservador,9334,116104,8.04
+6.0,Planaltina,GOVERNADOR,moderado,63717,116104,54.88
+6.0,Planaltina,GOVERNADOR,outros,11479,116104,9.89
+6.0,Planaltina,GOVERNADOR,progressista,31574,116104,27.19
+6.0,Planaltina,SENADOR,liberal_conservador,74921,116104,64.53
+6.0,Planaltina,SENADOR,moderado,926,116104,0.8
+6.0,Planaltina,SENADOR,outros,15668,116104,13.49
+6.0,Planaltina,SENADOR,progressista,24589,116104,21.18
+7.0,Paranoá,DEPUTADO_DISTRITAL,liberal_conservador,11849,50872,23.29
+7.0,Paranoá,DEPUTADO_DISTRITAL,moderado,16388,50872,32.21
+7.0,Paranoá,DEPUTADO_DISTRITAL,outros,4445,50872,8.74
+7.0,Paranoá,DEPUTADO_DISTRITAL,progressista,18190,50872,35.76
+7.0,Paranoá,DEPUTADO_FEDERAL,liberal_conservador,23467,50872,46.13
+7.0,Paranoá,DEPUTADO_FEDERAL,moderado,9997,50872,19.65
+7.0,Paranoá,DEPUTADO_FEDERAL,outros,5686,50872,11.18
+7.0,Paranoá,DEPUTADO_FEDERAL,progressista,11722,50872,23.04
+7.0,Paranoá,GOVERNADOR,liberal_conservador,3625,50872,7.13
+7.0,Paranoá,GOVERNADOR,moderado,29423,50872,57.84
+7.0,Paranoá,GOVERNADOR,outros,4863,50872,9.56
+7.0,Paranoá,GOVERNADOR,progressista,12961,50872,25.48
+7.0,Paranoá,SENADOR,liberal_conservador,32919,50872,64.71
+7.0,Paranoá,SENADOR,moderado,514,50872,1.01
+7.0,Paranoá,SENADOR,outros,7086,50872,13.93
+7.0,Paranoá,SENADOR,progressista,10353,50872,20.35
+8.0,Núcleo Bandeirante,DEPUTADO_DISTRITAL,liberal_conservador,10036,33652,29.82
+8.0,Núcleo Bandeirante,DEPUTADO_DISTRITAL,moderado,10787,33652,32.05
+8.0,Núcleo Bandeirante,DEPUTADO_DISTRITAL,outros,3786,33652,11.25
+8.0,Núcleo Bandeirante,DEPUTADO_DISTRITAL,progressista,9043,33652,26.87
+8.0,Núcleo Bandeirante,DEPUTADO_FEDERAL,liberal_conservador,13986,33652,41.56
+8.0,Núcleo Bandeirante,DEPUTADO_FEDERAL,moderado,6061,33652,18.01
+8.0,Núcleo Bandeirante,DEPUTADO_FEDERAL,outros,3186,33652,9.47
+8.0,Núcleo Bandeirante,DEPUTADO_FEDERAL,progressista,10419,33652,30.96
+8.0,Núcleo Bandeirante,GOVERNADOR,liberal_conservador,3586,33652,10.66
+8.0,Núcleo Bandeirante,GOVERNADOR,moderado,17488,33652,51.97
+8.0,Núcleo Bandeirante,GOVERNADOR,outros,2351,33652,6.99
+8.0,Núcleo Bandeirante,GOVERNADOR,progressista,10227,33652,30.39
+8.0,Núcleo Bandeirante,SENADOR,liberal_conservador,21491,33652,63.86
+8.0,Núcleo Bandeirante,SENADOR,moderado,505,33652,1.5
+8.0,Núcleo Bandeirante,SENADOR,outros,3596,33652,10.69
+8.0,Núcleo Bandeirante,SENADOR,progressista,8060,33652,23.95
+9.0,Ceilândia,DEPUTADO_DISTRITAL,liberal_conservador,75592,258568,29.23
+9.0,Ceilândia,DEPUTADO_DISTRITAL,moderado,71189,258568,27.53
+9.0,Ceilândia,DEPUTADO_DISTRITAL,outros,38297,258568,14.81
+9.0,Ceilândia,DEPUTADO_DISTRITAL,progressista,73490,258568,28.42
+9.0,Ceilândia,DEPUTADO_FEDERAL,liberal_conservador,117438,258568,45.42
+9.0,Ceilândia,DEPUTADO_FEDERAL,moderado,39442,258568,15.25
+9.0,Ceilândia,DEPUTADO_FEDERAL,outros,31588,258568,12.22
+9.0,Ceilândia,DEPUTADO_FEDERAL,progressista,70100,258568,27.11
+9.0,Ceilândia,GOVERNADOR,liberal_conservador,19088,258568,7.38
+9.0,Ceilândia,GOVERNADOR,moderado,145698,258568,56.35
+9.0,Ceilândia,GOVERNADOR,outros,25866,258568,10.0
+9.0,Ceilândia,GOVERNADOR,progressista,67916,258568,26.27
+9.0,Ceilândia,SENADOR,liberal_conservador,166891,258568,64.54
+9.0,Ceilândia,SENADOR,moderado,3236,258568,1.25
+9.0,Ceilândia,SENADOR,outros,37415,258568,14.47
+9.0,Ceilândia,SENADOR,progressista,51026,258568,19.73
+10.0,Guará,DEPUTADO_DISTRITAL,liberal_conservador,29426,90273,32.6
+10.0,Guará,DEPUTADO_DISTRITAL,moderado,21509,90273,23.83
+10.0,Guará,DEPUTADO_DISTRITAL,outros,9938,90273,11.01
+10.0,Guará,DEPUTADO_DISTRITAL,progressista,29400,90273,32.57
+10.0,Guará,DEPUTADO_FEDERAL,liberal_conservador,37453,90273,41.49
+10.0,Guará,DEPUTADO_FEDERAL,moderado,13174,90273,14.59
+10.0,Guará,DEPUTADO_FEDERAL,outros,9002,90273,9.97
+10.0,Guará,DEPUTADO_FEDERAL,progressista,30644,90273,33.95
+10.0,Guará,GOVERNADOR,liberal_conservador,10738,90273,11.9
+10.0,Guará,GOVERNADOR,moderado,41734,90273,46.23
+10.0,Guará,GOVERNADOR,outros,6576,90273,7.28
+10.0,Guará,GOVERNADOR,progressista,31225,90273,34.59
+10.0,Guará,SENADOR,liberal_conservador,53643,90273,59.42
+10.0,Guará,SENADOR,moderado,1512,90273,1.67
+10.0,Guará,SENADOR,outros,10009,90273,11.09
+10.0,Guará,SENADOR,progressista,25109,90273,27.81
+11.0,Cruzeiro,DEPUTADO_DISTRITAL,liberal_conservador,11069,29267,37.82
+11.0,Cruzeiro,DEPUTADO_DISTRITAL,moderado,6260,29267,21.39
+11.0,Cruzeiro,DEPUTADO_DISTRITAL,outros,2857,29267,9.76
+11.0,Cruzeiro,DEPUTADO_DISTRITAL,progressista,9081,29267,31.03
+11.0,Cruzeiro,DEPUTADO_FEDERAL,liberal_conservador,12642,29267,43.2
+11.0,Cruzeiro,DEPUTADO_FEDERAL,moderado,3261,29267,11.14
+11.0,Cruzeiro,DEPUTADO_FEDERAL,outros,3121,29267,10.66
+11.0,Cruzeiro,DEPUTADO_FEDERAL,progressista,10243,29267,35.0
+11.0,Cruzeiro,GOVERNADOR,liberal_conservador,3540,29267,12.1
+11.0,Cruzeiro,GOVERNADOR,moderado,13539,29267,46.26
+11.0,Cruzeiro,GOVERNADOR,outros,2048,29267,7.0
+11.0,Cruzeiro,GOVERNADOR,progressista,10140,29267,34.65
+11.0,Cruzeiro,SENADOR,liberal_conservador,17497,29267,59.78
+11.0,Cruzeiro,SENADOR,moderado,479,29267,1.64
+11.0,Cruzeiro,SENADOR,outros,3054,29267,10.43
+11.0,Cruzeiro,SENADOR,progressista,8237,29267,28.14
+12.0,Samambaia,DEPUTADO_DISTRITAL,liberal_conservador,45199,135119,33.45
+12.0,Samambaia,DEPUTADO_DISTRITAL,moderado,43589,135119,32.26
+12.0,Samambaia,DEPUTADO_DISTRITAL,outros,14600,135119,10.81
+12.0,Samambaia,DEPUTADO_DISTRITAL,progressista,31731,135119,23.48
+12.0,Samambaia,DEPUTADO_FEDERAL,liberal_conservador,70617,135119,52.26
+12.0,Samambaia,DEPUTADO_FEDERAL,moderado,17940,135119,13.28
+12.0,Samambaia,DEPUTADO_FEDERAL,outros,16196,135119,11.99
+12.0,Samambaia,DEPUTADO_FEDERAL,progressista,30366,135119,22.47
+12.0,Samambaia,GOVERNADOR,liberal_conservador,9956,135119,7.37
+12.0,Samambaia,GOVERNADOR,moderado,81285,135119,60.16
+12.0,Samambaia,GOVERNADOR,outros,12635,135119,9.35
+12.0,Samambaia,GOVERNADOR,progressista,31243,135119,23.12
+12.0,Samambaia,SENADOR,liberal_conservador,91772,135119,67.92
+12.0,Samambaia,SENADOR,moderado,1612,135119,1.19
+12.0,Samambaia,SENADOR,outros,18579,135119,13.75
+12.0,Samambaia,SENADOR,progressista,23156,135119,17.14
+13.0,Santa Maria,DEPUTADO_DISTRITAL,liberal_conservador,28854,74892,38.53
+13.0,Santa Maria,DEPUTADO_DISTRITAL,moderado,12086,74892,16.14
+13.0,Santa Maria,DEPUTADO_DISTRITAL,outros,7944,74892,10.61
+13.0,Santa Maria,DEPUTADO_DISTRITAL,progressista,26008,74892,34.73
+13.0,Santa Maria,DEPUTADO_FEDERAL,liberal_conservador,36960,74892,49.35
+13.0,Santa Maria,DEPUTADO_FEDERAL,moderado,11685,74892,15.6
+13.0,Santa Maria,DEPUTADO_FEDERAL,outros,9698,74892,12.95
+13.0,Santa Maria,DEPUTADO_FEDERAL,progressista,16549,74892,22.1
+13.0,Santa Maria,GOVERNADOR,liberal_conservador,5605,74892,7.48
+13.0,Santa Maria,GOVERNADOR,moderado,40779,74892,54.45
+13.0,Santa Maria,GOVERNADOR,outros,8480,74892,11.32
+13.0,Santa Maria,GOVERNADOR,progressista,20028,74892,26.74
+13.0,Santa Maria,SENADOR,liberal_conservador,49434,74892,66.01
+13.0,Santa Maria,SENADOR,moderado,833,74892,1.11
+13.0,Santa Maria,SENADOR,outros,11421,74892,15.25
+13.0,Santa Maria,SENADOR,progressista,13204,74892,17.63
+14.0,São Sebastião,DEPUTADO_DISTRITAL,liberal_conservador,10738,56189,19.11
+14.0,São Sebastião,DEPUTADO_DISTRITAL,moderado,26479,56189,47.12
+14.0,São Sebastião,DEPUTADO_DISTRITAL,outros,4680,56189,8.33
+14.0,São Sebastião,DEPUTADO_DISTRITAL,progressista,14292,56189,25.44
+14.0,São Sebastião,DEPUTADO_FEDERAL,liberal_conservador,24957,56189,44.42
+14.0,São Sebastião,DEPUTADO_FEDERAL,moderado,10274,56189,18.28
+14.0,São Sebastião,DEPUTADO_FEDERAL,outros,7042,56189,12.53
+14.0,São Sebastião,DEPUTADO_FEDERAL,progressista,13916,56189,24.77
+14.0,São Sebastião,GOVERNADOR,liberal_conservador,4000,56189,7.12
+14.0,São Sebastião,GOVERNADOR,moderado,28202,56189,50.19
+14.0,São Sebastião,GOVERNADOR,outros,5970,56189,10.62
+14.0,São Sebastião,GOVERNADOR,progressista,18017,56189,32.06
+14.0,São Sebastião,SENADOR,liberal_conservador,32931,56189,58.61
+14.0,São Sebastião,SENADOR,moderado,546,56189,0.97
+14.0,São Sebastião,SENADOR,outros,8514,56189,15.15
+14.0,São Sebastião,SENADOR,progressista,14198,56189,25.27
+15.0,Recanto das Emas,DEPUTADO_DISTRITAL,liberal_conservador,18356,71339,25.73
+15.0,Recanto das Emas,DEPUTADO_DISTRITAL,moderado,20492,71339,28.72
+15.0,Recanto das Emas,DEPUTADO_DISTRITAL,outros,7363,71339,10.32
+15.0,Recanto das Emas,DEPUTADO_DISTRITAL,progressista,25128,71339,35.22
+15.0,Recanto das Emas,DEPUTADO_FEDERAL,liberal_conservador,41085,71339,57.59
+15.0,Recanto das Emas,DEPUTADO_FEDERAL,moderado,8433,71339,11.82
+15.0,Recanto das Emas,DEPUTADO_FEDERAL,outros,8078,71339,11.32
+15.0,Recanto das Emas,DEPUTADO_FEDERAL,progressista,13743,71339,19.26
+15.0,Recanto das Emas,GOVERNADOR,liberal_conservador,4369,71339,6.12
+15.0,Recanto das Emas,GOVERNADOR,moderado,44585,71339,62.5
+15.0,Recanto das Emas,GOVERNADOR,outros,6962,71339,9.76
+15.0,Recanto das Emas,GOVERNADOR,progressista,15423,71339,21.62
+15.0,Recanto das Emas,SENADOR,liberal_conservador,47511,71339,66.6
+15.0,Recanto das Emas,SENADOR,moderado,839,71339,1.18
+15.0,Recanto das Emas,SENADOR,outros,10473,71339,14.68
+15.0,Recanto das Emas,SENADOR,progressista,12516,71339,17.54
+16.0,Lago Sul,DEPUTADO_DISTRITAL,liberal_conservador,12071,33853,35.66
+16.0,Lago Sul,DEPUTADO_DISTRITAL,moderado,6983,33853,20.63
+16.0,Lago Sul,DEPUTADO_DISTRITAL,outros,3617,33853,10.68
+16.0,Lago Sul,DEPUTADO_DISTRITAL,progressista,11182,33853,33.03
+16.0,Lago Sul,DEPUTADO_FEDERAL,liberal_conservador,16376,33853,48.37
+16.0,Lago Sul,DEPUTADO_FEDERAL,moderado,3322,33853,9.81
+16.0,Lago Sul,DEPUTADO_FEDERAL,outros,2468,33853,7.29
+16.0,Lago Sul,DEPUTADO_FEDERAL,progressista,11687,33853,34.52
+16.0,Lago Sul,GOVERNADOR,liberal_conservador,4154,33853,12.27
+16.0,Lago Sul,GOVERNADOR,moderado,16641,33853,49.16
+16.0,Lago Sul,GOVERNADOR,outros,1831,33853,5.41
+16.0,Lago Sul,GOVERNADOR,progressista,11227,33853,33.16
+16.0,Lago Sul,SENADOR,liberal_conservador,20968,33853,61.94
+16.0,Lago Sul,SENADOR,moderado,631,33853,1.86
+16.0,Lago Sul,SENADOR,outros,2775,33853,8.2
+16.0,Lago Sul,SENADOR,progressista,9479,33853,28.0
+17.0,Riacho Fundo,DEPUTADO_DISTRITAL,liberal_conservador,8716,27182,32.07
+17.0,Riacho Fundo,DEPUTADO_DISTRITAL,moderado,8746,27182,32.18
+17.0,Riacho Fundo,DEPUTADO_DISTRITAL,outros,3087,27182,11.36
+17.0,Riacho Fundo,DEPUTADO_DISTRITAL,progressista,6633,27182,24.4
+17.0,Riacho Fundo,DEPUTADO_FEDERAL,liberal_conservador,12580,27182,46.28
+17.0,Riacho Fundo,DEPUTADO_FEDERAL,moderado,4807,27182,17.68
+17.0,Riacho Fundo,DEPUTADO_FEDERAL,outros,3118,27182,11.47
+17.0,Riacho Fundo,DEPUTADO_FEDERAL,progressista,6677,27182,24.56
+17.0,Riacho Fundo,GOVERNADOR,liberal_conservador,2510,27182,9.23
+17.0,Riacho Fundo,GOVERNADOR,moderado,15834,27182,58.25
+17.0,Riacho Fundo,GOVERNADOR,outros,2126,27182,7.82
+17.0,Riacho Fundo,GOVERNADOR,progressista,6712,27182,24.69
+17.0,Riacho Fundo,SENADOR,liberal_conservador,18410,27182,67.73
+17.0,Riacho Fundo,SENADOR,moderado,351,27182,1.29
+17.0,Riacho Fundo,SENADOR,outros,3150,27182,11.59
+17.0,Riacho Fundo,SENADOR,progressista,5271,27182,19.39
+18.0,Lago Norte,DEPUTADO_DISTRITAL,liberal_conservador,8871,24746,35.85
+18.0,Lago Norte,DEPUTADO_DISTRITAL,moderado,4053,24746,16.38
+18.0,Lago Norte,DEPUTADO_DISTRITAL,outros,2181,24746,8.81
+18.0,Lago Norte,DEPUTADO_DISTRITAL,progressista,9641,24746,38.96
+18.0,Lago Norte,DEPUTADO_FEDERAL,liberal_conservador,10634,24746,42.97
+18.0,Lago Norte,DEPUTADO_FEDERAL,moderado,2317,24746,9.36
+18.0,Lago Norte,DEPUTADO_FEDERAL,outros,1901,24746,7.68
+18.0,Lago Norte,DEPUTADO_FEDERAL,progressista,9894,24746,39.98
+18.0,Lago Norte,GOVERNADOR,liberal_conservador,2845,24746,11.5
+18.0,Lago Norte,GOVERNADOR,moderado,10793,24746,43.62
+18.0,Lago Norte,GOVERNADOR,outros,1447,24746,5.85
+18.0,Lago Norte,GOVERNADOR,progressista,9661,24746,39.04
+18.0,Lago Norte,SENADOR,liberal_conservador,13977,24746,56.48
+18.0,Lago Norte,SENADOR,moderado,403,24746,1.63
+18.0,Lago Norte,SENADOR,outros,2129,24746,8.6
+18.0,Lago Norte,SENADOR,progressista,8237,24746,33.29
+19.0,Candangolândia,DEPUTADO_DISTRITAL,liberal_conservador,3334,11974,27.84
+19.0,Candangolândia,DEPUTADO_DISTRITAL,moderado,5193,11974,43.37
+19.0,Candangolândia,DEPUTADO_DISTRITAL,outros,1031,11974,8.61
+19.0,Candangolândia,DEPUTADO_DISTRITAL,progressista,2416,11974,20.18
+19.0,Candangolândia,DEPUTADO_FEDERAL,liberal_conservador,5452,11974,45.53
+19.0,Candangolândia,DEPUTADO_FEDERAL,moderado,2385,11974,19.92
+19.0,Candangolândia,DEPUTADO_FEDERAL,outros,1208,11974,10.09
+19.0,Candangolândia,DEPUTADO_FEDERAL,progressista,2929,11974,24.46
+19.0,Candangolândia,GOVERNADOR,liberal_conservador,1265,11974,10.56
+19.0,Candangolândia,GOVERNADOR,moderado,6607,11974,55.18
+19.0,Candangolândia,GOVERNADOR,outros,981,11974,8.19
+19.0,Candangolândia,GOVERNADOR,progressista,3121,11974,26.06
+19.0,Candangolândia,SENADOR,liberal_conservador,7959,11974,66.47
+19.0,Candangolândia,SENADOR,moderado,192,11974,1.6
+19.0,Candangolândia,SENADOR,outros,1407,11974,11.75
+19.0,Candangolândia,SENADOR,progressista,2416,11974,20.18
+20.0,Águas Claras,DEPUTADO_DISTRITAL,liberal_conservador,26682,84374,31.62
+20.0,Águas Claras,DEPUTADO_DISTRITAL,moderado,21296,84374,25.24
+20.0,Águas Claras,DEPUTADO_DISTRITAL,outros,9386,84374,11.12
+20.0,Águas Claras,DEPUTADO_DISTRITAL,progressista,27010,84374,32.01
+20.0,Águas Claras,DEPUTADO_FEDERAL,liberal_conservador,36992,84374,43.84
+20.0,Águas Claras,DEPUTADO_FEDERAL,moderado,10167,84374,12.05
+20.0,Águas Claras,DEPUTADO_FEDERAL,outros,8127,84374,9.63
+20.0,Águas Claras,DEPUTADO_FEDERAL,progressista,29088,84374,34.48
+20.0,Águas Claras,GOVERNADOR,liberal_conservador,8571,84374,10.16
+20.0,Águas Claras,GOVERNADOR,moderado,42208,84374,50.02
+20.0,Águas Claras,GOVERNADOR,outros,5432,84374,6.44
+20.0,Águas Claras,GOVERNADOR,progressista,28163,84374,33.38
+20.0,Águas Claras,SENADOR,liberal_conservador,52382,84374,62.08
+20.0,Águas Claras,SENADOR,moderado,1444,84374,1.71
+20.0,Águas Claras,SENADOR,outros,8474,84374,10.04
+20.0,Águas Claras,SENADOR,progressista,22074,84374,26.16
+21.0,Riacho Fundo II,DEPUTADO_DISTRITAL,liberal_conservador,10163,26381,38.52
+21.0,Riacho Fundo II,DEPUTADO_DISTRITAL,moderado,7100,26381,26.91
+21.0,Riacho Fundo II,DEPUTADO_DISTRITAL,outros,2801,26381,10.62
+21.0,Riacho Fundo II,DEPUTADO_DISTRITAL,progressista,6317,26381,23.95
+21.0,Riacho Fundo II,DEPUTADO_FEDERAL,liberal_conservador,13297,26381,50.4
+21.0,Riacho Fundo II,DEPUTADO_FEDERAL,moderado,4110,26381,15.58
+21.0,Riacho Fundo II,DEPUTADO_FEDERAL,outros,3110,26381,11.79
+21.0,Riacho Fundo II,DEPUTADO_FEDERAL,progressista,5864,26381,22.23
+21.0,Riacho Fundo II,GOVERNADOR,liberal_conservador,1740,26381,6.6
+21.0,Riacho Fundo II,GOVERNADOR,moderado,16075,26381,60.93
+21.0,Riacho Fundo II,GOVERNADOR,outros,2353,26381,8.92
+21.0,Riacho Fundo II,GOVERNADOR,progressista,6213,26381,23.55
+21.0,Riacho Fundo II,SENADOR,liberal_conservador,17558,26381,66.56
+21.0,Riacho Fundo II,SENADOR,moderado,287,26381,1.09
+21.0,Riacho Fundo II,SENADOR,outros,3548,26381,13.45
+21.0,Riacho Fundo II,SENADOR,progressista,4988,26381,18.91
+22.0,Sudoeste/Octogonal,DEPUTADO_DISTRITAL,liberal_conservador,9304,25896,35.93
+22.0,Sudoeste/Octogonal,DEPUTADO_DISTRITAL,moderado,4524,25896,17.47
+22.0,Sudoeste/Octogonal,DEPUTADO_DISTRITAL,outros,3015,25896,11.64
+22.0,Sudoeste/Octogonal,DEPUTADO_DISTRITAL,progressista,9053,25896,34.96
+22.0,Sudoeste/Octogonal,DEPUTADO_FEDERAL,liberal_conservador,11339,25896,43.79
+22.0,Sudoeste/Octogonal,DEPUTADO_FEDERAL,moderado,2348,25896,9.07
+22.0,Sudoeste/Octogonal,DEPUTADO_FEDERAL,outros,2165,25896,8.36
+22.0,Sudoeste/Octogonal,DEPUTADO_FEDERAL,progressista,10044,25896,38.79
+22.0,Sudoeste/Octogonal,GOVERNADOR,liberal_conservador,2993,25896,11.56
+22.0,Sudoeste/Octogonal,GOVERNADOR,moderado,11594,25896,44.77
+22.0,Sudoeste/Octogonal,GOVERNADOR,outros,1492,25896,5.76
+22.0,Sudoeste/Octogonal,GOVERNADOR,progressista,9817,25896,37.91
+22.0,Sudoeste/Octogonal,SENADOR,liberal_conservador,14942,25896,57.7
+22.0,Sudoeste/Octogonal,SENADOR,moderado,563,25896,2.17
+22.0,Sudoeste/Octogonal,SENADOR,outros,2336,25896,9.02
+22.0,Sudoeste/Octogonal,SENADOR,progressista,8055,25896,31.11
+23.0,Varjão,DEPUTADO_DISTRITAL,liberal_conservador,1309,3552,36.85
+23.0,Varjão,DEPUTADO_DISTRITAL,moderado,679,3552,19.12
+23.0,Varjão,DEPUTADO_DISTRITAL,outros,289,3552,8.14
+23.0,Varjão,DEPUTADO_DISTRITAL,progressista,1275,3552,35.9
+23.0,Varjão,DEPUTADO_FEDERAL,liberal_conservador,1779,3552,50.08
+23.0,Varjão,DEPUTADO_FEDERAL,moderado,642,3552,18.07
+23.0,Varjão,DEPUTADO_FEDERAL,outros,322,3552,9.07
+23.0,Varjão,DEPUTADO_FEDERAL,progressista,809,3552,22.78
+23.0,Varjão,GOVERNADOR,liberal_conservador,205,3552,5.77
+23.0,Varjão,GOVERNADOR,moderado,1997,3552,56.22
+23.0,Varjão,GOVERNADOR,outros,373,3552,10.5
+23.0,Varjão,GOVERNADOR,progressista,977,3552,27.51
+23.0,Varjão,SENADOR,liberal_conservador,2299,3552,64.72
+23.0,Varjão,SENADOR,moderado,22,3552,0.62
+23.0,Varjão,SENADOR,outros,481,3552,13.54
+23.0,Varjão,SENADOR,progressista,750,3552,21.11
+25.0,SCIA/Estrutural,DEPUTADO_DISTRITAL,liberal_conservador,6729,18304,36.76
+25.0,SCIA/Estrutural,DEPUTADO_DISTRITAL,moderado,6045,18304,33.03
+25.0,SCIA/Estrutural,DEPUTADO_DISTRITAL,outros,1575,18304,8.6
+25.0,SCIA/Estrutural,DEPUTADO_DISTRITAL,progressista,3955,18304,21.61
+25.0,SCIA/Estrutural,DEPUTADO_FEDERAL,liberal_conservador,9763,18304,53.34
+25.0,SCIA/Estrutural,DEPUTADO_FEDERAL,moderado,4227,18304,23.09
+25.0,SCIA/Estrutural,DEPUTADO_FEDERAL,outros,1804,18304,9.86
+25.0,SCIA/Estrutural,DEPUTADO_FEDERAL,progressista,2510,18304,13.71
+25.0,SCIA/Estrutural,GOVERNADOR,liberal_conservador,1565,18304,8.55
+25.0,SCIA/Estrutural,GOVERNADOR,moderado,11235,18304,61.38
+25.0,SCIA/Estrutural,GOVERNADOR,outros,1869,18304,10.21
+25.0,SCIA/Estrutural,GOVERNADOR,progressista,3635,18304,19.86
+25.0,SCIA/Estrutural,SENADOR,liberal_conservador,13688,18304,74.78
+25.0,SCIA/Estrutural,SENADOR,moderado,144,18304,0.79
+25.0,SCIA/Estrutural,SENADOR,outros,2219,18304,12.12
+25.0,SCIA/Estrutural,SENADOR,progressista,2253,18304,12.31
+26.0,Sobradinho II,DEPUTADO_DISTRITAL,liberal_conservador,6277,23720,26.46
+26.0,Sobradinho II,DEPUTADO_DISTRITAL,moderado,6423,23720,27.08
+26.0,Sobradinho II,DEPUTADO_DISTRITAL,outros,2048,23720,8.63
+26.0,Sobradinho II,DEPUTADO_DISTRITAL,progressista,8972,23720,37.82
+26.0,Sobradinho II,DEPUTADO_FEDERAL,liberal_conservador,10271,23720,43.3
+26.0,Sobradinho II,DEPUTADO_FEDERAL,moderado,5404,23720,22.78
+26.0,Sobradinho II,DEPUTADO_FEDERAL,outros,2475,23720,10.43
+26.0,Sobradinho II,DEPUTADO_FEDERAL,progressista,5570,23720,23.48
+26.0,Sobradinho II,GOVERNADOR,liberal_conservador,1963,23720,8.28
+26.0,Sobradinho II,GOVERNADOR,moderado,13237,23720,55.81
+26.0,Sobradinho II,GOVERNADOR,outros,2159,23720,9.1
+26.0,Sobradinho II,GOVERNADOR,progressista,6361,23720,26.82
+26.0,Sobradinho II,SENADOR,liberal_conservador,15082,23720,63.58
+26.0,Sobradinho II,SENADOR,moderado,246,23720,1.04
+26.0,Sobradinho II,SENADOR,outros,3211,23720,13.54
+26.0,Sobradinho II,SENADOR,progressista,5181,23720,21.84
+27.0,Jardim Botânico,DEPUTADO_DISTRITAL,liberal_conservador,3437,10853,31.67
+27.0,Jardim Botânico,DEPUTADO_DISTRITAL,moderado,2549,10853,23.49
+27.0,Jardim Botânico,DEPUTADO_DISTRITAL,outros,910,10853,8.38
+27.0,Jardim Botânico,DEPUTADO_DISTRITAL,progressista,3957,10853,36.46
+27.0,Jardim Botânico,DEPUTADO_FEDERAL,liberal_conservador,4681,10853,43.13
+27.0,Jardim Botânico,DEPUTADO_FEDERAL,moderado,991,10853,9.13
+27.0,Jardim Botânico,DEPUTADO_FEDERAL,outros,860,10853,7.92
+27.0,Jardim Botânico,DEPUTADO_FEDERAL,progressista,4321,10853,39.81
+27.0,Jardim Botânico,GOVERNADOR,liberal_conservador,1487,10853,13.7
+27.0,Jardim Botânico,GOVERNADOR,moderado,4580,10853,42.2
+27.0,Jardim Botânico,GOVERNADOR,outros,595,10853,5.48
+27.0,Jardim Botânico,GOVERNADOR,progressista,4191,10853,38.62
+27.0,Jardim Botânico,SENADOR,liberal_conservador,6197,10853,57.1
+27.0,Jardim Botânico,SENADOR,moderado,184,10853,1.7
+27.0,Jardim Botânico,SENADOR,outros,914,10853,8.42
+27.0,Jardim Botânico,SENADOR,progressista,3558,10853,32.78
+28.0,Itapoã,DEPUTADO_DISTRITAL,liberal_conservador,4026,15724,25.6
+28.0,Itapoã,DEPUTADO_DISTRITAL,moderado,4372,15724,27.8
+28.0,Itapoã,DEPUTADO_DISTRITAL,outros,1471,15724,9.36
+28.0,Itapoã,DEPUTADO_DISTRITAL,progressista,5855,15724,37.24
+28.0,Itapoã,DEPUTADO_FEDERAL,liberal_conservador,7541,15724,47.96
+28.0,Itapoã,DEPUTADO_FEDERAL,moderado,2750,15724,17.49
+28.0,Itapoã,DEPUTADO_FEDERAL,outros,1644,15724,10.46
+28.0,Itapoã,DEPUTADO_FEDERAL,progressista,3789,15724,24.1
+28.0,Itapoã,GOVERNADOR,liberal_conservador,1032,15724,6.56
+28.0,Itapoã,GOVERNADOR,moderado,9318,15724,59.26
+28.0,Itapoã,GOVERNADOR,outros,1512,15724,9.62
+28.0,Itapoã,GOVERNADOR,progressista,3862,15724,24.56
+28.0,Itapoã,SENADOR,liberal_conservador,10348,15724,65.81
+28.0,Itapoã,SENADOR,moderado,141,15724,0.9
+28.0,Itapoã,SENADOR,outros,2062,15724,13.11
+28.0,Itapoã,SENADOR,progressista,3173,15724,20.18
+30.0,Vicente Pires,DEPUTADO_DISTRITAL,liberal_conservador,4548,12456,36.51
+30.0,Vicente Pires,DEPUTADO_DISTRITAL,moderado,3468,12456,27.84
+30.0,Vicente Pires,DEPUTADO_DISTRITAL,outros,1320,12456,10.6
+30.0,Vicente Pires,DEPUTADO_DISTRITAL,progressista,3120,12456,25.05
+30.0,Vicente Pires,DEPUTADO_FEDERAL,liberal_conservador,6204,12456,49.81
+30.0,Vicente Pires,DEPUTADO_FEDERAL,moderado,1614,12456,12.96
+30.0,Vicente Pires,DEPUTADO_FEDERAL,outros,1109,12456,8.9
+30.0,Vicente Pires,DEPUTADO_FEDERAL,progressista,3529,12456,28.33
+30.0,Vicente Pires,GOVERNADOR,liberal_conservador,1427,12456,11.46
+30.0,Vicente Pires,GOVERNADOR,moderado,7255,12456,58.25
+30.0,Vicente Pires,GOVERNADOR,outros,750,12456,6.02
+30.0,Vicente Pires,GOVERNADOR,progressista,3024,12456,24.28
+30.0,Vicente Pires,SENADOR,liberal_conservador,8668,12456,69.59
+30.0,Vicente Pires,SENADOR,moderado,205,12456,1.65
+30.0,Vicente Pires,SENADOR,outros,1137,12456,9.13
+30.0,Vicente Pires,SENADOR,progressista,2446,12456,19.64
