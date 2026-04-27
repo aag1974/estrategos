@@ -1301,6 +1301,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
                   <th onclick="estrSrt('ra')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:6;border-bottom:0.5px solid var(--bd2);text-align:left;left:0;min-width:230px;cursor:pointer;user-select:none">Região <span class="sa" id="estr-s-ra"></span><input class="th-filter" id="estr-filtro-ra" placeholder="filtrar..." oninput="estrFiltrarRA()" onclick="event.stopPropagation()"></th>
                   <th onclick="estrSrt('aptos')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:right;min-width:80px;cursor:pointer;user-select:none">Aptos <span class="sa" id="estr-s-aptos"></span></th>
                   <th onclick="estrSrt('votos')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:right;min-width:120px;cursor:pointer;user-select:none"><span class="tt">Votos do candidato<span class="tt-icon">?</span><span class="tt-box">Total de votos que o candidato selecionado recebeu nessa RA em 2022. Não é o total de votos válidos da RA — é só a fatia que ficou com ele.</span></span> <span class="sa" id="estr-s-votos">▼</span></th>
+                  <th onclick="estrSrt('pe')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:right;min-width:110px;cursor:pointer;user-select:none"><span class="tt">% dos votos<span class="tt-icon">?</span><span class="tt-box">Frequência relativa: que fração do total de votos que o candidato teve no DF veio desta RA. Soma 100% no total. Mostra de onde vieram os votos do candidato.</span></span> <span class="sa" id="estr-s-pe"></span></th>
                   <th onclick="estrSrt('idxCand')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:right;min-width:110px;cursor:pointer;user-select:none"><span class="tt">Performance<span class="tt-icon">?</span><span class="tt-box">Indicador de força do candidato na RA. Compara os votos que ele recebeu com os que seria esperado pelo tamanho da RA. +30%+ = Reduto; +15%–30% = Base forte; ±15% = Esperado; −15%–30% = Base fraca; ≤−30% = Ausência.</span></span> <span class="sa" id="estr-s-idxCand"></span></th>
                   <th onclick="estrSrt('idxCampo')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:right;min-width:120px;cursor:pointer;user-select:none"><span class="tt">Força do campo<span class="tt-icon">?</span><span class="tt-box">Mesma escala da Performance, mas aplicada ao campo político do candidato (Progressista, Moderado ou Liberal/Conservador) na RA × cargo. Mostra se o campo dele é forte ou fraco naquela região, independente desse candidato específico.</span></span> <span class="sa" id="estr-s-idxCampo"></span></th>
                   <th onclick="estrSrt('cat')" style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:7px 10px;position:sticky;top:0;background:var(--s1);z-index:4;border-bottom:0.5px solid var(--bd2);text-align:left;min-width:230px;cursor:pointer;user-select:none"><span class="tt">Status<span class="tt-icon">?</span><span class="tt-box">Classificação da RA pelo cruzamento Performance (do candidato) × Força do campo. Cinco zonas estratégicas: Reduto consolidado (ambos fortes), Voto pessoal (só candidato forte), Esperado (proporcional), Espaço a conquistar (só campo forte) e Sem espaço pelo campo (ambos fracos).</span></span> <span class="sa" id="estr-s-cat"></span><select class="th-filter" id="estr-filtro-cat" onchange="estrFiltrarCat()" onclick="event.stopPropagation()"><option value="all">Todos</option><option value="compartilhado">Reduto consolidado</option><option value="pessoal">Voto pessoal</option><option value="esperado">Esperado</option><option value="conquistar">Espaço a conquistar</option><option value="sem_espaco">Sem espaço pelo campo</option></select></th>
@@ -2312,6 +2313,7 @@ function estrDadosCand(cand){
       ra: ra,
       aptos: dadoRa.el_aptos || 0,
       votos: r.v || 0,
+      pe: r.pe || 0,
       idxCand: idxCand,
       idxCampo: idxCampo,
       cat: estrCategoria(idxCand, idxCampo)
@@ -2446,22 +2448,24 @@ function estrRenderTab(dados){
     else { va = a[estrSortCol]||0; vb = b[estrSortCol]||0; }
     return estrSortAsc ? va-vb : vb-va;
   });
-  ["ra","aptos","votos","idxCand","idxCampo","cat"].forEach(function(c){
+  ["ra","aptos","votos","pe","idxCand","idxCampo","cat"].forEach(function(c){
     var el = document.getElementById("estr-s-"+c);
     if(el) el.textContent = (estrSortCol===c) ? (estrSortAsc?"▲":"▼") : "";
   });
   if(!rows.length){
-    tb.innerHTML = "<tr><td colspan='6' style='padding:14px;text-align:center;color:var(--muted);font-style:italic;font-size:11.5px'>Nenhuma RA nesta categoria.</td></tr>";
+    tb.innerHTML = "<tr><td colspan='7' style='padding:14px;text-align:center;color:var(--muted);font-style:italic;font-size:11.5px'>Nenhuma RA nesta categoria.</td></tr>";
     return;
   }
   var fmtIdx = function(v){ if(v==null) return "—"; var d=Math.round((v-1)*100); return (d>=0?"+":"")+d+"%"; };
   var corIdx = function(v){ if(v==null) return "var(--muted)"; var d=v-1; return d>=0.15?"#085041":(d<=-0.15?"#791F1F":"#444"); };
+  var fpt1 = function(v){ return (v||0).toFixed(1).replace(".",","); };
   tb.innerHTML = rows.map(function(d){
     var def = ESTR_CAT_DEF[d.cat] || {lbl:"—", cor:"#444", bg:"#F1EFE8"};
     return "<tr>"
       + "<td style='padding:6px 10px;font-size:12px;font-weight:500'>"+d.ra+"</td>"
       + "<td style='padding:6px 10px;font-size:12px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)'>"+(d.aptos||0).toLocaleString("pt-BR")+"</td>"
       + "<td style='padding:6px 10px;font-size:12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:#185FA5'>"+(d.votos||0).toLocaleString("pt-BR")+"</td>"
+      + "<td style='padding:6px 10px;font-size:12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:#185FA5'>"+fpt1(d.pe)+"%</td>"
       + "<td style='padding:6px 10px;font-size:12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:"+corIdx(d.idxCand)+"'>"+fmtIdx(d.idxCand)+"</td>"
       + "<td style='padding:6px 10px;font-size:12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:"+corIdx(d.idxCampo)+"'>"+fmtIdx(d.idxCampo)+"</td>"
       + "<td style='padding:5px 8px'><span class='estr-cat-badge' style='background:"+def.bg+";color:"+def.cor+"'>"+def.lbl+"</span></td>"
