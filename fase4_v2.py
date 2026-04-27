@@ -1708,7 +1708,10 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
       <!-- Veredito curto baseado em cargo+campo+padrão -->
       <div id="cmp-veredito" style="font-size:12px;line-height:1.5;padding:10px 12px;background:var(--s2);border-radius:8px;margin-bottom:12px;border-left:3px solid var(--amber)"></div>
       <!-- 4 KPI cards de quadrantes -->
-      <div id="cmp-quad-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px"></div>
+      <div id="cmp-quad-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px"></div>
+      <div style="font-size:11px;color:var(--muted);background:var(--s2);padding:8px 12px;border-radius:6px;margin-bottom:14px;line-height:1.5">
+        <strong style="color:var(--txt)">Como ler:</strong> a Performance é normalizada pelo tamanho do candidato e da RA — diz se a região entrega <em>acima</em> ou <em>abaixo</em> do esperado pela proporção. <strong>Não confundir com volume absoluto</strong>: candidatos com totais muito diferentes podem ter Performance oposta na mesma RA mesmo com volumes similares — ou volumes muito distintos com Performance parecida.
+      </div>
       <!-- Tabela com coluna Padrão -->
       <div style="overflow-y:scroll;overflow-x:auto;max-height:60vh;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px;scrollbar-gutter:stable"><table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px"><thead id="cmp-thead" style="position:sticky;top:0;z-index:4;background:var(--s1)"></thead><tbody id="cmp-tbody"></tbody></table></div>
     </div>
