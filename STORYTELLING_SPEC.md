@@ -485,6 +485,23 @@ Imagens vêm da Geopolítica:
 7. **Cenários recalibrados** — depende de ter dados de 2018 com qualidade pros percentis empíricos. Verificar cobertura.
 8. **Aprofundamento dos achados de Campo político** — testes empíricos sobre: (i) origem da anomalia DF (estrutural × cultural via comparação 2018×2022), (ii) teto demográfico do servidor federal, (iii) servidor distrital como fiel da balança majoritária, (iv) explicações pro paradoxo Lago Sul, (v) mensagem-tipo por perfil de cliente. Discutidos no debate, agendados para revisão posterior.
 9. **5 RAs sem zona TSE (predição)** — Park Way, SIA, Fercal, Sol Nascente, Arniqueira têm PDAD próprio mas TSE só na RA-mãe. Decidir caminho (vizinha geográfica / clusters / regressão multivariada / não predizer). Provavelmente toggle de "incluir estimativas" no produto. Adiado para o final.
+10. **Revisão da metodologia de Estrategos** — flagada em abr/2026, ainda não feita. Mapa em 6 camadas para varrer top-down (próxima sessão escolhe por onde começar):
+    1. **Fontes e unidade de análise** — PDAD 2021 × TSE 2022 (validação 2018 disponível mas pouco usada); 33 RAs (28 com zona direta · 5 sem); Cargo × Campo (4 campos incl. "Outros" residual).
+    2. **Métrica central** — Sobre-índice/Performance, cortes ±15%/±30%, denominador "aptos" (não comparecimento), threshold mínimo 30 votos / 1% do total.
+    3. **Métricas derivadas** — Spread → tipologia (cortes 100pp/200pp); Domínio; Margem 1º-2º; Peso eleitoral; Força do campo; Idx do Campo (pode ser todo negativo).
+    4. **Cruzamentos estratégicos** — Estratégia (Performance × Força do campo, 5 zonas); Reposicionamento (origem × referência, 5 zonas com Volume baixo separado por mediana); Aliança (quadrantes categóricos, substituiu r/σ).
+    5. **Achados estruturais do DF** — Eixo central × Periferia; classe alta progressista (r≈+0,86); vetor dual servidor federal/AB privada; servidor distrital como fiel da majoritária.
+    6. **Projeção e Word** — Quociente, cenários (orgânico / ponte parcial / ponte construída — calibração pendente); 4 templates por tipo de candidato.
+
+    **Pontos frágeis identificados (candidatos a discussão):** (i) 5 RAs sem zona TSE — filtrar continua certo ou virar toggle? (ii) Cortes ±15/±30 — empíricos ou herdados? (iii) Aptos vs. comparecimento como denominador — escolha consciente? (iv) Cruzamento PDAD × campo (item 6 acima já adiado pra Bloco E). (v) Calibração de cenários — depende de cobertura 2018. (vi) "Outros" como campo residual — entra ou não nos cruzamentos de força?
+
+    **Estado atual do dashboard durante a revisão:** link "Sobre o Estrategos" do rodapé do menu **comentado** em `index.html` (commit `769ad8f`, abr/2026) — modal explicativo descreve metodologia que pode mudar. Reativar quando a revisão concluir. Campo político permanece visível.
+
+11. **Revisão CSS mobile** — não começada. Dois níveis estimados:
+    - **Decente** (~1 dia): nav vira drawer com hambúrguer, layouts 3-col empilham, tabelas ganham scroll horizontal, tooltips viram tap. Garante que não quebra.
+    - **Bom** (~1 semana): tabelas grandes (Candidatos, Estratégia) viram cards/colapso de colunas em <768px, decisões editoriais sobre o que cortar, mapas redimensionados, comportamento de hover/tap consistente.
+
+    Recomendação inicial: nível 1 + versão "leitura" no mobile com achados-âncora e remetendo pro desktop pras tabelas. Decisão pendente.
 
 ---
 
