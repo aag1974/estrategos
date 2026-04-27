@@ -1711,14 +1711,6 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
       <div id="cmp-quad-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px"></div>
       <!-- Tabela com coluna Padrão -->
       <div style="overflow:auto;max-height:60vh;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px"><table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px"><thead id="cmp-thead" style="position:sticky;top:0;z-index:4;background:var(--s1)"></thead><tbody id="cmp-tbody"></tbody></table></div>
-      <!-- Scatter como visual de apoio -->
-      <details style="border-top:0.5px solid var(--bd);padding-top:10px">
-        <summary style="font-size:11px;color:var(--muted);cursor:pointer;letter-spacing:.5px;text-transform:uppercase">Distribuição (% do total) · scatter</summary>
-        <div style="display:flex;flex-direction:column;align-items:center;margin-top:10px">
-          <div id="cmp-scatter-leg" style="font-size:11px;margin-bottom:6px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center"></div>
-          <svg id="cmp-scatter" width="300" height="240" viewBox="0 0 300 240" style="display:block;border:0.5px solid var(--bd);border-radius:8px;background:var(--bg)"></svg>
-        </div>
-      </details>
     </div>
   </div>
 </div>
@@ -3329,7 +3321,8 @@ function candComparar() {
   var _bTag = document.getElementById("cmp-b-tag");
   if(_bTag){ _bTag.style.display = "none"; _bTag.innerHTML = ""; }
   document.getElementById("cmp-b-search").style.display = "";
-  document.getElementById("cmp-a-nome").textContent = candSelecionado.nome;
+  var _totA = (candSelecionado.total||0).toLocaleString("pt-BR");
+  document.getElementById("cmp-a-nome").innerHTML = "<span style='color:var(--muted);font-weight:400;margin-right:5px'>"+_totA+" votos ·</span>"+candSelecionado.nome;
   var CC3={progressista:"#A32D2D",moderado:"#0F6E56",liberal_conservador:"#854F0B",outros:"#6B7280"};
   var CN3={progressista:"Progressista",moderado:"Moderado",liberal_conservador:"Liberal/Cons.",outros:"Outros"};
   var _bp="font-size:9px;padding:2px 7px;border-radius:10px;";
@@ -3426,7 +3419,9 @@ function cmpSelecionarB(nome) {
   bTag.innerHTML = "";
   var _SbgL={progressista:"background:#FCEBEB;color:#791F1F",moderado:"background:#E1F5EE;color:#085041",liberal_conservador:"background:#FAEEDA;color:#633806",outros:"background:#F1EFE8;color:#444"};
   var _d2=document.createElement("span"); _d2.style.cssText="font-size:14px;font-weight:700;line-height:1;color:"+(CC3[cmpCandB.campo]||"#888")+";flex-shrink:0;width:14px;text-align:center"; _d2.textContent="✶";
-  var _n2=document.createElement("span"); _n2.style.cssText="font-size:13px;font-weight:500"; _n2.textContent=cmpCandB.nome;
+  var _n2=document.createElement("span"); _n2.style.cssText="font-size:13px;font-weight:500";
+  var _totB=(cmpCandB.total||0).toLocaleString("pt-BR");
+  _n2.innerHTML="<span style='color:var(--muted);font-weight:400;margin-right:5px'>"+_totB+" votos ·</span>"+cmpCandB.nome;
   var _b2=document.createElement("span"); _b2.style.cssText="font-size:9px;padding:2px 7px;border-radius:10px;"+(_SbgL[cmpCandB.campo]||"background:#F1EFE8;color:#444"); _b2.textContent=CN3[cmpCandB.campo]||cmpCandB.campo;
   var _s2=document.createElement("span"); _s2.style.cssText="font-size:11px;color:var(--muted)"; _s2.innerHTML="<strong style='color:var(--txt);font-weight:600'>"+(cl2[cmpCandB.cargo]||"")+"</strong> · "+cmpCandB.partido;
   var _e2=document.createElement("span"); _e2.textContent="×"; _e2.title="Limpar e escolher outro"; _e2.style.cssText="font-size:18px;line-height:1;color:var(--muted);cursor:pointer;padding:0 4px;margin-left:2px;border-radius:4px;font-weight:400";
@@ -3528,33 +3523,34 @@ function cmpRenderizar(cA, cB) {
   var pctSob = qTot ? Math.round(nSob/qTot*100) : 0;
   var totalFortes = nSob + nAggA + nAggB;
 
+  // Veredito descritivo (sem julgamento político — só leitura territorial)
   var veredito = "";
   if(semDados || maxPp < 0.5){
     veredito = "<strong>Volume insuficiente</strong> · "+nA+": "+totalA.toLocaleString("pt-BR")+" votos · "+nB+": "+totalB.toLocaleString("pt-BR")+" votos. Sem expressão eleitoral suficiente para análise territorial confiável.";
   } else if(totalFortes === 0){
-    veredito = "<strong>Sem RAs fortes em nenhum dos dois</strong> · ambos com Performance abaixo do ponto forte (Reduto/Base forte) em todas as regiões — aliança não tem base territorial concreta para construir.";
+    veredito = "<strong>Sem regiões fortes</strong> · em nenhuma das 33 RAs algum dos dois alcançou Performance ≥ +15% (Reduto ou Base forte). A leitura territorial deste cruzamento é limitada.";
   } else if(mesmoCargo && mesmoCampo){
     if(nSob > (nAggA+nAggB)){
-      veredito = "<strong>Mesmo cargo + mesmo campo</strong> · "+nSob+" RAs de sobreposição vs "+(nAggA+nAggB)+" complementares. <strong>Canibalização domina</strong> — disputam as mesmas regiões fortes do mesmo campo.";
+      veredito = "<strong>Mesmo cargo, mesmo campo · bases sobrepostas</strong> · "+nSob+" RAs com Performance ≥ +15% nos dois vs "+(nAggA+nAggB)+" complementares. Disputam o mesmo voto nas mesmas regiões — voto não migra entre candidatos do mesmo cargo+campo.";
     } else if(nAggA + nAggB > 0){
-      veredito = "<strong>Mesmo cargo + mesmo campo</strong> · "+nAggB+" RAs onde "+nA+" agrega + "+nAggA+" onde "+nB+" agrega vs "+nSob+" sobrepostas. <strong>Complementaridade domina</strong> — aliança com divisão de territórios pode somar.";
+      veredito = "<strong>Mesmo cargo, mesmo campo · geografia complementar</strong> · "+nAggB+" RAs onde só "+nA+" é forte, "+nAggA+" onde só "+nB+", "+nSob+" sobrepostas. Cada candidato concentra força em RAs distintas; voto não migra entre eles, mas cobrem territórios diferentes do campo.";
     } else {
-      veredito = "<strong>Mesmo cargo + mesmo campo</strong> · "+nSob+" RAs sobrepostas. Bases coincidem; aliança seria canibalização.";
+      veredito = "<strong>Mesmo cargo, mesmo campo · bases coincidentes</strong> · "+nSob+" RAs sobrepostas, sem complementaridade. Bases idênticas no mesmo cargo+campo.";
     }
   } else if(mesmoCargo && !mesmoCampo){
-    veredito = "<strong>Mesmo cargo, campos diferentes</strong> · competem em públicos distintos. Voto não migra entre eles (cada eleitor escolhe um). Os "+nSob+" pontos de sobreposição refletem densidade eleitoral comum, não disputa pelo mesmo voto.";
+    veredito = "<strong>Mesmo cargo, campos distintos · públicos não-substituíveis</strong> · "+nSob+" RAs de sobreposição. Cada eleitor escolhe um, voto não migra. As sobreposições refletem densidade eleitoral comum, não disputa pelo mesmo voto.";
   } else if(!mesmoCargo && mesmoCampo){
     if(nSob > (nAggA+nAggB)){
-      veredito = "<strong>Cargos diferentes, mesmo campo</strong> · "+nSob+" RAs onde ambos são fortes. <strong>Dobradinha clássica</strong> — palanque conjunto e transferência natural de voto entre os cargos.";
+      veredito = "<strong>Cargos diferentes, mesmo campo · bases coincidentes</strong> · "+nSob+" RAs com ambos ≥ +15%. Reforço territorial sem disputa direta — a transferência depende da disposição do eleitor a votar nos dois cargos.";
     } else {
-      veredito = "<strong>Cargos diferentes, mesmo campo</strong> · "+nSob+" RAs de base coincidente + "+nAggB+" onde só "+nA+" é forte e "+nAggA+" onde só "+nB+" é forte. <strong>Dobradinha com geografia complementar</strong> — cada um cobre território onde o outro é fraco.";
+      veredito = "<strong>Cargos diferentes, mesmo campo · bases complementares</strong> · "+nSob+" RAs coincidentes, "+nAggB+" só com "+nA+" forte, "+nAggA+" só com "+nB+" forte. Cada um cobre território onde o outro não chega.";
     }
   } else {
     // !mesmoCargo && !mesmoCampo
     if(nSob > 0){
-      veredito = "<strong>Cargos e campos diferentes</strong> · "+nSob+" RAs de sobreposição. <strong>Disputa de palanque</strong> — buscam visibilidade nos mesmos territórios com narrativas distintas.";
+      veredito = "<strong>Cargos e campos distintos · sobreposição parcial</strong> · "+nSob+" RAs onde ambos ≥ +15%. Concorrência por densidade eleitoral comum, sem disputa direta de voto.";
     } else {
-      veredito = "<strong>Cargos e campos diferentes</strong> · sem sobreposição forte. Bases distintas em todos os planos — sem ressonância natural pra aliança eleitoral.";
+      veredito = "<strong>Cargos e campos distintos · territórios distintos</strong> · 0 sobreposição forte. "+nA+" forte em "+nAggB+" RAs, "+nB+" em "+nAggA+". Os redutos não coincidem — leitura territorial baixa para análise de aliança.";
     }
   }
   document.getElementById("cmp-veredito").innerHTML = veredito;
@@ -3594,46 +3590,6 @@ function cmpRenderizar(cA, cB) {
       el.style.outlineOffset = "2px";
     }
   });
-
-  // Scatter SVG
-  var minP = Math.min.apply(null, ppA.concat(ppB)) * 0.9;
-  var maxP = Math.max.apply(null, ppA.concat(ppB)) * 1.05;
-  if(maxP - minP < 0.01){ minP = 0; maxP = 1; }
-  var range = maxP - minP || 1;
-  var pad=40, w=300, h=240;
-  var sx = function(v){ return pad + (v-minP)/range*(w-pad); };
-  var sy = function(v){ return (h-pad) - (v-minP)/range*(h-pad); };
-  var scaleMin = minP.toFixed(1).replace(".",",")+"%";
-  var scaleMax = maxP.toFixed(1).replace(".",",")+"%";
-  var star = "✶";
-  var dots = RAs.map(function(ra2,i){
-    var x=sx(ppA[i]), y=sy(ppB[i]);
-    var tip="<title>"+ra2+" | "+nA+": "+fpt(ppA[i])+"pp | "+nB+": "+fpt(ppB[i])+"pp</title>";
-    if(ppA[i]>=ppB[i]){
-      return "<circle cx='"+x.toFixed(1)+"' cy='"+y.toFixed(1)+"' r='4' fill='"+corA+"' opacity='0.8'>"+tip+"</circle>";
-    } else {
-      return "<text x='"+x.toFixed(1)+"' y='"+y.toFixed(1)+"' text-anchor='middle' dominant-baseline='middle' font-size='13' font-weight='700' fill='"+corB+"' opacity='0.85'>"+star+tip+"</text>";
-    }
-  }).join("");
-
-  document.getElementById("cmp-scatter").innerHTML =
-    "<line x1='"+pad+"' y1='"+(h-pad)+"' x2='"+w+"' y2='"+(h-pad)+"' stroke='var(--bd2)' stroke-width='0.5'/>"
-    +"<line x1='"+pad+"' y1='4' x2='"+pad+"' y2='"+(h-pad)+"' stroke='var(--bd2)' stroke-width='0.5'/>"
-    +"<line x1='"+pad+"' y1='"+(h-pad)+"' x2='"+w+"' y2='4' stroke='var(--bd2)' stroke-width='0.5' stroke-dasharray='3,3'/>"
-    +"<text x='"+(pad-4)+"' y='"+(h-pad)+"' text-anchor='end' dominant-baseline='auto' font-size='8' fill='var(--muted)'>"+scaleMin+"</text>"
-    +"<text x='"+w+"' y='"+(h-pad+10)+"' text-anchor='end' font-size='8' fill='var(--muted)'>"+scaleMax+"</text>"
-    +"<text x='"+(pad-4)+"' y='12' text-anchor='end' dominant-baseline='hanging' font-size='8' fill='var(--muted)'>"+scaleMax+"</text>"
-    +"<text x='"+(pad+(w-pad)/2)+"' y='"+(h-6)+"' text-anchor='middle' font-size='9' fill='var(--muted)'>"+nA+"</text>"
-    +"<text x='10' y='"+(h-pad)/2+"' text-anchor='middle' font-size='9' fill='var(--muted)' transform='rotate(-90,10,"+(h-pad)/2+")'>"+nB+"</text>"
-    +dots;
-
-  document.getElementById("cmp-scatter-leg").innerHTML =
-    "<span style='display:inline-flex;align-items:center;gap:5px'>"
-    + "<span style='width:8px;height:8px;border-radius:50%;background:"+corA+";display:inline-block'></span>"
-    + nA+" lidera</span>  "
-    + "<span style='display:inline-flex;align-items:center;gap:5px'>"
-    + "<span style='font-size:14px;font-weight:700;color:"+corB+";line-height:1'>✶</span>"
-    + nB+" lidera</span>";
 
   // Tabela — header com sort + filtro inline (mesmo padrão de Candidatos/Estratégia)
   var thB = "padding:6px 10px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--s1);border-bottom:0.5px solid var(--bd2);position:sticky;top:0;z-index:4;white-space:nowrap;cursor:pointer;user-select:none";
@@ -3726,14 +3682,13 @@ function cmpRenderTabela(){
   };
 
   var tbody = lista.map(function(d){
-    var bg = d.delta > 0.5 ? "background:#f9f3ec" : d.delta < -0.5 ? "background:#f0f5fb" : "";
     var dStr = d.delta > 0 ? "+"+fpt2(d.delta)+"pp" : fpt2(d.delta)+"pp";
     var dCol = d.delta > 0.5 ? corA : d.delta < -0.5 ? corB : "var(--muted)";
     var td = "padding:7px 10px;font-size:12px;border-bottom:0.5px solid var(--bd2);";
     var p = padLbl[d.padrao] || padLbl.ABERTO;
     var padBg = (d.padrao==="AGREGA_B") ? "background:"+p.color+"22" : (d.padrao==="AGREGA_A") ? "background:"+p.color+"22" : "background:"+p.bg;
     var padBadge = "<span style='display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;"+padBg+";color:"+p.color+"'>"+p.txt+"</span>";
-    return "<tr style='"+bg+"'>"
+    return "<tr>"
       +"<td style='"+td+"font-weight:500'>"+d.ra+"</td>"
       +"<td style='"+td+"'>"+padBadge+"</td>"
       +"<td style='"+td+"text-align:right'>"+d.vA.toLocaleString("pt-BR")+"</td>"
