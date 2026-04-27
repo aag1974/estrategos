@@ -2094,8 +2094,7 @@ function candSel(cand) {
     +"<span style='font-size:13px;font-weight:500'>"+cand.nome+"</span>"
     +(totalStr?"<span style='font-size:11px;color:var(--muted)'>· "+totalStr+"</span>":"")
     +campoBadgeHtml
-    +votoBadgeHtml
-    +"<button onclick='candComparar()' style='margin-left:auto;font-size:11px;padding:4px 12px;border-radius:6px;border:0;background:var(--amber);color:white;cursor:pointer;white-space:nowrap;flex-shrink:0;font-weight:500;letter-spacing:0.5px;text-transform:uppercase'>Alianças políticas</button>";
+    +votoBadgeHtml;
   candRenderTab(cand);
   _candResetScroll();
 }
@@ -2405,7 +2404,8 @@ function estrRenderConteudo(){
       "<strong style='font-size:13px'>"+c.nome+"</strong>"
     + votoBadge
     + "<span style='font-size:11px;color:var(--muted)'>"+(c.partido||"?")+" · "+(cl[c.cargo]||c.cargo)+eleitoStr+"</span>"
-    + (totalStr ? "<span style='margin-left:auto;font-size:11px;color:var(--muted)'>"+totalStr+"</span>" : "");
+    + (totalStr ? "<span style='font-size:11px;color:var(--muted)'>· "+totalStr+"</span>" : "")
+    + "<button onclick='abrirAliancas(estrCandSel)' style='margin-left:auto;font-size:11px;padding:4px 12px;border-radius:6px;border:0;background:var(--amber);color:white;cursor:pointer;white-space:nowrap;flex-shrink:0;font-weight:500;letter-spacing:0.5px;text-transform:uppercase'>Alianças políticas</button>";
 
   var dados = estrDadosCand(c);
   estrRenderTab(dados);
@@ -3313,24 +3313,27 @@ function cmpToggleFiltro(pad){
   });
 }
 
-function candComparar() {
-  if(!candSelecionado) return;
+// candAtivoCmp: o candidato A da comparação (referência atual quando o modal está aberto)
+var candAtivoCmp = null;
+function abrirAliancas(cand){
+  if(!cand) return;
+  candAtivoCmp = cand;
   cmpCandB = null;
   cmpFiltroPad = null;
   // Reset visual do candidato B (caso tenha sido aberto antes)
   var _bTag = document.getElementById("cmp-b-tag");
   if(_bTag){ _bTag.style.display = "none"; _bTag.innerHTML = ""; }
   document.getElementById("cmp-b-search").style.display = "";
-  var _totA = (candSelecionado.total||0).toLocaleString("pt-BR");
-  document.getElementById("cmp-a-nome").innerHTML = "<span style='color:var(--muted);font-weight:400;margin-right:5px'>"+_totA+" votos ·</span>"+candSelecionado.nome;
+  var _totA = (cand.total||0).toLocaleString("pt-BR");
+  document.getElementById("cmp-a-nome").innerHTML = "<span style='color:var(--muted);font-weight:400;margin-right:5px'>"+_totA+" votos ·</span>"+cand.nome;
   var CC3={progressista:"#A32D2D",moderado:"#0F6E56",liberal_conservador:"#854F0B",outros:"#6B7280"};
   var CN3={progressista:"Progressista",moderado:"Moderado",liberal_conservador:"Liberal/Cons.",outros:"Outros"};
   var _bp="font-size:9px;padding:2px 7px;border-radius:10px;";
   var Sbg={progressista:_bp+"background:#FCEBEB;color:#791F1F",moderado:_bp+"background:#E1F5EE;color:#085041",
             liberal_conservador:_bp+"background:#FAEEDA;color:#633806",outros:_bp+"background:#F1EFE8;color:#444"};
-  document.getElementById("cmp-a-dot").style.background = CC3[candSelecionado.campo]||"#888";
-  document.getElementById("cmp-a-badge").style.cssText = Sbg[candSelecionado.campo]||_bp;
-  document.getElementById("cmp-a-badge").textContent = CN3[candSelecionado.campo]||"";
+  document.getElementById("cmp-a-dot").style.background = CC3[cand.campo]||"#888";
+  document.getElementById("cmp-a-badge").style.cssText = Sbg[cand.campo]||_bp;
+  document.getElementById("cmp-a-badge").textContent = CN3[cand.campo]||"";
   document.getElementById("cmp-b-search").value = "";
   document.getElementById("cmp-b-results").style.display = "none";
   document.getElementById("cmp-content").style.display = "none";
@@ -3338,7 +3341,7 @@ function candComparar() {
   document.getElementById("cmp-corr").textContent = "";
   var _cl2={GOVERNADOR:"Governador",SENADOR:"Senador",DEPUTADO_FEDERAL:"Dep. Federal",DEPUTADO_DISTRITAL:"Dep. Distrital"};
   var _subEl=document.getElementById("cmp-a-sub");
-  if(_subEl) _subEl.innerHTML="<strong style='color:var(--txt);font-weight:600'>"+(_cl2[candSelecionado.cargo]||candSelecionado.cargo)+"</strong> · "+candSelecionado.partido;
+  if(_subEl) _subEl.innerHTML="<strong style='color:var(--txt);font-weight:600'>"+(_cl2[cand.cargo]||cand.cargo)+"</strong> · "+cand.partido;
   document.getElementById("cmp-overlay").style.display = "flex";
   document.body.style.overflow = "hidden";
   setTimeout(function(){ document.getElementById("cmp-b-search").focus(); }, 100);
@@ -3354,11 +3357,11 @@ function cmpFechar() {
 }
 
 function cmpBuscar(q) {
-  if(!candSelecionado) return;
+  if(!candAtivoCmp) return;
   var res = document.getElementById("cmp-b-results");
   q = (q||"").toLowerCase().trim();
   var lista = A5_CANDS.filter(function(c){
-    return c.nome !== candSelecionado.nome
+    return c.nome !== candAtivoCmp.nome
       && (q.length < 2 || c.nome.toLowerCase().indexOf(q) >= 0 || c.partido.toLowerCase().indexOf(q) >= 0);
   }).slice(0, 12);
   if(!lista.length){ res.style.display="none"; return; }
@@ -3442,7 +3445,7 @@ function cmpSelecionarB(nome) {
   // Esconder placeholder e mostrar conteúdo da comparação
   document.getElementById("cmp-pick-hint").style.display = "none";
   document.getElementById("cmp-content").style.display = "block";
-  cmpRenderizar(candSelecionado, cmpCandB);
+  cmpRenderizar(candAtivoCmp, cmpCandB);
 }
 
 function pearson(xs, ys) {
@@ -3495,11 +3498,17 @@ function cmpRenderizar(cA, cB) {
   //   AGREGA_A: B forte, A não → B traz a base pra aliança
   //   ABERTO:   nenhum forte   → terreno aberto, aliança não resolve aqui
   function _isForte(s){ return s==="REDUTO" || s==="BASE FORTE"; }
+  // Performance em pp (delta percentual sobre o esperado pelo tamanho da RA)
+  function _perfPp(r){ return (r && r.idx != null) ? (r.idx - 1) * 100 : null; }
   var deltas = RAs.map(function(r2,i){
     var sA=(rasA[r2]||{}).s||"", sB=(rasB[r2]||{}).s||"";
     var fA=_isForte(sA), fB=_isForte(sB);
     var pad = fA&&fB ? "SOBREPOE" : (fA && !fB ? "AGREGA_B" : (!fA && fB ? "AGREGA_A" : "ABERTO"));
-    return {ra:r2, ppA:ppA[i], ppB:ppB[i], delta:ppA[i]-ppB[i],
+    var perfA = _perfPp(rasA[r2]);
+    var perfB = _perfPp(rasB[r2]);
+    var dPerf = (perfA != null && perfB != null) ? (perfA - perfB) : 0;
+    return {ra:r2, ppA:ppA[i], ppB:ppB[i],
+            perfA:perfA, perfB:perfB, delta:dPerf,
             vA:(rasA[r2].v||0), vB:(rasB[r2].v||0),
             sA:sA, sB:sB, padrao:pad};
   }).sort(function(a,b){ return b.delta-a.delta; });
@@ -3598,18 +3607,18 @@ function cmpRenderizar(cA, cB) {
   var lblCargoB = cargoLbl3[cB.cargo]||cB.cargo;
   var subVotosA = "<div style='font-size:8px;font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:1px'>"+lblCargoA+"</div>";
   var subVotosB = "<div style='font-size:8px;font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:1px'>"+lblCargoB+"</div>";
-  var ttPct = "<span class='tt' style='text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted);font-size:10px;margin-left:3px'><span class='tt-icon'>?</span><span class='tt-box'>Distribuição: votos do candidato na RA dividido pelo total de votos do candidato. Soma 100% por candidato — é a fatia da própria base que vem de cada região.</span></span>";
-  var ttDelta = "<span class='tt' style='text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted);font-size:10px;margin-left:3px'><span class='tt-icon'>?</span><span class='tt-box'>Diferença em pontos percentuais entre os shares internos. Positivo: a RA pesa mais na base de "+nA+". Negativo: pesa mais na base de "+nB+".</span></span>";
-  var ttPad = "<span class='tt' style='text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted);font-size:10px;margin-left:3px'><span class='tt-icon'>?</span><span class='tt-box'>Classificação da RA pela força (Reduto/Base forte) de cada candidato. Sobreposição: ambos fortes. "+nA+" agrega: só "+nA+" é forte. "+nB+" agrega: só "+nB+" é forte. Aberto: nenhum dos dois é forte.</span></span>";
+  var ttPerf = "<span class='tt' style='text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted);font-size:10px;margin-left:3px'><span class='tt-icon'>?</span><span class='tt-box'>Performance: quanto a RA entrega de votos ao candidato comparado ao esperado pelo tamanho do território. +30% ou mais = Reduto · +15% a +30% = Base forte · −15% a +15% = Esperado · −15% a −30% = Base fraca · ≤ −30% = Ausência. Comparável entre candidatos com volumes muito diferentes.</span></span>";
+  var ttDelta = "<span class='tt' style='text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted);font-size:10px;margin-left:3px'><span class='tt-icon'>?</span><span class='tt-box'>Diferença em pp entre as Performances. Positivo: a RA performa mais para "+nA+". Negativo: performa mais para "+nB+".</span></span>";
+  var ttPad = "<span class='tt' style='text-transform:none;letter-spacing:0;font-weight:400;color:var(--muted);font-size:10px;margin-left:3px'><span class='tt-icon'>?</span><span class='tt-box'>Classificação da RA pela Performance ≥ +15% (Reduto/Base forte) de cada candidato. Sobreposição: ambos fortes. "+nA+" agrega: só "+nA+" é forte. "+nB+" agrega: só "+nB+" é forte. Aberto: nenhum dos dois é forte.</span></span>";
   document.getElementById("cmp-thead").innerHTML =
     "<tr>"
     +"<th onclick='cmpSrt(&quot;ra&quot;)' style='"+thB+"text-align:left;left:0;z-index:20;min-width:160px'>Região <span class='sa' id='cmp-s-ra'></span><input class='th-filter' id='cmp-filtro-ra' placeholder='filtrar...' oninput='cmpFiltrarRA()' onclick='event.stopPropagation()'></th>"
     +"<th onclick='cmpSrt(&quot;padrao&quot;)' style='"+thB+"text-align:left;min-width:130px'>Padrão"+ttPad+" <span class='sa' id='cmp-s-padrao'></span></th>"
     +"<th onclick='cmpSrt(&quot;vA&quot;)' style='"+thB+"text-align:right'>Votos "+nA+" <span class='sa' id='cmp-s-vA'></span>"+subVotosA+"</th>"
-    +"<th onclick='cmpSrt(&quot;ppA&quot;)' style='"+thB+"text-align:right'>% do total"+ttPct+" <span class='sa' id='cmp-s-ppA'></span></th>"
+    +"<th onclick='cmpSrt(&quot;perfA&quot;)' style='"+thB+"text-align:right'>Performance "+nA+ttPerf+" <span class='sa' id='cmp-s-perfA'></span></th>"
     +"<th onclick='cmpSrt(&quot;vB&quot;)' style='"+thB+"text-align:right'>Votos "+nB+" <span class='sa' id='cmp-s-vB'></span>"+subVotosB+"</th>"
-    +"<th onclick='cmpSrt(&quot;ppB&quot;)' style='"+thB+"text-align:right'>% do total"+ttPct+" <span class='sa' id='cmp-s-ppB'></span></th>"
-    +"<th onclick='cmpSrt(&quot;delta&quot;)' style='"+thB+"text-align:right'>Delta"+ttDelta+" <span class='sa' id='cmp-s-delta'></span></th>"
+    +"<th onclick='cmpSrt(&quot;perfB&quot;)' style='"+thB+"text-align:right'>Performance "+nB+ttPerf+" <span class='sa' id='cmp-s-perfB'></span></th>"
+    +"<th onclick='cmpSrt(&quot;delta&quot;)' style='"+thB+"text-align:right'>Δ Performance"+ttDelta+" <span class='sa' id='cmp-s-delta'></span></th>"
     +"</tr>";
 
   // Cache pra renderizações subsequentes (filtro/sort)
@@ -3660,14 +3669,14 @@ function cmpRenderTabela(){
     }
     if(col==="vA"){ va=a.vA; vb=b.vA; }
     else if(col==="vB"){ va=a.vB; vb=b.vB; }
-    else if(col==="ppA"){ va=a.ppA; vb=b.ppA; }
-    else if(col==="ppB"){ va=a.ppB; vb=b.ppB; }
+    else if(col==="perfA"){ va=(a.perfA!=null?a.perfA:-9999); vb=(b.perfA!=null?b.perfA:-9999); }
+    else if(col==="perfB"){ va=(a.perfB!=null?a.perfB:-9999); vb=(b.perfB!=null?b.perfB:-9999); }
     else { va=a.delta; vb=b.delta; }
     return (va-vb) * asc;
   });
 
   // Atualizar setas
-  var arrows = ["ra","padrao","vA","ppA","vB","ppB","delta"];
+  var arrows = ["ra","padrao","vA","perfA","vB","perfB","delta"];
   arrows.forEach(function(c){
     var el = document.getElementById("cmp-s-"+c);
     if(el) el.textContent = (cmpSortCol===c) ? (cmpSortAsc?"▲":"▼") : "";
@@ -3688,13 +3697,19 @@ function cmpRenderTabela(){
     var p = padLbl[d.padrao] || padLbl.ABERTO;
     var padBg = (d.padrao==="AGREGA_B") ? "background:"+p.color+"22" : (d.padrao==="AGREGA_A") ? "background:"+p.color+"22" : "background:"+p.bg;
     var padBadge = "<span style='display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;"+padBg+";color:"+p.color+"'>"+p.txt+"</span>";
+    function _perfTxt(p){
+      if(p==null) return "<span style='color:var(--muted)'>—</span>";
+      var sign = p >= 0 ? "+" : "";
+      var col = p >= 15 ? "#085041" : p <= -15 ? "#791F1F" : "var(--muted)";
+      return "<span style='color:"+col+";font-weight:500'>"+sign+fpt2(p)+"%</span>";
+    }
     return "<tr>"
       +"<td style='"+td+"font-weight:500'>"+d.ra+"</td>"
       +"<td style='"+td+"'>"+padBadge+"</td>"
       +"<td style='"+td+"text-align:right'>"+d.vA.toLocaleString("pt-BR")+"</td>"
-      +"<td style='"+td+"text-align:right;color:"+corA+";font-weight:500'>"+fpt2(d.ppA)+"%</td>"
+      +"<td style='"+td+"text-align:right'>"+_perfTxt(d.perfA)+"</td>"
       +"<td style='"+td+"text-align:right'>"+d.vB.toLocaleString("pt-BR")+"</td>"
-      +"<td style='"+td+"text-align:right;color:"+corB+";font-weight:500'>"+fpt2(d.ppB)+"%</td>"
+      +"<td style='"+td+"text-align:right'>"+_perfTxt(d.perfB)+"</td>"
       +"<td style='"+td+"text-align:right;color:"+dCol+";font-weight:500'>"+dStr+"</td>"
       +"</tr>";
   }).join("");
