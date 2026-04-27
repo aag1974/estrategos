@@ -542,7 +542,119 @@ A inconsistência é assumida e tem custo cognitivo: "forte" significa coisas le
 
 ## 7. Camada 5 — Achados estruturais do DF
 
-*[a escrever]*
+Camadas 2 a 4 descrevem o estado do território. Camada 5 olha para os **padrões que se repetem** — aquilo que o DF revela quando se cruza renda, escolaridade, ocupação e voto entre as RAs. Esses achados não são conjunturais (uma eleição específica) nem individuais (um candidato): descrevem como o eleitorado distrital se organiza estruturalmente.
+
+A leitura aqui muda de tom. Em Camadas 2-4, a unidade é o candidato ou a RA específica. Em Camada 5, a unidade é o **DF como sistema** — e o que se ganha é uma chave de interpretação que se aplica a qualquer candidato que entre depois no painel.
+
+### 7.1 Método correlacional
+
+A ferramenta principal é o **coeficiente de correlação de Pearson (r)** entre variáveis socioeconômicas (PDAD) e variáveis eleitorais (TSE), agregando por RA.
+
+```
+r(X, Y) = covariância(X, Y) / (σ_X × σ_Y)
+```
+
+Onde X é uma variável socioeconômica da RA (ex.: % de classe A/B, % de servidor federal, % com ensino superior) e Y é uma variável eleitoral (ex.: % de voto para o campo progressista naquele cargo). O cálculo cobre as **28 RAs com cobertura completa** (as 5 sem zona TSE são excluídas).
+
+#### Por que Pearson
+
+A escolha por Pearson tem três motivações:
+
+1. **Direto e interpretável.** Um r entre −1 e +1 com sinal explícito comunica imediatamente sentido (positivo/negativo) e força (módulo). Métricas alternativas (Spearman, informação mútua) ou são equivalentes para os pares aproximadamente lineares observados, ou perdem leitura ("informação mútua = 0,12" não diz nada para o leitor não-técnico).
+2. **Coerente com o tom do produto.** Os achados precisam virar afirmações editorialmente claras ("a renda alta no DF puxa para o progressista, ao contrário do padrão nacional"). Pearson sustenta esse tipo de afirmação sem precisar de aparato técnico adicional.
+3. **Compatível com visualização.** Toda correlação de Pearson tem um scatter que a representa fielmente (28 pontos, uma reta de regressão). O painel pode renderizar o scatter quando o achado for central, e o leitor verifica olho-no-olho.
+
+#### Como interpretar a magnitude
+
+Os cortes convencionais para |r| (em módulo):
+
+| |r| | Leitura |
+|---|---|
+| **< 0,3** | Sem padrão linear claro — variáveis aproximadamente independentes |
+| **0,3 – 0,6** | Padrão moderado |
+| **0,6 – 0,8** | Padrão forte |
+| **> 0,8** | Padrão muito forte |
+
+O sinal indica o sentido: positivo (variam juntas) ou negativo (variam inverso).
+
+#### Limitações conhecidas do método
+
+- **Linearidade pressuposta.** Pearson detecta apenas dependência linear. Relações em U, em S, ou com saturação podem ter |r| baixo mesmo sendo informativas. Inspeção visual do scatter mitiga isso parcialmente.
+- **Sensível a outliers.** Já discutido em §6.3 (no contexto da Aliança). Plano Piloto, Lago Sul e Ceilândia tendem a influenciar fortemente os coeficientes — em alguns casos, removê-los altera o r de modo substantivo. Quando isso acontece, o achado merece ser apresentado com a ressalva.
+- **N pequeno.** Vinte e oito pontos. Intervalos de confiança de Pearson para N=28 são amplos: um r = 0,5 tem IC95% que pode ir de ~0,15 a ~0,75. Magnitudes próximas dos cortes (p.ex. r = 0,32) devem ser lidas com cautela.
+- **Inferência limitada ao território.** Como em §3.5, a correlação é em nível de RA — não autoriza concluir comportamento individual do eleitor.
+
+### 7.2 Achado 1 — Paradoxo da classe alta progressista
+
+No DF, **renda alta vota progressista** — o oposto do padrão nacional, onde classes mais altas tendem a votar conservador.
+
+- **r ≈ +0,93** entre % com ensino superior na RA e voto progressista (todos os cargos agregados).
+- **r ≈ +0,86** entre % de classe A/B na RA e voto progressista para Deputado Federal.
+
+As RAs que sustentam essa correlação são Lago Sul, Plano Piloto, Sudoeste/Octogonal, Águas Claras e Jardim Botânico — as mais ricas e escolarizadas do DF — e simultaneamente as que mais entregam votos para o campo progressista no cargo Federal.
+
+Esse padrão é estrutural, não conjuntural: aparece também em 2018 (com magnitude próxima) e em ciclos anteriores. Não é efeito Lula, não é efeito Bolsonaro — é traço do DF.
+
+### 7.3 Achado 2 — Vetor dual
+
+O paradoxo da classe alta progressista não tem **um único** mecanismo causal — tem **dois** vetores que se sobrepõem:
+
+1. **Servidor federal.** A presença de servidores federais na RA correlaciona fortemente com voto progressista para cargos federais (**r ≈ +0,83** para Deputado Federal e Senador). A interpretação é direta: identidade ideológica de carreira pública, defesa do Estado, alinhamento histórico com pautas trabalhistas.
+2. **Classe AB privada altamente escolarizada.** Mesmo onde o servidor federal **não** está concentrado, o voto progressista persiste, sustentado por escolaridade alta e perfil cosmopolita. A hipótese qualitativa — a confirmar empiricamente — é que Lago Sul ilustra esse caso: predomínio de renda alta privada com proporção comparativamente menor de servidor federal, mas voto progressista mantido.
+
+Os dois vetores são distintos e se reforçam. O "eleitor rico" do DF, na verdade, **são dois eleitores** — e ambos votam progressista, contrariando o que renda alta significa em outras capitais brasileiras.
+
+A separação dos dois vetores é importante porque tem implicação tática: uma campanha progressista que se ancora apenas em pauta de servidor federal perde Lago Sul; uma que se ancora apenas em pauta cosmopolita perde Plano Piloto. A leitura conjunta de PDAD (% servidor federal, % classe A/B, % superior) por RA permite ver onde cada vetor pesa mais.
+
+### 7.4 Achado 3 — O cargo importa: servidor distrital como fiel da majoritária
+
+A força da correlação servidor federal × progressista **cai com o cargo**:
+
+- Federal e Senador: **r ≈ +0,83**
+- Distrital: **r ≈ +0,43**
+
+E o **servidor distrital** faz o movimento oposto. Sua presença correlaciona positivamente com o campo governista local:
+
+- **r ≈ +0,61** entre % servidor distrital e voto liberal/conservador para Governador.
+- **r ≈ +0,60** entre % servidor distrital e voto moderado para Senador.
+
+A leitura: o servidor distrital depende da máquina pública local e tende a votar com quem governa o DF — independentemente do campo ideológico que esse governo represente. Em ciclos com governos progressistas, o servidor distrital migra para a moderação operacional do governo. Em ciclos com governos liberais/conservadores (como 2022), ele migra para o liberal/conservador.
+
+A implicação metodológica: a mesma variável socioeconômica (% servidor) tem **direção de correlação diferente conforme o cargo e o tipo de servidor**. Análises que tratam "servidor público" como bloco único perdem essa estrutura. Estrategos separa servidor federal de servidor distrital exatamente por isso.
+
+### 7.5 Insight estrutural — Eixo central × Periferia
+
+Os três achados anteriores são correlacionais. O quarto é **interpretativo**: emerge do conjunto dos dados quando se olha para a geografia política do DF como um todo.
+
+#### O eixo central como ringue ideológico
+
+Cinco RAs concentram a maior parte do voto ideológico do DF — em qualquer direção:
+
+**Plano Piloto · Lago Sul · Lago Norte · Sudoeste/Octogonal · Águas Claras · Jardim Botânico**
+
+Essas RAs são simultaneamente o coração do voto progressista (achado 1) **e** o coração do voto liberal-conservador de elite (Lago Sul é base bolsonarista; Plano Piloto é base PSOL e PT). Candidatos extremos dos dois lados — Kicis (PL) e Erika Kokay (PT), Manzoni (PL Distrital) e Fábio Felix (PSOL Distrital) — disputam **as mesmas RAs**, com Performance alta nos mesmos territórios.
+
+A leitura: o eixo central é onde **a política ideológica acontece**. Quem se elege por extremos (de qualquer lado) sustenta a base ali.
+
+#### A periferia como política local não-ideológica
+
+Brazlândia, SCIA/Estrutural, Recanto das Emas, Varjão, Itapoã, Paranoá — RAs grandes em eleitorado, baixas em escolaridade e renda — não seguem o eixo ideológico. Os candidatos que performam ali não são os ideológicos do eixo central; são candidatos com **base territorial específica**: pastor com igreja consolidada, sindicalista, vereador-virou-distrital, candidato com prestação direta (cesta básica, ambulância, vale-luz, mediação com administração regional).
+
+A correlação % superior × voto progressista, que vale +0,93 quando se olha o DF inteiro, **cai a praticamente zero** se filtrar para a periferia. Lá não há padrão ideológico — há padrão de presença local.
+
+#### Implicação metodológica
+
+A dualidade Eixo × Periferia é a chave que evita interpretar errado o DF. Análises que extrapolam o padrão do eixo central para o DF inteiro (do tipo "no DF, a renda alta puxa para o progressista — então campanha progressista deve focar em renda alta") **erram a estratégia** se a campanha for para a periferia. A campanha da periferia é outra coisa — territorial, individual, não-ideológica.
+
+Estrategos não codifica essa dualidade como métrica formal (não há um indicador "isto é eixo / isto é periferia"). Mas ela atravessa a leitura de tudo: as zonas estratégicas (Camada 4), as projeções (Camada 6), e a estrutura editorial dos relatórios. Funciona como uma **lente interpretativa** sobre os dados quantitativos.
+
+### 7.6 Premissas e limitações
+
+1. **Achados são correlacionais, não causais.** Que renda alta correlacione com voto progressista não significa que renda alta *causa* voto progressista. O mecanismo causal pode ser escolaridade, perfil ocupacional, identidade urbana cosmopolita ou um conjunto deles — Pearson não distingue.
+2. **Inferência ecológica.** Repetindo a fronteira de §3.5: as correlações são entre variáveis das RAs, não entre características de eleitores individuais. "RAs ricas votam progressista" é diferente de "eleitores ricos votam progressista".
+3. **Outliers influenciam fortemente.** Lago Sul pesa muito no r de classe A/B × progressista. Plano Piloto pesa em quase tudo. Achados centrais foram verificados removendo cada outlier para garantir robustez, mas a magnitude exata dos coeficientes é sensível.
+4. **N = 28 limita precisão.** Para valores absolutos próximos dos cortes convencionais, intervalos de confiança são amplos. Achados muito fortes (|r| > 0,8) são robustos a essa limitação; achados moderados (|r| ≈ 0,4–0,6) precisam ser lidos com cautela.
+5. **Eixo × Periferia é interpretação, não classificação formal.** A dualidade emerge da leitura conjunta dos achados — não há uma fronteira numérica fixa que separe RAs em uma categoria ou outra. A lista citada no §7.5 é uma simplificação editorial; alguns casos (Vicente Pires, Cruzeiro, Guará) ficam ambíguos e merecem leitura caso a caso.
 
 ---
 
