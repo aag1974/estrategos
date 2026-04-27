@@ -27,7 +27,7 @@ Atualizado em **abr/2026**.
 
 Estrategos é um sistema de inteligência eleitoral aplicada ao Distrito Federal. Cruza dados socioeconômicos (PDAD 2021/IPEDF) com resultados de votação (TSE 2022) para gerar uma leitura territorial estratégica das 33 Regiões Administrativas (RAs) do DF, organizada por cargo (Governador, Senador, Deputado Federal, Deputado Distrital) e por campo político (Progressista, Moderado, Liberal/Conservador, Outros).
 
-O indicador central é o **sobre-índice** — apresentado como **Performance** na interface — que mede o quanto cada RA entrega de votos a um candidato em relação ao que seria proporcional ao tamanho do seu eleitorado. Sobre essa métrica simples e auditável se constroem todas as derivações: tipologia de candidato, força do campo, zonas estratégicas, análises de aliança e reposicionamento.
+O indicador central é o **sobre-índice** — apresentado como **Performance** na interface — que mede o quanto cada RA entrega de votos a um candidato em relação ao que seria proporcional ao tamanho do seu eleitorado. Sobre essa métrica simples e auditável se constroem todas as derivações: perfil de votação do candidato, força do campo, zonas estratégicas, análises de aliança e reposicionamento.
 
 A escolha de uma **métrica atomizada** — em vez de um índice composto com pesos arbitrários, modelo que foi explicitamente aposentado em abr/2026 — é deliberada: cada número é defensável, reconstrutível a partir de fontes públicas, e o usuário pode auditar cada passo. O produto **organiza o território para apoiar decisões táticas; não prevê resultados eleitorais**.
 
@@ -292,7 +292,148 @@ RAs abaixo desse limite têm sua Performance calculada e exibida na tabela compl
 
 ## 5. Camada 3 — Métricas derivadas
 
-*[a escrever]*
+A Performance é a métrica central, mas sozinha não responde todas as perguntas estratégicas. Cinco métricas derivadas complementam a leitura — quatro descrevem **a RA ou o candidato**, e uma é uma transformação que classifica o **tipo de campanha**.
+
+### 5.1 Spread e perfil de votação
+
+#### Spread
+
+```
+spread(C) = max(Performance) − min(Performance) do candidato C
+```
+
+Em pontos percentuais. Mede a **amplitude** da Performance do candidato — quanto a sua RA mais favorável difere da menos favorável.
+
+#### Perfil de votação (Distribuído / Híbrido / Concentrado)
+
+A partir do spread, o candidato é classificado em um de três perfis:
+
+| Perfil | Spread | Leitura | Cargo típico |
+|---|---|---|---|
+| **Distribuído** | < 100pp | Candidato performa parecido em todo o DF; cobertura ampla | Governador (Ibaneis-tipo) |
+| **Híbrido** | 100–200pp | Forte em algumas regiões mas mantém presença razoável nas demais | Federal (Kicis-tipo) |
+| **Concentrado** | > 200pp | Hiperperformance em poucas RAs; ausência clara em outras | Distrital (Manzoni-tipo) |
+
+#### Por que essa métrica
+
+O perfil de votação diagnostica **o tipo de campanha** que o candidato faz — antes mesmo de olhar onde ele é forte. Isso tem implicação estratégica direta:
+
+- Um candidato **Distribuído** já cobre território; o desafio é defender a base e mobilizar.
+- Um **Híbrido** tem alicerce em poucas RAs e precisa decidir entre consolidar ou expandir.
+- Um **Concentrado** depende de hiperperformance num conjunto pequeno; a estratégia é afunilar, não diluir.
+
+#### Por que cortes em 100pp e 200pp
+
+Como em §4.4, os cortes são **editoriais empíricos** — fixados pela observação dos candidatos do TSE 2022. Refletem diferenças naturais entre cargos: Governador exige distribuição (quem ganha em maioria simples não pode ter ausência grande), Distrital aceita hiperconcentração (a aritmética do quociente eleitoral premia bases compactas).
+
+#### Limitações
+
+- **Sensível a outliers.** Spread se baseia em dois pontos (max e min). Uma única RA atípica pode jogar o perfil. Alternativa considerada: desvio padrão da Performance — mais robusto, mas menos interpretável editorialmente. A escolha pelo spread privilegia a leitura ("qual é o range?") sobre o rigor estatístico.
+- **Cortes não validados estatisticamente.** Mesma limitação dos cortes da Performance. Pode haver cargo onde 150pp seja a fronteira mais informativa.
+
+### 5.2 Domínio do campo
+
+```
+domínio(campo, RA, cargo) = votos_campo_RA / votos_totais_cargo_RA
+```
+
+Em pontos percentuais. Mede a **fatia de mercado bruta** do campo político na RA — qual fração dos votos válidos daquele cargo na RA foi para algum candidato do campo.
+
+#### Por que essa métrica (e por que separada da Performance)
+
+Performance e Domínio respondem perguntas diferentes:
+
+- **Performance** mede **força relativa** ao tamanho do território. Uma RA pequena com Performance +50% pode contribuir com poucos votos absolutos.
+- **Domínio** mede **peso absoluto na disputa local**. Uma RA grande com domínio 40% para um campo é um território onde quase metade dos votos do cargo vai para esse campo, independentemente do tamanho.
+
+Exemplo: um candidato pode ter Performance +50% em Park Way (reduto pessoal numa RA pequena) e Performance +20% em Plano Piloto (RA grande). Em volume absoluto de votos, Plano Piloto contribui muito mais — Domínio captura isso.
+
+A leitura conjunta das duas métricas evita o erro de tratar reduto pequeno e território estratégico como equivalentes.
+
+#### Aplicação por candidato
+
+A mesma lógica de Domínio se aplica ao candidato individual: `votos_cand_RA / votos_totais_cargo_RA`, exibido como "% do cargo" na interface. Mede penetração local.
+
+### 5.3 Margem 1º–2º
+
+```
+margem(RA, cargo) = % do 1º colocado − % do 2º colocado (em pp)
+```
+
+Mede a **competitividade da RA naquele cargo**. Quanto menor a margem, mais disputada — uma decisão eleitoral pequena pode virar a RA. Quanto maior, mais cativa.
+
+#### Por que essa métrica
+
+A margem é o indicador mais direto de onde uma campanha tem **leverage** territorial. Investir em uma RA com margem de 50pp é jogar contra a corrente; em uma com margem de 5pp, qualquer mobilização adicional pode mudar o resultado local.
+
+A margem é calculada **na RA × cargo**, não no DF inteiro. Uma RA pode ser disputadíssima para Governador e cativa para Deputado Distrital, ou vice-versa.
+
+#### Faixas de leitura
+
+A margem é exibida como número contínuo na interface, sem cortes categóricos fixados. Como guia editorial provisório:
+
+- **< 10pp** — competição alta
+- **10–30pp** — competição moderada
+- **> 30pp** — competição baixa
+
+Os rótulos categóricos para a Margem ainda estão sendo definidos no produto e podem ser revisados.
+
+### 5.4 Peso eleitoral da RA
+
+```
+peso(RA, cargo) = votos_totais_cargo_RA / votos_totais_cargo_DF
+```
+
+Em pontos percentuais. Mede a **importância da RA na decisão eleitoral** daquele cargo.
+
+#### Por que separada de "share de aptos"
+
+Peso eleitoral usa **votos efetivos**, não eleitorado registrado. A diferença reflete a abstenção: uma RA com 9% dos aptos do DF mas só 6% dos votos válidos para Governador tem peso 6%, não 9%. Para decisão estratégica de campanha, o que importa é onde a eleição **efetivamente** é decidida — peso eleitoral é o indicador correto.
+
+(O share de aptos, lembrando, é o que entra no denominador da Performance — porque a Performance mede potencial relativo, não decisão efetiva.)
+
+#### Aplicação
+
+Cruzando peso × margem, identifica-se o que poderia se chamar de **"onde a eleição é decidida"**: RAs grandes (alto peso) e disputadas (margem pequena). Esse cruzamento foi a fundação da antiga "Visão Cargo" do produto e hoje vive como duas colunas adjacentes na tabela de Campo político.
+
+### 5.5 Força do campo
+
+A Força do campo é a **Performance aplicada ao campo político**, não ao candidato individual. Para um campo P (Progressista, Moderado, Liberal/Conservador) numa RA R e cargo Q:
+
+```
+força_campo(P, R, Q) = (votos_P_R_Q / total_P_Q) / (aptos_R / aptos_DF)
+```
+
+Mesmo formato e mesma escala da Performance — exibida como `+X%` / `−X%`. Usa os **mesmos cortes ±15% / ±30%** para classificar a RA em forte / esperado / fraca para o campo.
+
+#### Por que essa métrica
+
+A Força do campo separa **"candidato forte"** de **"campo forte"**. Um candidato pode ter Performance +50% numa RA por dois motivos:
+
+1. O campo dele inteiro vai bem ali — o candidato surfa essa onda.
+2. O candidato especificamente performa, mesmo que o campo seja médio.
+
+Saber qual dos dois está acontecendo muda totalmente a leitura estratégica. O cruzamento Performance × Força do campo gera as **cinco zonas estratégicas** descritas em Camada 4 (Reduto consolidado, Voto pessoal, Esperado, Espaço a conquistar, Sem espaço pelo campo).
+
+#### Limitações
+
+- **"Outros" como campo é especialmente frágil.** Por construção, "Outros" agrega candidatos heterogêneos de siglas pequenas. A força do campo "Outros" tende a ter pouco significado estratégico e raramente entra na leitura.
+- **Soma das forças dos quatro campos pode ser toda negativa.** Em RAs com alta abstenção, o numerador agregado de cada campo é proporcionalmente menor que o denominador (aptos), e os quatro idx podem ficar simultaneamente negativos. Isso não é erro — é reflexo direto do baixo comparecimento da RA. Tratamento atual: candidato a tooltip explicativo na interface; o leitor que entende a métrica reconhece o sinal.
+
+### 5.6 Resumo das relações
+
+```
+Performance      → onde o candidato está acima/abaixo do tamanho do território
+Spread/perfil      → que tipo de campanha o candidato faz (Distribuído, Híbrido, Concentrado)
+Domínio          → fatia de mercado bruta (% do cargo)
+Margem           → competitividade local
+Peso eleitoral   → onde a eleição é decidida
+Força do campo   → onda em que o candidato surfa (ou não)
+```
+
+Performance e Força do campo compartilham a mesma forma matemática — diferem apenas no agregado (candidato individual vs. soma do campo). Domínio e Peso são fatias absolutas (do cargo na RA, da RA no cargo). Margem é a única que olha para a estrutura competitiva da RA, não para o candidato.
+
+A leitura estratégica de Estrategos depende da combinação dessas métricas — nenhuma sozinha responde tudo.
 
 ---
 
