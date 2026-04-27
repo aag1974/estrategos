@@ -1042,7 +1042,7 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
 
       <div style="font-size:10px;color:#B45309;text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin-bottom:10px">Por onde começar</div>
       <div style="font-size:13px;color:#1A1A1A;line-height:1.7">
-        Pra entender o panorama do DF: comece em <strong>Território › População</strong>. Pra estudar um candidato específico: vá em <strong>Contexto › Candidatos</strong> ou <strong>Geopolítica › Candidato</strong>, escolha pelo nome e clique em <strong>🖨 Imprimir</strong> ou <strong>🖨 Relatório</strong> pra gerar o PDF de 1–2 páginas com o diagnóstico estratégico.
+        Pra entender o panorama do DF: comece em <strong>Território › População</strong>. Pra estudar um candidato específico: vá em <strong>Geopolítica › Candidato</strong>, escolha pelo nome e clique em <strong>🖨 Imprimir</strong> pra gerar o PDF de 1–2 páginas com o diagnóstico estratégico.
       </div>
     </div>
 
@@ -2101,8 +2101,7 @@ function candSel(cand) {
     +(totalStr?"<span style='font-size:11px;color:var(--muted)'>· "+totalStr+"</span>":"")
     +campoBadgeHtml
     +votoBadgeHtml
-    +"<button onclick='imprimirRelCandSelecionado()' title='Imprimir relatório PDF do candidato' style='margin-left:auto;font-size:11px;padding:4px 12px;border-radius:6px;border:0.5px solid var(--bd2);background:var(--s1);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:4px'>🖨 Relatório</button>"
-    +"<span style='"+PREFIX_STYLE+"'>Testar aliança</span>"
+    +"<span style='"+PREFIX_STYLE+";margin-left:auto'>Testar aliança</span>"
     +"<button onclick='candComparar()' style='font-size:11px;padding:4px 12px;border-radius:6px;border:0;background:var(--amber);color:white;cursor:pointer;white-space:nowrap;flex-shrink:0;font-weight:500'>Comparar com...</button>";
   candRenderTab(cand);
   _candResetScroll();
