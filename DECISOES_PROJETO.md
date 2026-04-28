@@ -175,3 +175,22 @@ A cada decisão **aprovada pelo cliente**, adicionar entrada aqui no formato:
 Decisões em discussão **não** entram aqui — só após aprovação explícita.
 
 Se algo neste documento estiver inconsistente com o painel, a fonte da verdade é o que está aqui (ou levanta-se a inconsistência para resolver).
+
+---
+
+## §X. Conglomerados socioeconômicos das RAs (4 grupos)
+
+Classificação editorial das 33 RAs do DF em 4 grupos para uso no Playbook e dashboard. **Não é PED-DF/DIEESE oficial** — é organização própria da equipe Estrategos, fundamentada em homogeneidade socioeconômica que correlaciona com comportamento eleitoral.
+
+| Sigla | Grupo | RAs |
+|---|---|---|
+| **BC** | Brasília Central | Plano Piloto, Jardim Botânico, Lago Norte, Lago Sul, Park Way, Sudoeste/Octogonal |
+| **RM** | Regiões Maduras | Águas Claras, Candangolândia, Cruzeiro, Gama, Guará, Núcleo Bandeirante, Sobradinho, Sobradinho II, Taguatinga, Vicente Pires, SIA, Arniqueira |
+| **RP** | Regiões Populares | Brazlândia, Ceilândia, Planaltina, Riacho Fundo, Riacho Fundo II, Samambaia, Santa Maria, São Sebastião |
+| **PF** | Periferia em Formação | Fercal, Itapoã, Paranoá, Recanto das Emas, SCIA/Estrutural, Varjão, Sol Nascente/Pôr do Sol |
+
+**Critério**: homogeneidade socioeconômica (renda + escolaridade + ocupação) que correlaciona com comportamento eleitoral (METODOLOGIA §7, r=+0,87 entre escolaridade e voto progressista).
+
+**Fonte de verdade**: composição neste documento. `outputs_fase3/clusters_ra.csv` (k-means + PCA sobre 17 variáveis PDAD, gerado por `fase3_ipe.py`) é referência metodológica auxiliar — divergências entre k-means e a classificação editorial são esperadas e documentadas (SIA e Arniqueira foram classificadas editorialmente sobrepondo o k-means).
+
+**Exceção editorial conhecida**: Paranoá (1957, vila operária histórica) está em PF pelo perfil socioeconômico (R$ 1.153 per capita, 9% classe AB, 15% superior) e não pela idade. Único caso onde temporalidade urbana cede pra perfil socioeconômico.

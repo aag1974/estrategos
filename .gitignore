@@ -16,6 +16,7 @@ relatorio_ipe_df_2026.docx
 playbook_*.html
 !playbook_template.html
 playbook_dados_*.json
+playbook_*.pdf
 
 # Dados brutos pesados (público mas grandes; documentar fonte no README)
 TSE/

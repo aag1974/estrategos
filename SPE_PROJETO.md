@@ -72,16 +72,18 @@ Importante: o perfil do eleitorado vem do **cadastro eleitoral** do TSE — não
 
 ---
 
-## 5. Grupos PED-DF (DIEESE)
+## 5. Conglomerados socioeconômicos (4 grupos)
 
-Agrupamento socioeconômico oficial do DF, usado para análises agregadas:
+Classificação editorial Estrategos das 33 RAs do DF em 4 grupos por homogeneidade socioeconômica (renda, escolaridade, ocupação) — critério que correlaciona com comportamento eleitoral. **Não é classificação oficial** (PED-DF/DIEESE) — é organização própria da equipe.
 
-| Grupo | RAs |
+| Grupo (sigla) | RAs |
 |---|---|
-| **Brasília Central** | Plano Piloto, Jardim Botânico, Lago Norte, Lago Sul, Park Way, Sudoeste/Octogonal |
-| **Satélites Consolidadas** | Águas Claras, Candangolândia, Cruzeiro, Gama, Guará, Núcleo Bandeirante, Sobradinho, Sobradinho II, Taguatinga, Vicente Pires |
-| **Satélites em Expansão** | Brazlândia, Ceilândia, Planaltina, Riacho Fundo, Riacho Fundo II, SIA, Samambaia, Santa Maria, São Sebastião, Arniqueira |
-| **Fronteiras Urbanas** | Fercal, Itapoã, Paranoá, Recanto das Emas, SCIA/Estrutural, Varjão, Sol Nascente/Pôr do Sol |
+| **Brasília Central (BC)** | Plano Piloto, Jardim Botânico, Lago Norte, Lago Sul, Park Way, Sudoeste/Octogonal |
+| **Regiões Maduras (RM)** | Águas Claras, Candangolândia, Cruzeiro, Gama, Guará, Núcleo Bandeirante, Sobradinho, Sobradinho II, Taguatinga, Vicente Pires, SIA, Arniqueira |
+| **Regiões Populares (RP)** | Brazlândia, Ceilândia, Planaltina, Riacho Fundo, Riacho Fundo II, Samambaia, Santa Maria, São Sebastião |
+| **Periferia em Formação (PF)** | Fercal, Itapoã, Paranoá, Recanto das Emas, SCIA/Estrutural, Varjão, Sol Nascente/Pôr do Sol |
+
+A análise multivariada (`outputs_fase3/clusters_ra.csv` — k-means + PCA sobre 17 variáveis PDAD) é referência metodológica auxiliar; a classificação operacional usada no playbook e no dashboard é a editorial acima.
 
 ---
 

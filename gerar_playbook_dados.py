@@ -15,18 +15,28 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 
 # ────────── candidatos suportados ──────────────────────────────────
+# match: substring que identifica o candidato no NM_CANDIDATO
+# cargo: filtro de cargo (precisa para candidatos com nomes parecidos em cargos diferentes)
 CANDIDATOS = {
-    "MANZONI": {
-        "match": "MANZONI",
-        "apelido": "MANZONI",
-        "nome_curto": "THIAGO MANZONI",
-    },
-    "FELIX": {
-        "match": "FÁBIO FELIX",
-        "apelido": "FELIX",
-        "nome_curto": "FÁBIO FELIX",
-    },
+    # Expressivos
+    "FELIX":     {"match":"FÁBIO FELIX",                "cargo":"DEPUTADO_DISTRITAL", "nome_curto":"FÁBIO FELIX"},
+    "MANZONI":   {"match":"MANZONI",                    "cargo":"DEPUTADO_DISTRITAL", "nome_curto":"THIAGO MANZONI"},
+    "BELMONTE":  {"match":"PAULA MORENO PARO BELMONTE", "cargo":"DEPUTADO_DISTRITAL", "nome_curto":"PAULA BELMONTE"},
+    "DAMARES":   {"match":"DAMARES",                    "cargo":"SENADOR",            "nome_curto":"DAMARES ALVES"},
+    "KICIS":     {"match":"BEATRIZ KICIS",              "cargo":"DEPUTADO_FEDERAL",   "nome_curto":"BIA KICIS"},
+    "IBANEIS":   {"match":"IBANEIS ROCHA",              "cargo":"GOVERNADOR",         "nome_curto":"IBANEIS ROCHA"},
+    # Não expressivos (para validar edge cases)
+    "ROGERIO":   {"match":"ROGÉRIO EDUARDO PEREIRA",    "cargo":"DEPUTADO_DISTRITAL", "nome_curto":"ROGÉRIO PEREIRA"},
+    "RITA":      {"match":"RITA DE CÁSSIA",             "cargo":"DEPUTADO_FEDERAL",   "nome_curto":"RITA DE CÁSSIA"},
+    "YARA":      {"match":"YARA MARISTELA",             "cargo":"SENADOR",            "nome_curto":"YARA MARISTELA"},
 }
+
+# Lote de revisão expressa (ordem de leitura sugerida)
+BATCH_REVISAO = [
+    "FELIX", "MANZONI", "BELMONTE",       # expressivos · Distrital
+    "DAMARES", "KICIS", "IBANEIS",        # expressivos · cargos majoritários
+    "ROGERIO", "RITA", "YARA",            # não expressivos · derrotados
+]
 
 # ────────── thresholds (alinhados com fase4_v2.py) ─────────────────
 T_PERF = 0.15  # ±15% para classificar
@@ -42,24 +52,24 @@ PATAMAR_CARGO = {
     "DEPUTADO_FEDERAL": 30000, "DEPUTADO_DISTRITAL": 18000,
 }
 
-# ────────── grupos PED-DF (DIEESE) — agrupamento socioeconômico ───
-# Adaptação editorial: "Satélites" → "Regiões"; "Fronteiras Urbanas" → "em Formação"
+# ────────── conglomerados socioeconômicos (4 grupos) ──────────────
+# Classificação editorial Estrategos: homogeneidade socioeconômica que
+# correlaciona com comportamento eleitoral. Ver DECISOES_PROJETO.md.
 GRUPOS_PED = [
     ("Brasília Central", [
         "Brasília (Plano Piloto)", "Jardim Botânico", "Lago Norte",
         "Lago Sul", "Park Way", "Sudoeste/Octogonal",
     ]),
-    ("Regiões Consolidadas", [
+    ("Regiões Maduras", [
         "Águas Claras", "Candangolândia", "Cruzeiro", "Gama", "Guará",
         "Núcleo Bandeirante", "Sobradinho", "Sobradinho II",
-        "Taguatinga", "Vicente Pires",
+        "Taguatinga", "Vicente Pires", "SIA", "Arniqueira",
     ]),
-    ("Regiões em Expansão", [
+    ("Regiões Populares", [
         "Brazlândia", "Ceilândia", "Planaltina", "Riacho Fundo",
-        "Riacho Fundo II", "SIA", "Samambaia", "Santa Maria",
-        "São Sebastião", "Arniqueira",
+        "Riacho Fundo II", "Samambaia", "Santa Maria", "São Sebastião",
     ]),
-    ("Regiões em Formação", [
+    ("Periferia em Formação", [
         "Fercal", "Itapoã", "Paranoá", "Recanto das Emas",
         "SCIA/Estrutural", "Varjão", "Sol Nascente/Pôr do Sol",
     ]),
@@ -117,7 +127,7 @@ def carregar_mestre():
 
 
 # ────────── 2. votos do candidato + Performance ────────────────────
-def carregar_votos_candidato(match):
+def carregar_votos_candidato(match, cargo="DEPUTADO_DISTRITAL"):
     """Retorna dict {ra_nome: {votos, perf, campo_str, partido, total_cand}}
     e meta {nome_oficial, campo_str, partido, total}."""
     path = ROOT / "outputs_fase3c" / "votos_candidato_ra.csv"
@@ -126,10 +136,10 @@ def carregar_votos_candidato(match):
     with path.open(encoding="utf-8") as f:
         rdr = csv.DictReader(f)
         for r in rdr:
-            if _norm(r["NM_CANDIDATO"]).find(nome_match) >= 0 and r["DS_CARGO"] == "DEPUTADO_DISTRITAL":
+            if _norm(r["NM_CANDIDATO"]).find(nome_match) >= 0 and r["DS_CARGO"] == cargo:
                 rows.append(r)
     if not rows:
-        raise RuntimeError(f"Candidato '{match}' não encontrado em votos_candidato_ra.csv")
+        raise RuntimeError(f"Candidato '{match}' (cargo={cargo}) não encontrado em votos_candidato_ra.csv")
     meta = {
         "nome": rows[0]["NM_CANDIDATO"].strip(),
         "campo": rows[0]["CAMPO"].strip(),
@@ -166,22 +176,21 @@ def carregar_votos_campo(campo, cargo="DEPUTADO_DISTRITAL"):
 # ────────── 4. consolidar tudo ─────────────────────────────────────
 def gerar_dados(apelido):
     cfg = CANDIDATOS[apelido]
+    cargo = cfg.get("cargo", "DEPUTADO_DISTRITAL")
     mestre = carregar_mestre()
-    meta, votos_cand = carregar_votos_candidato(cfg["match"])
-    votos_campo, total_campo = carregar_votos_campo(meta["campo"])
+    meta, votos_cand = carregar_votos_candidato(cfg["match"], cargo=cargo)
+    votos_campo, total_campo = carregar_votos_campo(meta["campo"], cargo=cargo)
 
     # Aptos totais DF
     aptos_df = sum(d["aptos"] for d in mestre.values())
 
     # Total de votos do cargo (todos os campos somados) — pra calcular PESO de cada RA
-    # Reaproveita a coluna TOTAL do votos_campo_ra.csv: TOTAL = total RA todos os campos
-    # Soma os totais únicos por RA
     total_cargo_por_ra = {}
     path = ROOT / "outputs_fase3c" / "votos_campo_ra.csv"
     with path.open(encoding="utf-8") as f:
         rdr = csv.DictReader(f)
         for r in rdr:
-            if r["DS_CARGO"] != "DEPUTADO_DISTRITAL":
+            if r["DS_CARGO"] != cargo:
                 continue
             ra = r["RA_NOME"].strip()
             total_cargo_por_ra[ra] = int(r["TOTAL"])
@@ -454,6 +463,26 @@ def gerar_dados(apelido):
         alocacao["esperado"] = 0
         alocacao["defesa"] += extra
 
+    # ─── Presença mínima em Sem espaço pelo campo (k=2) ───
+    # Quando ≥25% do eleitorado está em RAs descartadas, reservar % simbólico
+    # para presença política, derivado dos dados:
+    #   presença = piso × √(24/vagas) × (pct_descartado/25)
+    # com piso=2 (k aprovado), arredondado, clamp [1, 12].
+    import math
+    presenca_min = 0
+    if pct_aptos_descartado >= 25:
+        fator_cargo = math.sqrt(24 / n_vagas)
+        fator_volume = pct_aptos_descartado / 25
+        presenca_min = max(1, min(12, round(2 * fator_cargo * fator_volume)))
+        # Subtrai proporcionalmente de Defesa + Crescimento
+        soma = alocacao["defesa"] + alocacao["crescimento"]
+        if soma > 0:
+            delta_def = round(presenca_min * alocacao["defesa"] / soma)
+            delta_cresc = presenca_min - delta_def
+            alocacao["defesa"] = max(0, alocacao["defesa"] - delta_def)
+            alocacao["crescimento"] = max(0, alocacao["crescimento"] - delta_cresc)
+    alocacao["sem_espaco"] = presenca_min
+
     # ─── PDAD baseline DF (média ponderada por aptos) ───
     pdad_keys = ["renda_pc", "classe_ab", "superior", "serv_fed", "serv_dist",
                  "benef_social", "nativo_df", "idosos_60"]
@@ -556,36 +585,96 @@ def gerar_html(apelido, dados):
         return None
     json_str = json.dumps(dados, ensure_ascii=False, indent=2)
     html = tpl.replace("__DADOS_JSON__", json_str)
-    # também substitui o título <title> e nome no <h1>, se o template usar marcadores
     html = html.replace("THIAGO MANZONI", dados["meta"]["nome_curto"])
     out = ROOT / f"playbook_{apelido}.html"
     out.write_text(html, encoding="utf-8")
     return out
 
 
+def gerar_pdf(apelido, html_path):
+    """Converte o HTML em PDF via Google Chrome headless. Retorna o Path do PDF."""
+    import subprocess
+    chrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    if not Path(chrome).exists():
+        print(f"  (chrome não encontrado em {chrome}; pulei a geração de PDF)")
+        return None
+    pdf_path = ROOT / f"playbook_{apelido}.pdf"
+    cmd = [
+        chrome,
+        "--headless=new",
+        "--disable-gpu",
+        "--no-pdf-header-footer",
+        "--virtual-time-budget=2000",
+        f"--print-to-pdf={pdf_path}",
+        str(html_path.absolute().as_uri()),
+    ]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if pdf_path.exists() and pdf_path.stat().st_size > 1000:
+            return pdf_path
+        else:
+            print(f"  ⚠ PDF não gerado ou muito pequeno. stderr: {result.stderr[:200]}")
+            return None
+    except subprocess.TimeoutExpired:
+        print(f"  ⚠ Timeout ao gerar PDF de {apelido}")
+        return None
+    except Exception as exc:
+        print(f"  ⚠ Erro ao gerar PDF: {exc}")
+        return None
+
+
 # ────────── main ───────────────────────────────────────────────────
-if __name__ == "__main__":
-    apelido = sys.argv[1] if len(sys.argv) > 1 else "MANZONI"
-    if apelido not in CANDIDATOS:
-        print(f"Candidato desconhecido: {apelido}. Disponíveis: {list(CANDIDATOS)}")
-        sys.exit(1)
+def _processar(apelido, com_pdf=True):
+    """Gera JSON + HTML + PDF para um candidato. Retorna (dados, html_path, pdf_path)."""
     dados = gerar_dados(apelido)
-    out_path = ROOT / f"playbook_dados_{apelido}.json"
-    with out_path.open("w", encoding="utf-8") as f:
+    out_json = ROOT / f"playbook_dados_{apelido}.json"
+    with out_json.open("w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=2)
-    print(f"OK json: {out_path}")
     html_path = gerar_html(apelido, dados)
-    if html_path:
-        print(f"OK html: {html_path}")
-    # Resumo na tela
+    pdf_path = gerar_pdf(apelido, html_path) if (com_pdf and html_path) else None
+    return dados, html_path, pdf_path
+
+
+def _print_resumo(apelido, dados, html_path, pdf_path=None):
     m = dados["meta"]
-    print(f"\n  {m['nome']}  ({m['partido']} · {m['campo']})")
+    print(f"\n[{apelido}] {m['nome']}  ({m['partido']} · {m['cargo']} · {m['campo']})")
     print(f"  Total: {m['total']:,} votos · Eleito: {m['eleito']} · Posição: {m['posicao_geral']}/{m['n_candidatos_cargo']}")
-    print(f"  % do cargo: {m['pct_do_cargo']:.2f}%  ·  RAs com voto: {m['n_ras_com_voto']}/{m['n_ras_total']}")
-    print(f"  Maior RA: {m['maior_ra']['ra']} ({m['maior_ra']['votos']:,} votos)")
-    print(f"  Perfil: {m['perfil']} (σ={m['sigma_perf']})")
-    print(f"  Patamar: {m['patamar_pct']:+.1f}% (vs 18k)")
-    print(f"  Redutos (Reduto + V.P.): {m['n_redutos']}")
-    print(f"\n  Top 5 RAs (Performance):")
-    for r in dados["ras"][:5]:
-        print(f"    {r['ra']:30s}  votos {r['votos']:>5d}  perf {(r['perf']-1)*100:+6.1f}%  campo {(r['perf_campo']-1)*100:+6.1f}%  {r['zona']}")
+    print(f"  Perfil: {m['perfil']} (σ={m['sigma_perf']}) · Patamar: {m['patamar_pct']:+.1f}% · Limiar: {m['distancia_limiar_pct']:+.1f}%")
+    print(f"  Defesa: {m['n_defesa']} RAs ({m['soma_pct_defesa']}%) · Crescimento: {m['n_crescimento']} RAs · Sem espaço: {m['n_sem_espaco']} RAs ({m['pct_aptos_descartado']}% DF)")
+    if pdf_path:
+        print(f"  → {pdf_path.name} ({pdf_path.stat().st_size // 1024} KB)")
+    elif html_path:
+        print(f"  → {html_path.name}")
+
+
+if __name__ == "__main__":
+    arg = sys.argv[1] if len(sys.argv) > 1 else "MANZONI"
+
+    if arg == "--batch" or arg == "BATCH":
+        print(f"\n=== Gerando lote de {len(BATCH_REVISAO)} playbooks (HTML + PDF) ===")
+        falhas = []
+        for ap in BATCH_REVISAO:
+            try:
+                dados, html, pdf = _processar(ap, com_pdf=True)
+                _print_resumo(ap, dados, html, pdf)
+            except Exception as exc:
+                print(f"\n[{ap}] ERRO: {exc}")
+                falhas.append((ap, str(exc)))
+        print(f"\n=== Concluído: {len(BATCH_REVISAO) - len(falhas)}/{len(BATCH_REVISAO)} OK ===")
+        if falhas:
+            print("Falhas:")
+            for ap, err in falhas:
+                print(f"  {ap}: {err}")
+        sys.exit(0 if not falhas else 1)
+
+    if arg not in CANDIDATOS:
+        print(f"Candidato desconhecido: {arg}.")
+        print(f"Disponíveis: {sorted(CANDIDATOS.keys())}")
+        print(f"Ou use --batch para gerar a lista completa de revisão.")
+        sys.exit(1)
+
+    dados, html, pdf = _processar(arg, com_pdf=True)
+    print(f"OK json: playbook_dados_{arg}.json")
+    if html: print(f"OK html: {html.name}")
+    if pdf:  print(f"OK pdf:  {pdf.name}")
+    _print_resumo(arg, dados, html, pdf)

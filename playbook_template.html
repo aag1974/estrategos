@@ -948,7 +948,7 @@ __DADOS_JSON__
   </div>
 
   <div class="conceito-bloco">
-    <p>O perfil socioeconômico do DF não é uniforme. Cada grupo de regiões — <strong>Brasília Central</strong>, <strong>Regiões Consolidadas</strong>, <strong>Regiões em Expansão</strong> e <strong>Regiões em Formação</strong> — tem renda, escolaridade e ocupação muito distintas. <em>Conhecer essa heterogeneidade é o primeiro passo para falar a língua certa em cada território.</em></p>
+    <p>O perfil socioeconômico do DF não é uniforme. Cada grupo de regiões — <strong>Brasília Central</strong>, <strong>Regiões Maduras</strong>, <strong>Regiões Populares</strong> e <strong>Periferia em Formação</strong> — tem renda, escolaridade e ocupação muito distintas. <em>Conhecer essa heterogeneidade é o primeiro passo para falar a língua certa em cada território.</em></p>
     <p><span style="color:#15803D;font-weight:700">Verde</span> = acima da média do DF · <span style="color:#791F1F;font-weight:700">Vermelho</span> = abaixo · <span style="color:#9CA3AF;font-weight:700">Cinza</span> = próximo da média.</p>
   </div>
 
@@ -985,10 +985,10 @@ __DADOS_JSON__
   </div>
 
   <div class="conceito-bloco">
-    <p>Esta página fecha o documento com três decisões: <strong>quanto se gasta</strong> em uma campanha de Distrital, <strong>como o esforço deve ser distribuído</strong> entre as quatro frentes territoriais, e <strong>os quatro achados</strong> que o candidato precisa carregar.</p>
+    <p>Esta página fecha o documento com três decisões: <strong>quanto se gasta</strong> em uma campanha do cargo, <strong>como o esforço deve ser distribuído</strong> entre as quatro frentes territoriais, e <strong>os quatro achados</strong> que o candidato precisa carregar.</p>
   </div>
 
-  <div class="sec-title">Orçamento estimado <span style="color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none;font-size:8pt">— Distrital DF 2022</span></div>
+  <div class="sec-title">Orçamento estimado <span id="pg7-orc-tit-sub" style="color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none;font-size:8pt"></span></div>
   <div class="orcamento-grid" id="pg7-orcamento"></div>
   <div class="orcamento-aviso">
     <strong>⚠ Valores simulados</strong> — pendente cálculo a partir das prestações de contas TSE 2022 (SPCE/Divulgacand). Estrutura pronta para receber os números finais.
@@ -1044,33 +1044,34 @@ __DADOS_JSON__
 <script>
 // ──────────────── HELPERS ────────────────
 // Prioridade de fontes de dados:
-// 1. postMessage (enviado pelo dashboard ao abrir esta janela)
-// 2. localStorage 'playbook-data' (fallback)
-// 3. <script id="dados"> inline (modo standalone, regerado por gerar_playbook_dados.py)
+// 1. <script id="dados"> inline com JSON real (modo standalone — Python já preencheu)
+// 2. localStorage 'playbook-data' (modo dashboard — popup vazio aguardando)
+// 3. postMessage (handshake bidirecional com o dashboard)
+// 4. estrutura vazia (fallback final, aguarda postMessage)
 var DADOS = (function(){
-  // 2. localStorage
+  // 1. Inline — só lê se começar com '{' (JSON real); ignora placeholder do build
+  try {
+    var raw = (document.getElementById('dados').textContent || '').trim();
+    if(raw && raw.charAt(0) === '{'){
+      var d1 = JSON.parse(raw);
+      if(d1 && d1.meta && d1.meta.nome){
+        console.log('[Playbook] Dados via <script id="dados"> (inline · ' + d1.meta.nome + ')');
+        return d1;
+      }
+    }
+  } catch(e){ console.warn('[Playbook] script inline falhou:', e.message); }
+  // 2. localStorage (set pelo dashboard antes de abrir popup)
   try {
     var ls = localStorage.getItem('playbook-data');
     if(ls){
       localStorage.removeItem('playbook-data');
-      var d1 = JSON.parse(ls);
-      if(d1 && d1.meta){
-        console.log('[Playbook] Dados via localStorage');
-        return d1;
-      }
-    }
-  } catch(e){ console.warn('[Playbook] localStorage falhou:', e.message); }
-  // 3. script inline — pode estar com placeholder literal "__DADOS_JSON__"
-  try {
-    var raw = (document.getElementById('dados').textContent || '').trim();
-    if(raw && raw.indexOf('__DADOS') !== 0){
-      var d2 = JSON.parse(raw);
+      var d2 = JSON.parse(ls);
       if(d2 && d2.meta){
-        console.log('[Playbook] Dados via <script id="dados"> (modo standalone)');
+        console.log('[Playbook] Dados via localStorage');
         return d2;
       }
     }
-  } catch(e){ console.warn('[Playbook] script inline falhou:', e.message); }
+  } catch(e){ console.warn('[Playbook] localStorage falhou:', e.message); }
   // Último recurso: estrutura vazia para o script não morrer.
   // O postMessage virá em seguida e re-renderiza.
   console.log('[Playbook] Sem dados iniciais — aguardando postMessage do dashboard');
@@ -1157,9 +1158,9 @@ var ZONA_LBL = {compartilhado:'Reduto consolidado', pessoal:'Voto pessoal',
 // Siglas de grupo socioeconômico (etiqueta antes do nome da RA)
 var GRUPO_SIGLA = {
   "Brasília Central":      "BC",
-  "Regiões Consolidadas":  "RC",
-  "Regiões em Expansão":   "RE",
-  "Regiões em Formação":   "RF",
+  "Regiões Maduras":       "RM",
+  "Regiões Populares":     "RP",
+  "Periferia em Formação": "PF",
 };
 function grupoTag(r){
   var sigla = GRUPO_SIGLA[r.grupo] || '';
@@ -1174,11 +1175,18 @@ function ordinal(n){
 }
 
 function resumoDescritivo(){
-  // Construído só com fatos: total, posição, RAs, top 3 por volume.
+  // Cargo em nominativo (acompanha META.cargo)
+  var CARGO_NOMINATIVO = {
+    GOVERNADOR:        'governador',
+    SENADOR:           'senador',
+    DEPUTADO_FEDERAL:  'deputado federal',
+    DEPUTADO_DISTRITAL:'deputado distrital'
+  };
+  var cargoNom = CARGO_NOMINATIVO[META.cargo] || 'candidato';
   var partes = [];
   var sit = META.eleito
-    ? '<strong>Eleito</strong> deputado distrital em 2022 com <strong>'+fmt(META.total)+'</strong> votos'
-    : 'Concorreu a deputado distrital em 2022 com <strong>'+fmt(META.total)+'</strong> votos';
+    ? '<strong>Eleito</strong> ' + cargoNom + ' em 2022 com <strong>'+fmt(META.total)+'</strong> votos'
+    : 'Concorreu a ' + cargoNom + ' em 2022 com <strong>'+fmt(META.total)+'</strong> votos';
   if(META.posicao_geral){
     sit += ', ficando em <strong>'+ordinal(META.posicao_geral)+'</strong> lugar entre '+fmt(META.n_candidatos_cargo)+' candidatos ao cargo';
   }
@@ -1192,7 +1200,7 @@ function resumoDescritivo(){
     : 'Recebeu votos em <strong>'+META.n_ras_com_voto+'</strong> das '+META.n_ras_total+' regiões administrativas do DF';
   partes.push(
     cobertura +
-    ' e representou <strong>'+pctCargo+'%</strong> do total de votos para deputado distrital — e <strong>'+pctCampo+'%</strong> dos votos entre os que escolheram o campo <strong>'+campoLbl+'</strong>.'
+    ' e representou <strong>'+pctCargo+'%</strong> do total de votos para ' + cargoNom + ' — e <strong>'+pctCampo+'%</strong> dos votos entre os que escolheram o campo <strong>'+campoLbl+'</strong>.'
   );
   return partes.join(' ');
 }
@@ -1522,17 +1530,17 @@ var COMUNICACAO_GRUPOS = {
     canal:    "Redes digitais qualificadas, mídia tradicional, eventos institucionais",
     tom:      "Conceitual, com nuance e dados",
   },
-  "Regiões Consolidadas": {
+  "Regiões Maduras": {
     mensagem: "Pragmática, agenda concreta, segurança e mobilidade urbana",
     canal:    "Redes + presença local + rádio",
     tom:      "Direto, com dados aplicados",
   },
-  "Regiões em Expansão": {
+  "Regiões Populares": {
     mensagem: "Cotidiano, prestação concreta, segurança e saúde",
     canal:    "Rádio comunitário, presença territorial, WhatsApp",
     tom:      "Acessível, vivo",
   },
-  "Regiões em Formação": {
+  "Periferia em Formação": {
     mensagem: "Prestação direta, vínculo personalíssimo, infraestrutura básica",
     canal:    "Presença territorial, lideranças locais, boca-a-boca",
     tom:      "Pessoal, mão na massa",
@@ -1592,7 +1600,7 @@ function insightHeterogeneidade(){
   var dom = grupos.slice().sort(function(a,b){ return b.pct_votos - a.pct_votos; })[0];
 
   if(spread > 50){
-    return '<strong>Eleitorado radicalmente heterogêneo.</strong> A diferença entre os grupos é tão grande que falar com Brasília Central e com Regiões em Formação exige <em>duas estratégias separadas</em> — não a mesma campanha em volumes diferentes. Seu maior peso está em <strong>'+dom.nome+'</strong> ('+dom.pct_votos.toFixed(1).replace('.', ',')+'% dos seus votos).';
+    return '<strong>Eleitorado radicalmente heterogêneo.</strong> A diferença entre os grupos é tão grande que falar com Brasília Central e com Periferia em Formação exige <em>duas estratégias separadas</em> — não a mesma campanha em volumes diferentes. Seu maior peso está em <strong>'+dom.nome+'</strong> ('+dom.pct_votos.toFixed(1).replace('.', ',')+'% dos seus votos).';
   }
   if(spread > 25){
     return '<strong>Eleitorado heterogêneo.</strong> Os grupos divergem o bastante para mensagem e canal precisarem ser ajustados em cada um. Concentração em <strong>'+dom.nome+'</strong> ('+dom.pct_votos.toFixed(1).replace('.', ',')+'% dos votos) — sua mensagem-âncora deve sair daí, mas precisa ter variantes.';
@@ -1641,7 +1649,12 @@ renderPg6();
 function renderPg7Aloc(){
   var a = META.alocacao || {};
   var dD = a.defesa || 0, dC = a.crescimento || 0, dE = a.esperado || 0;
-  var dS = 100 - dD - dC - dE; // sempre = 0 nas regras atuais, mas calculável
+  // sem_espaco vem direto da alocação; se ausente (versão antiga), cai pra resíduo 0
+  var dS = (a.sem_espaco != null) ? a.sem_espaco : (100 - dD - dC - dE);
+  // Sub-label da 4ª linha varia conforme presença mínima ativa ou não
+  var subSemEspaco = dS > 0
+    ? 'Presença simbólica em RAs populosas'
+    : 'Alto investimento, baixo retorno';
   var head = '<thead><tr>' +
     '<th>Frente</th><th class="num" style="width:120pt">% do esforço</th><th>Detalhe</th>' +
   '</tr></thead>';
@@ -1652,8 +1665,8 @@ function renderPg7Aloc(){
      pct:dC, det: META.n_crescimento+' RAs · estoque '+fmt(META.estoque_total)+' votos do campo'},
     {cls:'esp',  zona:'esp', lbl:'Esperado top', sub:'RAs grandes neutras (peso ≥ 5%)',
      pct:dE, det: (META.n_esperado_top||0)+' RA'+(META.n_esperado_top===1?'':'s')},
-    {cls:'sem',  zona:'sem', lbl:'Sem espaço pelo campo', sub:'Alto investimento, baixo retorno',
-     pct:dS, det: META.n_sem_espaco+' RAs · '+META.pct_aptos_descartado.toFixed(1).replace('.', ',')+'% do eleitorado descartado'},
+    {cls:'sem',  zona:'sem', lbl:'Sem espaço pelo campo', sub:subSemEspaco,
+     pct:dS, det: META.n_sem_espaco+' RAs · '+META.pct_aptos_descartado.toFixed(1).replace('.', ',')+'% do eleitorado'},
   ];
   var body = '<tbody>' + linhas.map(function(l){
     return '<tr>' +
@@ -1681,22 +1694,32 @@ function justificativaAlocacao(){
   var refPct = META.distancia_limiar_pct != null ? META.distancia_limiar_pct : META.patamar_pct;
   var pp = Math.abs(refPct).toFixed(0);
   var dir = refPct >= 0 ? 'acima' : 'abaixo';
+  var presencaMin = (META.alocacao && META.alocacao.sem_espaco) || 0;
+  var sufixoPresenca = presencaMin > 0
+    ? ' Reserva-se <strong>'+presencaMin+'%</strong> para presença simbólica em RAs populosas onde o campo não vota — sinalização política, não conquista de voto.'
+    : '';
+  var base;
   if(c === 1){
-    return 'Base concentrada em poucas RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — sua eleição já tem folga. Defesa carrega a maior parte do esforço; Crescimento entra como frente complementar para capturar o estoque do campo.';
+    base = 'Base concentrada em poucas RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — sua eleição já tem folga. Defesa carrega a maior parte do esforço; Crescimento entra como frente complementar para capturar o estoque do campo.';
+  } else if(c === 2){
+    base = 'Base distribuída entre várias RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — eleição com folga. Equilíbrio entre proteger o que já tem e expandir nas RAs onde o campo já vota.';
+  } else if(c === 3){
+    base = 'Base concentrada em poucas RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — tem reduto forte mas falta volume. Defesa e Crescimento dividem o esforço, com leve vantagem para Crescimento.';
+  } else {
+    base = 'Sem reduto definido e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — Crescimento é a frente principal. Antes de defender, é preciso construir base.';
   }
-  if(c === 2){
-    return 'Base distribuída entre várias RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — eleição com folga. Equilíbrio entre proteger o que já tem e expandir nas RAs onde o campo já vota.';
-  }
-  if(c === 3){
-    return 'Base concentrada em poucas RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — tem reduto forte mas falta volume. Defesa e Crescimento dividem o esforço, com leve vantagem para Crescimento.';
-  }
-  return 'Sem reduto definido e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — Crescimento é a frente principal. Antes de defender, é preciso construir base.';
+  return base + sufixoPresenca;
 }
 
 function renderPg7Orcamento(){
+  // Sub-título dinâmico (cargo do candidato)
+  var CARGO_LBL_PG7 = {GOVERNADOR:'Governador DF', SENADOR:'Senador DF',
+                       DEPUTADO_FEDERAL:'Federal DF', DEPUTADO_DISTRITAL:'Distrital DF'};
+  var orcSub = document.getElementById('pg7-orc-tit-sub');
+  if(orcSub){ orcSub.textContent = '— ' + (CARGO_LBL_PG7[META.cargo] || 'DF') + ' 2022'; }
   // ⚠ VALORES SIMULADOS — substituir por cálculo TSE 2022 quando disponível
   var KPIS = [
-    {num:'R$ 1,2 mi',  lbl:'Limite legal de gastos', sub:'TSE 2022 — Distrital DF (1º turno)'},
+    {num:'R$ 1,2 mi',  lbl:'Limite legal de gastos', sub:'TSE 2022 — '+(CARGO_LBL_PG7[META.cargo]||'DF')+' (1º turno)'},
     {num:'R$ 380 mil', lbl:'Gasto mediano dos eleitos', sub:'simulado · valor pendente cálculo SPCE'},
     {num:'R$ 17',      lbl:'Custo médio por voto', sub:'simulado · gasto eleito ÷ votos recebidos'},
   ];
@@ -1717,8 +1740,12 @@ function renderPg7Ancoras(){
   var soma_def = META.soma_pct_defesa.toFixed(1).replace('.', ',');
   var ancora1 = '<strong>'+pp+'% '+dir+' do limiar de eleição</strong>. <strong>'+META.n_defesa+' RAs</strong> de Defesa carregam <strong>'+soma_def+'%</strong> dos seus votos.';
 
-  // ② Maior força — RA topo (já vem ordenada por Performance desc)
-  var topo = (META.ras_defesa || [])[0];
+  // ② Maior força — RA topo com volume relevante (votos ≥ 1% do total do candidato)
+  // Evita escolher RAs minúsculas (SIA, Fercal) com Performance volátil
+  var minVotos = Math.max(1, Math.round((META.total || 0) * 0.01));
+  var defesaArr = (META.ras_defesa || []).slice();
+  var defesaRelevante = defesaArr.filter(function(r){ return r.votos >= minVotos; });
+  var topo = defesaRelevante.length ? defesaRelevante[0] : defesaArr[0];
   var ancora2;
   if(topo){
     var perfP = ((topo.perf - 1) * 100).toFixed(0);
@@ -1742,13 +1769,25 @@ function renderPg7Ancoras(){
     ancora3 = 'Sem RAs em <em>Espaço a conquistar</em>. O campo já votou em você onde podia — crescimento exige ir além da base ideológica.';
   }
 
-  // ④ Restrição — escolhe a mais marcante
+  // ④ Restrição — escolhe a mais marcante.
+  // "Base diluída" e "Concentrada e abaixo" só fazem sentido se candidato ABAIXO do limiar:
+  // distribuição/concentração frágil só é alerta para quem ainda não venceu.
+  var refLim = (META.distancia_limiar_pct != null ? META.distancia_limiar_pct : META.patamar_pct);
+  var abaixoLim = (refLim != null && refLim < 0);
+  var presencaMin = (META.alocacao && META.alocacao.sem_espaco) || 0;
   var ancora4;
   if(META.pct_aptos_descartado >= 30){
-    ancora4 = '<strong>'+META.pct_aptos_descartado.toFixed(1).replace('.', ',')+'%</strong> do eleitorado do DF está em <em>Sem espaço pelo campo</em> — território fora do raio realista. Alto investimento e baixo retorno por padrão.';
-  } else if(META.soma_pct_defesa < 40){
+    var pctDesc = META.pct_aptos_descartado.toFixed(1).replace('.', ',');
+    if(presencaMin > 0 && (META.ras_sem_espaco||[]).length){
+      // Cita as 3 maiores RAs em Sem espaço (já ordenadas por aptos desc)
+      var top3Sem = (META.ras_sem_espaco||[]).slice(0,3).map(function(r){return r.ra;}).join(', ');
+      ancora4 = '<strong>'+pctDesc+'%</strong> do eleitorado do DF está em <em>Sem espaço pelo campo</em> — fora do raio realista para conversão, mas concentra muita massa eleitoral. <strong>Presença mínima ('+presencaMin+'%)</strong> é estratégica para sinalização política em RAs populosas como '+top3Sem+'.';
+    } else {
+      ancora4 = '<strong>'+pctDesc+'%</strong> do eleitorado do DF está em <em>Sem espaço pelo campo</em> — território fora do raio realista. Alto investimento e baixo retorno por padrão.';
+    }
+  } else if(META.soma_pct_defesa < 40 && abaixoLim){
     ancora4 = 'Base diluída: só <strong>'+META.soma_pct_defesa.toFixed(1).replace('.', ',')+'%</strong> dos votos vêm das RAs de Defesa. Antes de qualquer expansão, é preciso criar reduto.';
-  } else if(META.perfil === 'Concentrado' && (META.distancia_limiar_pct != null ? META.distancia_limiar_pct : META.patamar_pct) < 0){
+  } else if(META.perfil === 'Concentrado' && abaixoLim){
     ancora4 = '<strong>Base concentrada e abaixo do limiar</strong> — depende de poucas RAs e ainda assim falta volume. Risco de uma RA fraca derrubar a eleição.';
   } else {
     ancora4 = 'Sem restrição estrutural óbvia — sua base cobre território suficiente para a margem atual.';
@@ -1822,9 +1861,9 @@ function renderPg8(){
   // Bloco metodológico — listagem das RAs por grupo
   var GRUPOS_DEF = [
     ["Brasília Central",      ["Brasília (Plano Piloto)", "Jardim Botânico", "Lago Norte", "Lago Sul", "Park Way", "Sudoeste/Octogonal"]],
-    ["Regiões Consolidadas",  ["Águas Claras", "Candangolândia", "Cruzeiro", "Gama", "Guará", "Núcleo Bandeirante", "Sobradinho", "Sobradinho II", "Taguatinga", "Vicente Pires"]],
-    ["Regiões em Expansão",   ["Brazlândia", "Ceilândia", "Planaltina", "Riacho Fundo", "Riacho Fundo II", "SIA", "Samambaia", "Santa Maria", "São Sebastião", "Arniqueira"]],
-    ["Regiões em Formação",   ["Fercal", "Itapoã", "Paranoá", "Recanto das Emas", "SCIA/Estrutural", "Varjão", "Sol Nascente/Pôr do Sol"]],
+    ["Regiões Maduras",       ["Águas Claras", "Candangolândia", "Cruzeiro", "Gama", "Guará", "Núcleo Bandeirante", "Sobradinho", "Sobradinho II", "Taguatinga", "Vicente Pires", "SIA", "Arniqueira"]],
+    ["Regiões Populares",     ["Brazlândia", "Ceilândia", "Planaltina", "Riacho Fundo", "Riacho Fundo II", "Samambaia", "Santa Maria", "São Sebastião"]],
+    ["Periferia em Formação", ["Fercal", "Itapoã", "Paranoá", "Recanto das Emas", "SCIA/Estrutural", "Varjão", "Sol Nascente/Pôr do Sol"]],
   ];
   var html = GRUPOS_DEF.map(function(g){
     var sigla = GRUPO_SIGLA[g[0]] || '';
