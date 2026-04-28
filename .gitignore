@@ -12,6 +12,10 @@ dashboard_com_candidato.html
 relatorio_*.html
 relatorio_*.docx
 relatorio_ipe_df_2026.docx
+# Playbook: outputs por candidato (gerados); só o template é fonte
+playbook_*.html
+!playbook_template.html
+playbook_dados_*.json
 
 # Dados brutos pesados (público mas grandes; documentar fonte no README)
 TSE/

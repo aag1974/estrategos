@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Playbook · THIAGO MANZONI · Estrategos</title>
+<style>
+@page { size: A4 portrait; margin: 12mm 14mm; }
+:root {
+  --bg:#F5F2EC; --s1:#FFFFFF; --s2:#F0EDE6; --bd:rgba(0,0,0,.08); --bd2:rgba(0,0,0,.18);
+  --txt:#1A1A1A; --muted:#6B7280; --amber:#B45309;
+  /* zonas (cores oficiais do ESTR_CAT_DEF em index.html) */
+  --z-comp:#0B5A2E; --z-comp-bg:#A7F3C8;
+  --z-pess:#075985; --z-pess-bg:#E0F2FE;
+  --z-esp:#B45309;  --z-esp-bg:#FEF3C7;
+  --z-conq:#9A3412; --z-conq-bg:#FFE4D6;
+  --z-sem:#5A1010;  --z-sem-bg:#FCA5A5;
+  /* campos políticos (cores oficiais do dashboard) */
+  --c-prog:#A32D2D;     --c-prog-bg:#FCEBEB;
+  --c-mod:#0F6E56;      --c-mod-bg:#E1F5EE;
+  --c-lib:#534AB7;      --c-lib-bg:#EEEDFE;
+  --c-out:#6B7280;      --c-out-bg:#F1EFE8;
+  /* Eleito (mesmo padrão dos relatórios *.html) */
+  --eleito:#15803D;     --eleito-bg:#DCFCE7;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-size: 10pt; color: var(--txt); margin: 0; background: #E5E5E5; padding: 18px;
+}
+
+/* PÁGINA — cada .page = uma A4 retrato (210 × 297mm) */
+.page {
+  width: 210mm; min-height: 297mm; background: white; margin: 0 auto 14px;
+  padding: 12mm 14mm; box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  page-break-after: always; break-after: page;
+  display: flex; flex-direction: column;
+}
+.page:last-child { page-break-after: auto; }
+
+@media print {
+  body { background: white; padding: 0; }
+  .page {
+    width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none;
+  }
+}
+
+/* HEADER da página */
+.hd {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:7pt; border-bottom:2pt solid var(--amber); margin-bottom:9pt;
+}
+.hd-l { display:flex; align-items:center; gap:11pt }
+.hd-logo-img {
+  flex-shrink:0; height:34pt; width:auto; max-width:90pt; object-fit:contain;
+  filter:sepia(1) saturate(1.2) hue-rotate(5deg) brightness(0.7);
+}
+/* Fallback caso a imagem não carregue */
+.hd-logo {
+  width:38pt; height:38pt; background:var(--s2); border-radius:6pt;
+  display:flex; align-items:center; justify-content:center;
+  font-size:8pt; color:var(--muted); font-weight:600; letter-spacing:.5pt;
+}
+.hd-title-grp { line-height:1.1 }
+.hd-title { font-size:13pt; font-weight:600; color:var(--txt) }
+.hd-sub { font-size:7.5pt; color:var(--muted); margin-top:2pt; letter-spacing:.4pt; text-transform:uppercase }
+.hd-data { font-size:8pt; color:var(--muted); text-align:right }
+
+/* BLOCO CANDIDATO (Pág 1) */
+.cand-box {
+  border-radius:6pt; padding:11pt 14pt; margin-bottom:11pt;
+  border-left: 3pt solid var(--c-lib);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+}
+/* Quando o candidato é de outro campo, sobrescreve a cor da borda esquerda no JS */
+.cand-nome { font-size:18pt; font-weight:700; line-height:1.05; color:var(--txt); letter-spacing:-.2pt }
+.cand-line { display:flex; gap:6pt; align-items:center; margin-top:6pt; flex-wrap:wrap }
+.cand-tag { font-size:8.5pt; padding:2pt 8pt; border-radius:9pt; font-weight:600 }
+.cand-tag.lib { background:var(--c-lib-bg); color:var(--c-lib) }
+.cand-tag.prog { background:var(--c-prog-bg); color:var(--c-prog) }
+.cand-tag.mod { background:var(--c-mod-bg); color:var(--c-mod) }
+.cand-tag.out { background:var(--c-out-bg); color:var(--c-out) }
+.cand-tag.eleito { background:var(--eleito-bg); color:var(--eleito) }
+.cand-info { font-size:9pt; color:var(--muted) }
+.cand-info strong { color:var(--txt); font-weight:600 }
+
+/* KPIs (4 cards em 2x2 — retrato cabe melhor) */
+.kpis { display:grid; grid-template-columns: 1fr 1fr; gap:7pt; margin-bottom:10pt }
+.kpi {
+  border-radius:6pt; padding:9pt 12pt;
+  border-left:2.5pt solid var(--amber);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+}
+.kpi-num { font-size:19pt; font-weight:700; color:var(--amber); line-height:1; letter-spacing:-.3pt }
+.kpi-num.pos { color:var(--eleito) }
+.kpi-num.neg { color:#791F1F }
+.kpi-lbl { font-size:7.5pt; color:var(--muted); text-transform:uppercase; letter-spacing:.5pt; margin-top:5pt; font-weight:600 }
+.kpi-sub { font-size:8pt; color:var(--muted); margin-top:2pt; line-height:1.35 }
+
+/* Section title */
+.sec-title {
+  font-size:8pt; letter-spacing:1.2pt; text-transform:uppercase; color:var(--amber);
+  margin: 12pt 0 5pt; padding-bottom:2pt; border-bottom:0.5pt solid var(--bd2); font-weight:600
+}
+
+/* RESUMO DESCRITIVO (frase factual da Pág. 1) */
+.resumo {
+  padding:11pt 14pt; border-radius:6pt;
+  border-left:3pt solid var(--amber);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+  font-size:10.5pt; line-height:1.55; color:var(--txt);
+}
+.resumo strong { font-weight:600 }
+
+/* TABELA dos 4 grupos PED-DF (Pág. 1) */
+.grupos-tbl {
+  width:100%; border-collapse:collapse; font-size:9.5pt; margin-top:4pt;
+}
+.grupos-tbl th {
+  font-size:7.5pt; text-transform:uppercase; letter-spacing:.4pt;
+  color:var(--muted); font-weight:600; text-align:left;
+  padding:5pt 8pt; border-bottom:0.5pt solid var(--bd2);
+}
+.grupos-tbl th.num { text-align:right }
+.grupos-tbl td {
+  padding:6pt 8pt; border-bottom:0.5pt solid var(--bd);
+}
+.grupos-tbl tr:last-child td { border-bottom:none }
+.grupos-tbl td.grp { font-weight:600; color:var(--txt) }
+.grupos-tbl td.num {
+  text-align:right; font-variant-numeric:tabular-nums;
+  font-family:"SF Mono", Menlo, monospace; font-size:9pt;
+}
+.grupos-tbl td.dest { color:var(--amber); font-weight:700 }
+
+/* SUMÁRIO (Pág 1) — em retrato fica 1 coluna mais espaçada */
+.sum {
+  background:white; border:0.5pt solid var(--bd2); border-radius:6pt; padding:11pt 14pt;
+}
+.sum-list { display:flex; flex-direction:column; gap:8pt; font-size:9.5pt }
+.sum-item { display:flex; gap:9pt; align-items:baseline }
+.sum-bullet { color:var(--amber); width:10pt; flex-shrink:0; font-size:11pt; line-height:1 }
+.sum-tit { font-weight:600; color:var(--txt) }
+.sum-sub { color:var(--muted); font-size:8.5pt; margin-left:19pt; line-height:1.4; margin-top:1pt }
+
+/* FOOTER canônico */
+.foot {
+  margin-top:auto; padding-top:8pt; border-top:0.5pt solid var(--bd2);
+  font-size:7.5pt; color:var(--muted); text-align:center; line-height:1.5;
+}
+.foot strong { color:var(--txt); font-weight:600 }
+
+/* PÁGINA 2 — Conceitos centrais */
+.conceito-bloco {
+  font-size:9.5pt; line-height:1.55; color:var(--txt); margin-bottom:8pt;
+}
+.conceito-bloco p { margin:0 0 6pt }
+.conceito-bloco strong { font-weight:600 }
+
+.conceito-pair {
+  display:grid; grid-template-columns:1fr 1fr; gap:8pt; margin:7pt 0;
+}
+.conceito-card {
+  border-radius:5pt; padding:7pt 10pt;
+  border-left:2.5pt solid var(--amber);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+}
+.conceito-tit { font-size:9.5pt; font-weight:700; color:var(--txt); letter-spacing:.2pt }
+.conceito-desc { font-size:8.5pt; color:var(--muted); margin-top:2pt; line-height:1.4 }
+
+.exemplo {
+  border-radius:5pt; padding:8pt 11pt; margin:6pt 0;
+  border-left:2.5pt solid var(--c-lib);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+  font-size:9.5pt; line-height:1.55;
+}
+.exemplo-tit {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.5pt;
+  color:var(--muted); font-weight:600; margin-bottom:3pt;
+}
+.exemplo-txt { color:var(--txt) }
+.exemplo-txt strong { font-weight:600; color:var(--txt) }
+
+/* Tabelas didáticas (faixas + zonas + patamar) */
+.didat-tbl { width:100%; border-collapse:collapse; font-size:9pt; margin-top:4pt }
+.didat-tbl th {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.4pt;
+  color:var(--muted); font-weight:600; text-align:left;
+  padding:5pt 7pt; border-bottom:0.5pt solid var(--bd2);
+}
+.didat-tbl th.num, .didat-tbl td.num { text-align:right; font-variant-numeric:tabular-nums }
+.didat-tbl td {
+  padding:5pt 7pt; border-bottom:0.5pt solid var(--bd);
+  vertical-align:middle;
+}
+.didat-tbl tr:last-child td { border-bottom:none }
+.didat-tbl td.dest { font-weight:600 }
+
+/* Etiqueta de grupo socioeconômico (BC/RC/RE/RF) — antes dos nomes de RAs */
+.grupo-tag {
+  display:inline-block;
+  font-size:6.5pt; font-weight:700;
+  padding:1pt 4.5pt; border-radius:3pt;
+  background:var(--s2); color:var(--amber);
+  margin-right:5pt; vertical-align:1pt; letter-spacing:.3pt;
+}
+
+/* Badge de zona (5 cores oficiais) */
+.zona-badge {
+  display:inline-block; font-size:7.5pt; padding:2pt 7pt; border-radius:8pt;
+  font-weight:600; white-space:nowrap;
+}
+.zona-comp { background:var(--z-comp-bg); color:var(--z-comp) }
+.zona-pess { background:var(--z-pess-bg); color:var(--z-pess) }
+.zona-esp  { background:var(--z-esp-bg);  color:var(--z-esp) }
+.zona-conq { background:var(--z-conq-bg); color:var(--z-conq) }
+.zona-sem  { background:var(--z-sem-bg);  color:var(--z-sem) }
+
+/* Patamar — 4 cards horizontais */
+.patamar-grid {
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:6pt; margin-top:5pt;
+}
+.patamar-card {
+  border-radius:5pt; padding:7pt 9pt; text-align:center;
+  border:0.5pt solid var(--bd);
+}
+.patamar-card.cargo-doc {
+  border:1pt solid var(--amber);
+  background:rgba(180, 83, 9, 0.04);
+}
+.patamar-cargo {
+  font-size:7.5pt; color:var(--muted); text-transform:uppercase; letter-spacing:.3pt;
+  font-weight:600; margin-bottom:3pt;
+}
+.patamar-num { font-size:14pt; font-weight:700; color:var(--txt); line-height:1 }
+.patamar-card.cargo-doc .patamar-num { color:var(--amber) }
+.patamar-mark {
+  font-size:7pt; color:var(--amber); font-weight:600; margin-top:3pt; letter-spacing:.3pt;
+}
+.patamar-nota {
+  font-size:8.5pt; color:var(--muted); line-height:1.5; margin-top:7pt;
+}
+.patamar-nota strong { color:var(--txt); font-weight:600 }
+
+/* PÁGINAS 3-5 — análises por zona */
+.tabela-tit {
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:8pt; margin-top:6pt; flex-wrap:wrap;
+}
+.tabela-tit-l { font-size:9.5pt; font-weight:600; color:var(--txt) }
+.tabela-tit-r { font-size:8.5pt; color:var(--muted) }
+.tabela-tit-r strong { color:var(--txt); font-weight:600 }
+
+/* Insight gerado por regras (uma frase em destaque) */
+.insight {
+  border-radius:5pt; padding:8pt 11pt; margin-top:7pt;
+  border-left:2.5pt solid var(--amber);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+  font-size:9.5pt; line-height:1.5; color:var(--txt);
+}
+.insight-tit {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.5pt;
+  color:var(--amber); font-weight:600; margin-bottom:3pt;
+}
+.insight-txt strong { font-weight:600 }
+
+/* Pares de zonas lado a lado (Reduto | Voto pessoal) */
+.zona-pair {
+  display:grid; grid-template-columns:1fr 1fr; gap:10pt; margin-top:7pt;
+}
+.zona-block {
+  border-radius:5pt; padding:9pt 12pt;
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+  border-left:2.5pt solid var(--amber);
+  font-size:9pt; line-height:1.5;
+}
+.zona-block.comp { border-left-color: var(--z-comp) }
+.zona-block.pess { border-left-color: var(--z-pess) }
+.zona-block.esp  { border-left-color: var(--z-esp) }
+.zona-block.conq { border-left-color: var(--z-conq) }
+.zona-block.sem  { border-left-color: var(--z-sem) }
+
+/* Mensagem quando uma seção tem zero RAs */
+.empty-msg {
+  border-radius:5pt; padding:9pt 12pt; margin-top:5pt;
+  border:0.5pt solid var(--bd2);
+  font-size:9pt; color:var(--muted); font-style:italic; line-height:1.5;
+}
+.zona-block-tit {
+  font-size:9.5pt; font-weight:700; color:var(--txt); margin-bottom:5pt;
+  letter-spacing:.2pt;
+}
+.zona-block-line { margin-top:4pt }
+.zona-block-lbl {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.5pt;
+  color:var(--muted); font-weight:600; margin-bottom:1pt;
+}
+.zona-block-acoes {
+  margin:2pt 0 0; padding-left:14pt;
+  list-style:disc; font-size:8.5pt; line-height:1.5;
+}
+.zona-block-acoes li { margin-bottom:1pt }
+
+/* PÁGINA 6 — Perfil dos grupos + manual de comunicação */
+.pdad-tbl {
+  width:100%; border-collapse:collapse; font-size:8.5pt; margin-top:5pt;
+  table-layout:fixed;
+}
+.pdad-tbl col.col-var   { width:22% }
+.pdad-tbl col.col-grupo { width:14.5% }
+.pdad-tbl col.col-df    { width:14% }
+.pdad-tbl th {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.4pt;
+  color:var(--muted); font-weight:600; text-align:left;
+  padding:5pt 4pt; border-bottom:0.5pt solid var(--bd2);
+}
+.pdad-tbl th.num { text-align:right }
+.pdad-tbl td {
+  padding:5pt 4pt; border-bottom:0.5pt solid var(--bd);
+  font-variant-numeric:tabular-nums;
+}
+.pdad-tbl tr:last-child td { border-bottom:none }
+.pdad-tbl td.var-lbl {
+  font-weight:600; color:var(--txt);
+}
+.pdad-tbl td.num { text-align:right; white-space:nowrap }
+.pdad-tbl td.up   { color:#15803D; font-weight:600 }
+.pdad-tbl td.down { color:#791F1F; font-weight:600 }
+.pdad-tbl td.flat { color:var(--txt) }
+.pdad-tbl td.df-col { color:var(--muted); font-style:italic; white-space:nowrap }
+.pdad-tbl thead th.grupo-col {
+  font-weight:700; color:var(--txt);
+}
+
+/* Mini-cards "Como falar com cada grupo" */
+.mensagem-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:7pt; margin-top:5pt;
+}
+.mensagem-card {
+  border-radius:5pt; padding:8pt 10pt;
+  border-left:2.5pt solid var(--amber);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+}
+.mensagem-card-head {
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:6pt; margin-bottom:5pt;
+}
+.mensagem-card-tit {
+  font-size:9.5pt; font-weight:700; color:var(--txt);
+}
+.mensagem-card-pct {
+  font-size:8pt; color:var(--amber); font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.mensagem-card-line {
+  display:grid; grid-template-columns:58pt 1fr; gap:6pt;
+  margin-top:3pt; font-size:8pt; line-height:1.4;
+}
+.mensagem-card-lbl {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.3pt;
+  color:var(--muted); font-weight:600; padding-top:1pt;
+  white-space:nowrap;
+}
+.mensagem-card-val { color:var(--txt) }
+
+/* Nota final na Pág. 6 */
+.usar-perfil-nota {
+  margin-top:7pt; padding:7pt 10pt; border-radius:5pt;
+  border-left:2pt solid var(--amber);
+  background:rgba(180,83,9,0.04);
+  font-size:8.5pt; color:var(--muted);
+}
+.usar-perfil-nota strong { color:var(--txt) }
+
+/* PÁGINA 7 — Alocação + Síntese */
+.aloc-tbl { width:100%; border-collapse:collapse; font-size:9pt; margin-top:5pt }
+.aloc-tbl th {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.4pt;
+  color:var(--muted); font-weight:600; text-align:left;
+  padding:5pt 7pt; border-bottom:0.5pt solid var(--bd2);
+}
+.aloc-tbl th.num { text-align:right }
+.aloc-tbl td {
+  padding:7pt 7pt; border-bottom:0.5pt solid var(--bd);
+  vertical-align:middle;
+}
+.aloc-tbl tr:last-child td { border-bottom:none }
+.aloc-frente {
+  display:flex; align-items:center; gap:7pt;
+}
+.aloc-bar-wrap {
+  width:80pt; height:6pt; background:var(--s2); border-radius:3pt;
+  overflow:hidden; flex-shrink:0;
+}
+.aloc-bar { height:100%; border-radius:3pt }
+.aloc-bar.def  { background:var(--z-comp) }
+.aloc-bar.cresc{ background:var(--z-conq) }
+.aloc-bar.esp  { background:var(--z-esp) }
+.aloc-bar.sem  { background:var(--z-sem) }
+.aloc-pct {
+  font-size:13pt; font-weight:700; min-width:48pt; text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.aloc-detalhe { font-size:8.5pt; color:var(--muted); line-height:1.4 }
+.aloc-detalhe strong { color:var(--txt) }
+
+/* Orçamento estimado (3 KPIs simulados) */
+.orcamento-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:7pt; margin-top:5pt;
+}
+.orcamento-card {
+  border-radius:5pt; padding:8pt 11pt;
+  border-left:2.5pt solid var(--amber);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+}
+.orcamento-num {
+  font-size:14pt; font-weight:700; color:var(--amber); line-height:1;
+}
+.orcamento-lbl {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.4pt;
+  color:var(--muted); font-weight:600; margin-top:4pt;
+}
+.orcamento-sub {
+  font-size:7.5pt; color:var(--muted); margin-top:2pt; line-height:1.3;
+}
+.orcamento-aviso {
+  margin-top:5pt; padding:6pt 10pt; border-radius:5pt;
+  background:#FEF3C7; border-left:2pt solid #B45309;
+  font-size:7.5pt; color:#854F0B; line-height:1.4;
+}
+
+/* Achados-âncora (4 cards) */
+.ancora-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:7pt; margin-top:5pt;
+}
+.ancora-card {
+  border-radius:5pt; padding:8pt 11pt;
+  border-left:2.5pt solid var(--amber);
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+}
+.ancora-card.ident { border-left-color:var(--amber) }
+.ancora-card.forca { border-left-color:var(--z-comp) }
+.ancora-card.espaco{ border-left-color:var(--z-conq) }
+.ancora-card.restr { border-left-color:var(--z-sem) }
+.ancora-tit {
+  font-size:7pt; text-transform:uppercase; letter-spacing:.5pt;
+  font-weight:700; margin-bottom:3pt;
+}
+.ancora-card.ident .ancora-tit { color:var(--amber) }
+.ancora-card.forca .ancora-tit { color:var(--z-comp) }
+.ancora-card.espaco .ancora-tit { color:var(--z-conq) }
+.ancora-card.restr .ancora-tit { color:var(--z-sem) }
+.ancora-txt {
+  font-size:9pt; line-height:1.5; color:var(--txt);
+}
+.ancora-txt strong { font-weight:600 }
+
+/* PÁGINA 8 — Apêndice 33 RAs */
+.apendice-tbl {
+  width:100%; border-collapse:collapse; font-size:7.5pt; margin-top:5pt;
+  table-layout:fixed;
+}
+.apendice-tbl col.col-ra   { width:32% }
+.apendice-tbl col.col-num  { width:11% }
+.apendice-tbl col.col-zona { width:24% }
+.apendice-tbl th {
+  font-size:6.5pt; text-transform:uppercase; letter-spacing:.3pt;
+  color:var(--muted); font-weight:600; text-align:left;
+  padding:4pt 4pt; border-bottom:0.5pt solid var(--bd2);
+}
+.apendice-tbl th.num { text-align:right }
+.apendice-tbl td {
+  padding:3pt 4pt; border-bottom:0.5pt solid var(--bd);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.apendice-tbl tr:last-child td { border-bottom:none }
+.apendice-tbl td.ra-nome {
+  font-weight:500; color:var(--txt);
+}
+.apendice-tbl td.num { text-align:right; font-size:7pt }
+.apendice-tbl td.up   { color:#15803D; font-weight:600 }
+.apendice-tbl td.down { color:#791F1F; font-weight:600 }
+.apendice-tbl td.flat { color:var(--txt) }
+.apendice-tbl td.grupo-cell {
+  font-size:7pt; color:var(--muted); text-align:center; font-weight:600;
+}
+/* Linha separadora entre grupos de status para varredura visual */
+.apendice-tbl tr.row-comp td { background:rgba(11,90,46,0.04) }
+.apendice-tbl tr.row-pess td { background:rgba(7,89,133,0.04) }
+.apendice-tbl tr.row-conq td { background:rgba(154,52,18,0.04) }
+
+/* Bloco metodológico do apêndice */
+.metodo-block {
+  margin-top:9pt; padding:9pt 12pt; border-radius:5pt;
+  border:0.5pt solid var(--bd2);
+  font-size:8pt; line-height:1.5;
+}
+.metodo-tit {
+  font-size:7.5pt; text-transform:uppercase; letter-spacing:.5pt;
+  color:var(--amber); font-weight:700; margin-bottom:4pt;
+}
+.metodo-grupos {
+  display:grid; grid-template-columns:1fr 1fr; gap:5pt 14pt; margin-top:5pt;
+}
+.metodo-grupo-tit {
+  font-size:8pt; font-weight:700; color:var(--txt); margin-bottom:1pt;
+}
+.metodo-grupo-ras {
+  font-size:7.5pt; color:var(--muted); line-height:1.4;
+}
+
+/* PLACEHOLDERS (páginas ainda não implementadas) */
+.placeholder {
+  background:#FAFAF7; border:1pt dashed var(--bd2); border-radius:6pt;
+  padding:50pt 30pt; text-align:center; color:var(--muted); font-size:11pt; font-style:italic;
+  flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;
+}
+.placeholder h2 { font-size:14pt; color:var(--txt); margin:0 0 8pt; font-weight:600 }
+.placeholder p { margin: 4pt 0 }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     DADOS — JSON inline, regerado por gerar_playbook_dados.py MANZONI
+     ════════════════════════════════════════════════════════════════ -->
+<script type="application/json" id="dados">
+__DADOS_JSON__
+</script>
+
+<!-- ─────────── PÁGINA 1 — CAPA + DIAGNÓSTICO ─────────── -->
+<div class="page" id="pg1">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Estratégia de Campanha</div>
+        <div class="hd-sub" id="pg1-sub"></div>
+      </div>
+    </div>
+    <div class="hd-data" id="pg1-data"></div>
+  </div>
+
+  <div class="cand-box" id="pg1-cand"></div>
+
+  <div class="kpis" id="pg1-kpis"></div>
+
+  <div class="sec-title">Resumo da eleição 2022</div>
+  <div class="resumo" id="pg1-resumo"></div>
+
+  <div class="sec-title">Distribuição dos votos por grupo de regiões</div>
+  <div id="pg1-grupos"></div>
+
+  <div class="sec-title">Estrutura deste documento</div>
+  <div class="sum">
+    <div class="sum-list">
+      <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Conceitos centrais</span></div>
+        <div class="sum-sub">Performance · Força do campo · 5 zonas estratégicas · Patamar de eleição</div>
+      </div>
+      <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Onde defender</span></div>
+        <div class="sum-sub">Reduto consolidado + Voto pessoal — proteger a base existente</div>
+      </div>
+      <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Onde crescer</span></div>
+        <div class="sum-sub">Espaço a conquistar — campo já vota, falta o eleitor te escolher</div>
+      </div>
+      <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Decisões periféricas</span></div>
+        <div class="sum-sub">Esperado em RAs grandes + Sem espaço pelo campo</div>
+      </div>
+      <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Quem é meu eleitor</span></div>
+        <div class="sum-sub">Perfil socioeconômico agregado (PDAD)</div>
+      </div>
+      <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Alocação + Síntese</span></div>
+        <div class="sum-sub">% sugerido por frente + 4 achados-âncora</div>
+      </div>
+      <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Apêndice — 33 RAs</span></div>
+        <div class="sum-sub">Tabela completa do território para consulta</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Página 1 de 8 · Fontes: <strong>PDAD 2021</strong> (IPEDF) · <strong>TSE 2022</strong> · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<!-- ─────────── PÁGINAS 2 a 8 — placeholders ─────────── -->
+<div class="page" id="pg2">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Conceitos centrais</div>
+        <div class="hd-sub">O vocabulário deste documento</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 2 de 8</div>
+  </div>
+
+  <!-- Bloco 1: Performance + Força do campo (unificados) -->
+  <div class="sec-title">Performance e Força do campo</div>
+  <div class="conceito-bloco">
+    <p>Toda análise deste documento parte da mesma pergunta: <strong>uma região entregou mais ou menos votos do que se esperaria pelo seu tamanho?</strong></p>
+    <p>Cada RA tem uma fatia do eleitorado do DF. Se o candidato fosse "neutro" no território, deveria capturar essa mesma fatia dos seus votos lá. Quando captura mais, está acima do esperado. Quando captura menos, está abaixo. A medida desse desvio é o que chamamos de <strong>Performance</strong>.</p>
+  </div>
+
+  <div class="conceito-pair">
+    <div class="conceito-card">
+      <div class="conceito-tit">Performance</div>
+      <div class="conceito-desc">Aplica esse cálculo aos votos do <strong>candidato</strong> — quanto ele recebeu na RA vs quanto receberia se fosse proporcional ao tamanho dela.</div>
+    </div>
+    <div class="conceito-card">
+      <div class="conceito-tit">Força do campo</div>
+      <div class="conceito-desc">Mesmo cálculo, mas aplicado ao <strong>bloco político inteiro</strong> (todos os candidatos do mesmo campo no mesmo cargo). Mostra se a região é favorável ao bloco, independente do candidato.</div>
+    </div>
+  </div>
+
+  <div class="exemplo">
+    <div class="exemplo-tit">Exemplo concreto</div>
+    <div class="exemplo-txt" id="pg2-exemplo"></div>
+  </div>
+
+  <div style="margin-top:8pt"></div>
+  <table class="didat-tbl">
+    <thead><tr>
+      <th style="width:32%">Faixa</th>
+      <th class="num" style="width:25%">Performance</th>
+      <th>Leitura</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="dest">Reduto</td><td class="num">≥ +30%</td><td>muito acima do esperado</td></tr>
+      <tr><td class="dest">Base forte</td><td class="num">+15% a +30%</td><td>acima do esperado</td></tr>
+      <tr><td class="dest">Esperado</td><td class="num">−15% a +15%</td><td>dentro do esperado pelo tamanho</td></tr>
+      <tr><td class="dest">Base fraca</td><td class="num">−15% a −30%</td><td>abaixo do esperado</td></tr>
+      <tr><td class="dest">Ausência</td><td class="num">≤ −30%</td><td>muito abaixo do esperado</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Bloco 2: 5 zonas estratégicas -->
+  <div class="sec-title">As 5 zonas estratégicas</div>
+  <div class="conceito-bloco">
+    <p>Cruzamento <strong>Performance × Força do campo</strong>. Cada RA cai em uma e só uma zona — e cada zona define uma estratégia diferente.</p>
+  </div>
+  <table class="didat-tbl">
+    <thead><tr>
+      <th style="width:30%">Zona</th>
+      <th class="num" style="width:18%">Performance</th>
+      <th class="num" style="width:18%">Força do campo</th>
+      <th>Significado</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="zona-badge zona-comp">Reduto consolidado</span></td>
+        <td class="num">≥ +15%</td>
+        <td class="num">≥ +15%</td>
+        <td>Você e seu campo são fortes ali. <strong>Defenda.</strong></td>
+      </tr>
+      <tr>
+        <td><span class="zona-badge zona-pess">Voto pessoal</span></td>
+        <td class="num">≥ +15%</td>
+        <td class="num">&lt; +15%</td>
+        <td>Só você é forte (campo é fraco). <strong>Voto vinculado à pessoa.</strong></td>
+      </tr>
+      <tr>
+        <td><span class="zona-badge zona-esp">Esperado</span></td>
+        <td class="num">−15% a +15%</td>
+        <td class="num">qualquer</td>
+        <td>Território neutro. <strong>Investimento proporcional ao retorno.</strong></td>
+      </tr>
+      <tr>
+        <td><span class="zona-badge zona-conq">Espaço a conquistar</span></td>
+        <td class="num">&lt; −15%</td>
+        <td class="num">≥ +15%</td>
+        <td>Campo forte mas você não chegou. <strong>Conquiste — eleitor já vota no bloco.</strong></td>
+      </tr>
+      <tr>
+        <td><span class="zona-badge zona-sem">Sem espaço pelo campo</span></td>
+        <td class="num">&lt; −15%</td>
+        <td class="num">&lt; +15%</td>
+        <td>Nem você nem o campo são fortes. <strong>Alto investimento, baixo retorno.</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Bloco 3: Limiar de eleição -->
+  <div class="sec-title">Limiar de eleição</div>
+  <div class="conceito-bloco">
+    <p>Volume de votos do <strong>último candidato a se eleger</strong> em cada cargo no DF — referência calibrada pela observação dos eleitos em 2022. Não é piso formal: candidatos podem entrar com menos via sobras de federação, e os mais fortes ultrapassam o limiar substancialmente.</p>
+  </div>
+  <div class="patamar-grid" id="pg2-patamar"></div>
+
+  <div class="foot">
+    Página 2 de 8 · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<div class="page" id="pg3">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Onde defender</div>
+        <div class="hd-sub">Reduto consolidado + Voto pessoal</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 3 de 8</div>
+  </div>
+
+  <div class="conceito-bloco">
+    <p>Aqui é onde você já tem voto. <strong>Não é zona de conquista — é zona de proteção.</strong> O risco principal é a abstenção: o eleitor que votou em 2022 deixar de votar em 2026 porque achou que estava garantido.</p>
+    <p>São <strong>duas zonas com motores diferentes</strong>: <span class="zona-badge zona-comp">Reduto consolidado</span> (você é forte e o campo também — está em casa) e <span class="zona-badge zona-pess">Voto pessoal</span> (só você é forte — voto vinculado à pessoa, não ao partido).</p>
+  </div>
+
+  <div class="sec-title">Suas RAs de defesa</div>
+  <table class="didat-tbl" id="pg3-tbl"></table>
+
+  <div class="insight">
+    <div class="insight-tit">Leitura</div>
+    <div class="insight-txt" id="pg3-insight"></div>
+  </div>
+
+  <div class="sec-title">Como defender cada uma</div>
+  <div class="zona-pair">
+    <div class="zona-block comp">
+      <div class="zona-block-tit"><span class="zona-badge zona-comp">Reduto consolidado</span></div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Estratégia</div>
+        Defender a base. Não precisa convencê-los — precisa <strong>garantir que vão votar</strong>.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Risco</div>
+        Complacência. Eleitor satisfeito vira abstenção quando se sente garantido.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Ações</div>
+        <ul class="zona-block-acoes">
+          <li>Agradecimento explícito ao eleitor</li>
+          <li>Prestação de contas pública e regular</li>
+          <li>Mobilização pré-eleição (lembrete e eventos locais)</li>
+          <li>Presença contínua durante o mandato</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="zona-block pess">
+      <div class="zona-block-tit"><span class="zona-badge zona-pess">Voto pessoal</span></div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Estratégia</div>
+        Proteger a <strong>relação pessoal</strong>. O voto está vinculado a você, não ao partido.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Risco</div>
+        Mudança evapora o voto. Troca de cargo, partido ou perda de visibilidade desfaz a base.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Ações</div>
+        <ul class="zona-block-acoes">
+          <li>Atendimento individual visível (gabinete na rua, redes pessoais)</li>
+          <li>Marca pessoal acima da marca partidária</li>
+          <li>Contato direto com lideranças locais</li>
+          <li>Comunicação que reforça vínculo de pessoa-eleitor</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Página 3 de 8 · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<div class="page" id="pg4">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Onde crescer</div>
+        <div class="hd-sub">Espaço a conquistar</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 4 de 8</div>
+  </div>
+
+  <div class="conceito-bloco">
+    <p>Aqui o seu <strong>campo já vota</strong> — o eleitor escolheu o seu bloco político. Só não escolheu <em>você</em> especificamente.</p>
+    <p>A boa notícia: não precisa convencer o eleitor de que o bloco vale. Basta <strong>fazê-lo saber que você é uma opção válida dentro dele</strong>. Por isso o custo de conversão é mais baixo aqui do que em qualquer outra zona.</p>
+  </div>
+
+  <div class="sec-title">Suas RAs de crescimento</div>
+  <table class="didat-tbl" id="pg4-tbl"></table>
+
+  <div class="insight">
+    <div class="insight-tit">Leitura</div>
+    <div class="insight-txt" id="pg4-insight"></div>
+  </div>
+
+  <div class="sec-title">Como crescer</div>
+  <div class="zona-block conq">
+    <div class="zona-block-tit"><span class="zona-badge zona-conq">Espaço a conquistar</span></div>
+
+    <div class="zona-block-line">
+      <div class="zona-block-lbl">Estratégia</div>
+      Tornar-se a <strong>opção mais visível do seu bloco</strong> naquela região. O eleitor já votaria no seu campo — sua tarefa é ser quem ele lembra na hora de escolher.
+    </div>
+
+    <div class="zona-block-line">
+      <div class="zona-block-lbl">Risco</div>
+      Canibalização interna do bloco. Disputar voto com candidato do mesmo campo que já está consolidado ali pode gerar atrito sem ganho líquido para você.
+    </div>
+
+    <div class="zona-block-line">
+      <div class="zona-block-lbl">Ações</div>
+      <ul class="zona-block-acoes">
+        <li>Mensagem identitária do <strong>campo</strong> (não pessoal)</li>
+        <li>Eventos conjuntos com candidatos do mesmo bloco que têm reduto ali</li>
+        <li>Endosso público de lideranças locais do bloco</li>
+        <li>Presença com pauta — panfleto, sonoro, redes com bandeira do campo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot">
+    Página 4 de 8 · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<div class="page" id="pg5">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Decisões periféricas</div>
+        <div class="hd-sub">Esperado em RAs grandes + Sem espaço pelo campo</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 5 de 8</div>
+  </div>
+
+  <div class="conceito-bloco">
+    <p>Estas zonas <strong>não estão na frente da defesa nem do crescimento</strong>. A decisão aqui é simples: quanto investir — pouco ou nada. Cada centavo gasto onde o retorno não é previsível é um centavo a menos onde rende.</p>
+    <p>Duas zonas com motivos diferentes: <span class="zona-badge zona-esp">Esperado</span> em RAs grandes (território neutro com volume eleitoral) e <span class="zona-badge zona-sem">Sem espaço pelo campo</span> (nem você nem o bloco performam ali).</p>
+  </div>
+
+  <div class="sec-title">Suas RAs periféricas</div>
+  <table class="didat-tbl" id="pg5-tbl"></table>
+
+  <div class="insight">
+    <div class="insight-tit">Leitura</div>
+    <div class="insight-txt" id="pg5-insight"></div>
+  </div>
+
+  <div class="sec-title">Como tratar cada uma</div>
+  <div class="zona-pair">
+    <div class="zona-block esp">
+      <div class="zona-block-tit"><span class="zona-badge zona-esp">Esperado</span></div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Estratégia</div>
+        Presença pontual com <strong>motivo específico</strong> — volume, mensagem ou evento concreto. Conversão é cara; retorno é proporcional.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Risco</div>
+        Dispersão de recursos sem virada perceptível. Pulverizar agenda em RAs neutras gera atividade sem ganho.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Ações</div>
+        <ul class="zona-block-acoes">
+          <li>Presença mínima — panfleto, sonoro pontual</li>
+          <li>Eventos só com retorno claro (não pulverizar)</li>
+          <li>Observar evolução: RA grande pode virar reduto com narrativa certa</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="zona-block sem">
+      <div class="zona-block-tit"><span class="zona-badge zona-sem">Sem espaço pelo campo</span></div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Estratégia</div>
+        Nem você nem o campo são fortes. <strong>Alto investimento, baixo retorno</strong>. Por padrão, recursos vão para as outras zonas — salvo razão fora do dado.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Risco</div>
+        Insistir aqui drena orçamento que renderia muito mais em Defesa, Crescimento ou Esperado.
+      </div>
+
+      <div class="zona-block-line">
+        <div class="zona-block-lbl">Ações</div>
+        <ul class="zona-block-acoes">
+          <li>Presença mínima ou nenhuma</li>
+          <li>Sinalização institucional só em campanhas conjuntas (presidencial, governamental)</li>
+          <li>Reavaliar a cada ciclo — RA pode mudar de status</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Página 5 de 8 · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<div class="page" id="pg6">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Quem é meu eleitor</div>
+        <div class="hd-sub">Perfil socioeconômico agregado (PDAD)</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 6 de 8</div>
+  </div>
+
+  <div class="conceito-bloco">
+    <p>O perfil socioeconômico do DF não é uniforme. Cada grupo de regiões — <strong>Brasília Central</strong>, <strong>Regiões Consolidadas</strong>, <strong>Regiões em Expansão</strong> e <strong>Regiões em Formação</strong> — tem renda, escolaridade e ocupação muito distintas. <em>Conhecer essa heterogeneidade é o primeiro passo para falar a língua certa em cada território.</em></p>
+    <p><span style="color:#15803D;font-weight:700">Verde</span> = acima da média do DF · <span style="color:#791F1F;font-weight:700">Vermelho</span> = abaixo · <span style="color:#9CA3AF;font-weight:700">Cinza</span> = próximo da média.</p>
+  </div>
+
+  <div class="sec-title">Perfil dos 4 grupos de regiões</div>
+  <table class="pdad-tbl" id="pg6-tbl"></table>
+
+  <div class="insight">
+    <div class="insight-tit">Leitura</div>
+    <div class="insight-txt" id="pg6-insight"></div>
+  </div>
+
+  <div class="sec-title">Como falar com cada grupo</div>
+  <div class="mensagem-grid" id="pg6-mensagem"></div>
+
+  <div class="usar-perfil-nota">
+    <strong>Atenção:</strong> dentro de cada grupo ainda há variação por RA. O eleitor do <em>Reduto consolidado</em> pode ser diferente do eleitor do <em>Espaço a conquistar</em> mesmo dentro do mesmo grupo. Use estes perfis para <strong>calibrar a média</strong> — não para simplificar a base.
+  </div>
+
+  <div class="foot">
+    Página 6 de 8 · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<div class="page" id="pg7">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Alocação + Síntese</div>
+        <div class="hd-sub">Para onde o esforço da campanha deve ir</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 7 de 8</div>
+  </div>
+
+  <div class="conceito-bloco">
+    <p>Esta página fecha o documento com três decisões: <strong>quanto se gasta</strong> em uma campanha de Distrital, <strong>como o esforço deve ser distribuído</strong> entre as quatro frentes territoriais, e <strong>os quatro achados</strong> que o candidato precisa carregar.</p>
+  </div>
+
+  <div class="sec-title">Orçamento estimado <span style="color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none;font-size:8pt">— Distrital DF 2022</span></div>
+  <div class="orcamento-grid" id="pg7-orcamento"></div>
+  <div class="orcamento-aviso">
+    <strong>⚠ Valores simulados</strong> — pendente cálculo a partir das prestações de contas TSE 2022 (SPCE/Divulgacand). Estrutura pronta para receber os números finais.
+  </div>
+
+  <div class="sec-title">Alocação sugerida</div>
+  <div class="conceito-bloco" style="margin-bottom:3pt">
+    <p>Cada real de campanha tem retorno diferente por zona. <strong>Defender voto existente é mais barato que conquistar voto novo.</strong> A proporção abaixo é uma referência, calibrada pelo seu perfil e posição no limiar de eleição.</p>
+  </div>
+  <table class="aloc-tbl" id="pg7-aloc"></table>
+  <div class="insight" style="margin-top:7pt">
+    <div class="insight-tit">Justificativa</div>
+    <div class="insight-txt" id="pg7-justif"></div>
+  </div>
+
+  <div class="sec-title">4 achados-âncora</div>
+  <div class="ancora-grid" id="pg7-ancoras"></div>
+
+  <div class="foot">
+    Página 7 de 8 · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<div class="page" id="pg8">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Apêndice — As 33 RAs</div>
+        <div class="hd-sub">Tabela completa para consulta</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 8 de 8</div>
+  </div>
+
+  <div class="conceito-bloco">
+    <p>Tabela ordenada por <strong>Status</strong> — Reduto consolidado primeiro, Sem espaço pelo campo por último. Dentro de cada Status, ordenada por Performance descendente. As primeiras linhas são as mais importantes para você; as últimas são território fora do raio de captura.</p>
+  </div>
+
+  <table class="apendice-tbl" id="pg8-tbl"></table>
+
+  <div class="metodo-block">
+    <div class="metodo-tit">Metodologia · Agrupamento das regiões em 4 grupos</div>
+    <p style="margin:0 0 5pt;color:var(--muted)">Os 4 grupos foram organizados pela equipe <strong>Estrategos</strong> a partir de uma <strong>análise multivariada</strong> das 33 RAs do DF, com base em variáveis socioeconômicas (renda, escolaridade, ocupação, infraestrutura urbana e tempo de formalização).</p>
+    <div class="metodo-grupos" id="pg8-metodo-grupos"></div>
+  </div>
+
+  <div class="foot">
+    Página 8 de 8 · Fontes: <strong>PDAD 2021</strong> (IPEDF) · <strong>TSE 2022</strong> · <strong>Estrategos</strong> — Inteligência Política da <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<script>
+// ──────────────── HELPERS ────────────────
+// Prioridade de fontes de dados:
+// 1. postMessage (enviado pelo dashboard ao abrir esta janela)
+// 2. localStorage 'playbook-data' (fallback)
+// 3. <script id="dados"> inline (modo standalone, regerado por gerar_playbook_dados.py)
+var DADOS = (function(){
+  // 2. localStorage
+  try {
+    var ls = localStorage.getItem('playbook-data');
+    if(ls){
+      localStorage.removeItem('playbook-data');
+      var d1 = JSON.parse(ls);
+      if(d1 && d1.meta){
+        console.log('[Playbook] Dados via localStorage');
+        return d1;
+      }
+    }
+  } catch(e){ console.warn('[Playbook] localStorage falhou:', e.message); }
+  // 3. script inline — pode estar com placeholder literal "__DADOS_JSON__"
+  try {
+    var raw = (document.getElementById('dados').textContent || '').trim();
+    if(raw && raw.indexOf('__DADOS') !== 0){
+      var d2 = JSON.parse(raw);
+      if(d2 && d2.meta){
+        console.log('[Playbook] Dados via <script id="dados"> (modo standalone)');
+        return d2;
+      }
+    }
+  } catch(e){ console.warn('[Playbook] script inline falhou:', e.message); }
+  // Último recurso: estrutura vazia para o script não morrer.
+  // O postMessage virá em seguida e re-renderiza.
+  console.log('[Playbook] Sem dados iniciais — aguardando postMessage do dashboard');
+  return {
+    meta: {nome:'', nome_curto:'', partido:'', campo:'outros', cargo:'DEPUTADO_DISTRITAL',
+           total:0, eleito:false, perfil:'', sigma_perf:0, patamar_pct:0,
+           n_redutos:0, aptos_df:0, pct_do_cargo:0, pct_no_campo:0,
+           total_cargo_df:0, total_campo_df:0, n_ras_com_voto:0, n_ras_total:0,
+           posicao_geral:null, n_candidatos_cargo:0,
+           top3_volume:[], maior_ra:null, grupos_ped:[], ra_exemplo:null,
+           ras_defesa:[], n_defesa:0, votos_defesa:0, soma_pct_defesa:0, insight_defesa_tipo:'diluida',
+           ras_crescimento:[], n_crescimento:0, estoque_total:0, insight_cresc_tipo:'vazio',
+           ras_esperado_top:[], n_esperado_top:0, insight_esp_tipo:'nenhum',
+           ras_sem_espaco:[], n_sem_espaco:0, aptos_sem_espaco_total:0,
+           pct_aptos_descartado:0, insight_sem_tipo:'baixo',
+           n_vagas:24, limiar_posicao:null, limiar_votos:null, limiar_nome:null,
+           distancia_limiar_pct:null, distancia_limiar_votos:null,
+           caso_alocacao:1, alocacao:{defesa:60,crescimento:30,esperado:10},
+           ras_apendice:[]
+    },
+    ras: [], df_baseline: {}, eleitor_tipo: {}
+  };
+})();
+var META = DADOS.meta;
+
+// Listener para postMessage do dashboard
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'playbook-data' && e.data.data && e.data.data.meta){
+    console.log('[Playbook] Dados via postMessage:', e.data.data.meta.nome);
+    DADOS = e.data.data;
+    META = DADOS.meta;
+    rerenderAll();
+    document.title = 'Playbook · ' + (META.nome_curto || META.nome) + ' · Estrategos';
+  }
+});
+
+// Avisa ao opener (dashboard) que estamos prontos para receber dados.
+// Disparado depois do script carregar (ao final).
+function _avisarReady(){
+  if(window.opener){
+    try {
+      window.opener.postMessage({type:'playbook-ready'}, '*');
+      console.log('[Playbook] sinal "ready" enviado ao opener');
+    } catch(err){
+      console.warn('[Playbook] falha ao avisar opener:', err.message);
+    }
+  }
+}
+
+function rerenderAll(){
+  try {
+    if(typeof renderPg1 === 'function') renderPg1();
+    if(typeof renderPg2 === 'function') renderPg2();
+    if(typeof renderPg3 === 'function') renderPg3();
+    if(typeof renderPg4 === 'function') renderPg4();
+    if(typeof renderPg5 === 'function') renderPg5();
+    if(typeof renderPg6 === 'function') renderPg6();
+    if(typeof renderPg7 === 'function') renderPg7();
+    if(typeof renderPg8 === 'function') renderPg8();
+  } catch(err){
+    console.error('[Playbook] Erro ao re-renderizar:', err);
+  }
+}
+
+function fmt(n){ return n.toLocaleString('pt-BR'); }
+function fmtPct(n, casas){
+  casas = casas==null?1:casas;
+  return (n>=0?'+':'') + n.toFixed(casas).replace('.', ',') + '%';
+}
+function fmtData(){
+  var d = new Date();
+  var dd=String(d.getDate()).padStart(2,'0');
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  return dd+'/'+mm+'/'+d.getFullYear();
+}
+// Labels canônicos (alinhados com o dashboard)
+var CAMPO_LBL = {progressista:'Progressista', moderado:'Moderado',
+                 liberal_conservador:'Liberal/Cons.', outros:'Outros'};
+var CAMPO_CLS = {progressista:'prog', moderado:'mod',
+                 liberal_conservador:'lib', outros:'out'};
+var ZONA_LBL = {compartilhado:'Reduto consolidado', pessoal:'Voto pessoal',
+                esperado:'Esperado', conquistar:'Espaço a conquistar',
+                sem_espaco:'Sem espaço pelo campo'};
+// Siglas de grupo socioeconômico (etiqueta antes do nome da RA)
+var GRUPO_SIGLA = {
+  "Brasília Central":      "BC",
+  "Regiões Consolidadas":  "RC",
+  "Regiões em Expansão":   "RE",
+  "Regiões em Formação":   "RF",
+};
+function grupoTag(r){
+  var sigla = GRUPO_SIGLA[r.grupo] || '';
+  if(!sigla) return '';
+  return '<span class="grupo-tag" title="'+r.grupo+'">'+sigla+'</span>';
+}
+
+// ──────────────── PÁGINA 1 — apenas descritivo da eleição 2022 ────────────────
+function ordinal(n){
+  if(n==null) return '—';
+  return n + 'º';
+}
+
+function resumoDescritivo(){
+  // Construído só com fatos: total, posição, RAs, top 3 por volume.
+  var partes = [];
+  var sit = META.eleito
+    ? '<strong>Eleito</strong> deputado distrital em 2022 com <strong>'+fmt(META.total)+'</strong> votos'
+    : 'Concorreu a deputado distrital em 2022 com <strong>'+fmt(META.total)+'</strong> votos';
+  if(META.posicao_geral){
+    sit += ', ficando em <strong>'+ordinal(META.posicao_geral)+'</strong> lugar entre '+fmt(META.n_candidatos_cargo)+' candidatos ao cargo';
+  }
+  partes.push(sit + '.');
+  // Cobertura territorial + escala (% do cargo + % do campo político)
+  var pctCargo = META.pct_do_cargo.toFixed(2).replace('.', ',');
+  var pctCampo = META.pct_no_campo.toFixed(2).replace('.', ',');
+  var campoLbl = CAMPO_LBL[META.campo];
+  var cobertura = (META.n_ras_com_voto === META.n_ras_total)
+    ? 'Sua votação alcançou <strong>todas as '+META.n_ras_total+' regiões administrativas</strong> do DF'
+    : 'Recebeu votos em <strong>'+META.n_ras_com_voto+'</strong> das '+META.n_ras_total+' regiões administrativas do DF';
+  partes.push(
+    cobertura +
+    ' e representou <strong>'+pctCargo+'%</strong> do total de votos para deputado distrital — e <strong>'+pctCampo+'%</strong> dos votos entre os que escolheram o campo <strong>'+campoLbl+'</strong>.'
+  );
+  return partes.join(' ');
+}
+
+function renderGrupos(){
+  if(!META.grupos_ped) return;
+  var rows = META.grupos_ped.map(function(g){
+    var pctVotos = g.pct_votos.toFixed(1).replace('.', ',');
+    var pctEl = g.pct_eleitorado.toFixed(1).replace('.', ',');
+    var sigla = GRUPO_SIGLA[g.nome] || '';
+    var tag = sigla ? '<span class="grupo-tag" title="'+g.nome+'">'+sigla+'</span>' : '';
+    return '<tr>' +
+      '<td class="grp">' + tag + g.nome + '</td>' +
+      '<td class="num">' + g.n_ras + '</td>' +
+      '<td class="num">' + pctEl + '%</td>' +
+      '<td class="num">' + fmt(g.votos) + '</td>' +
+      '<td class="num dest">' + pctVotos + '%</td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('pg1-grupos').innerHTML =
+    '<table class="grupos-tbl">' +
+      '<thead><tr>' +
+        '<th>Grupo de regiões</th>' +
+        '<th class="num">RAs</th>' +
+        '<th class="num">% do eleitorado</th>' +
+        '<th class="num">Votos</th>' +
+        '<th class="num">% dos votos</th>' +
+      '</tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+    '</table>';
+}
+
+function renderPg1(){
+  document.getElementById('pg1-data').textContent = 'Gerado em ' + fmtData();
+  // Sub-header dinâmico (cargo do candidato)
+  var CARGO_LBL = {GOVERNADOR:'Governador', SENADOR:'Senador',
+                   DEPUTADO_FEDERAL:'Dep. Federal', DEPUTADO_DISTRITAL:'Dep. Distrital'};
+  var subEl = document.getElementById('pg1-sub');
+  if(subEl){ subEl.textContent = (CARGO_LBL[META.cargo] || META.cargo || '—') + ' · 2026'; }
+
+  // Bloco do candidato (sem "Perfil" — esse conceito é da Pág. 2)
+  var box = document.getElementById('pg1-cand');
+  var eleitoBadge = META.eleito ? '<span class="cand-tag eleito">Eleito</span>' : '';
+  // Borda esquerda do bloco usa a cor do campo do candidato
+  var corCampo = {
+    progressista: 'var(--c-prog)', moderado: 'var(--c-mod)',
+    liberal_conservador: 'var(--c-lib)', outros: 'var(--c-out)'
+  }[META.campo] || 'var(--c-out)';
+  box.style.borderLeftColor = corCampo;
+  box.innerHTML =
+    '<div class="cand-nome">' + META.nome_curto + '</div>' +
+    '<div class="cand-line">' +
+      '<span class="cand-tag '+CAMPO_CLS[META.campo]+'">'+CAMPO_LBL[META.campo]+'</span>' +
+      '<span class="cand-info">'+META.partido+'</span>' +
+      eleitoBadge +
+      '<span class="cand-info">· '+(CARGO_LBL[META.cargo] || META.cargo)+' · 2022</span>' +
+    '</div>';
+
+  // 4 KPIs — todos descritivos da eleição 2022 (nada da Pág. 2)
+  var maior = META.maior_ra || {ra:'—', votos:0, pct:0};
+  // KPI distância ao limiar de eleição
+  var dlim = META.distancia_limiar_pct;
+  var dlimNum, dlimLbl, dlimSub, dlimCls;
+  if(dlim != null){
+    dlimNum = (dlim>=0?'+':'') + dlim.toFixed(0).replace('.', ',') + '%';
+    dlimLbl = dlim >= 0 ? 'Acima do limiar de eleição' : 'Abaixo do limiar de eleição';
+    dlimCls = dlim >= 0 ? 'pos' : 'neg';
+    var refLbl;
+    if(META.posicao_geral === META.n_vagas){
+      refLbl = 'sobre o '+ordinal(META.limiar_posicao)+' (1º suplente, '+fmt(META.limiar_votos)+' votos)';
+    } else if(META.posicao_geral < META.n_vagas){
+      refLbl = 'sobre o '+ordinal(META.limiar_posicao)+' (último eleito, '+fmt(META.limiar_votos)+' votos)';
+    } else {
+      refLbl = 'em relação ao '+ordinal(META.limiar_posicao)+' (último eleito, '+fmt(META.limiar_votos)+' votos)';
+    }
+    dlimSub = refLbl;
+  } else {
+    dlimNum = '—'; dlimLbl = 'Limiar de eleição'; dlimSub = 'Sem dado'; dlimCls = '';
+  }
+  var kpis = [
+    {num: fmt(META.total), lbl:'Total de votos', sub:'Eleição 2022'},
+    {num: dlimNum, lbl: dlimLbl, sub: dlimSub, cls: dlimCls},
+    {num: ordinal(META.posicao_geral), lbl:'Posição entre candidatos',
+     sub:'de '+fmt(META.n_candidatos_cargo)+' que disputaram o cargo'},
+    {num: fmt(maior.votos), lbl:'Maior RA por volume',
+     sub: maior.ra + ' · ' + maior.pct.toFixed(1).replace('.', ',') + '% dos seus votos'},
+  ];
+  document.getElementById('pg1-kpis').innerHTML = kpis.map(function(k){
+    return '<div class="kpi">' +
+      '<div class="kpi-num '+(k.cls||'')+'">'+k.num+'</div>' +
+      '<div class="kpi-lbl">'+k.lbl+'</div>' +
+      '<div class="kpi-sub">'+k.sub+'</div>' +
+    '</div>';
+  }).join('');
+
+  // Resumo descritivo (factual)
+  document.getElementById('pg1-resumo').innerHTML = resumoDescritivo();
+  // Distribuição por grupos PED-DF
+  renderGrupos();
+}
+
+renderPg1();
+
+// ──────────────── PÁGINA 2 — exemplo concreto da Performance ────────────────
+function renderPg2(){
+  var ex = META.ra_exemplo;
+  var el = document.getElementById('pg2-exemplo');
+  if(el){
+    if(!ex){
+      el.innerHTML = '<em>Sem RA com Performance positiva no histórico do candidato.</em>';
+    } else {
+      var apt = ex.pct_aptos_df.toFixed(1).replace('.', ',');
+      var vot = ex.pct_votos_cand.toFixed(1).replace('.', ',');
+      var perf = (ex.perf_pct >= 0 ? '+' : '') + ex.perf_pct.toFixed(0) + '%';
+      el.innerHTML =
+        '<strong>'+ex.ra+'</strong> tem <strong>'+apt+'%</strong> do eleitorado do DF. ' +
+        'Se ' + (META.nome_curto || 'o candidato') + ' fosse "neutro" no território, esperaríamos que '+apt+'% dos seus votos viessem de lá. ' +
+        'Vieram <strong>'+vot+'%</strong> — <strong>Performance '+perf+'</strong> nessa RA.';
+    }
+  }
+
+  // Tabela do patamar (com destaque dinâmico no cargo do candidato)
+  var pgrid = document.getElementById('pg2-patamar');
+  if(pgrid){
+    var PATAMARES = [
+      {cargo:'GOVERNADOR',         lbl:'Governador',   txt:'≈ 700 mil'},
+      {cargo:'SENADOR',            lbl:'Senador',      txt:'≈ 550 mil'},
+      {cargo:'DEPUTADO_FEDERAL',   lbl:'Dep. Federal', txt:'≈ 30 mil'},
+      {cargo:'DEPUTADO_DISTRITAL', lbl:'Dep. Distrital',txt:'≈ 18 mil'}
+    ];
+    pgrid.innerHTML = PATAMARES.map(function(p){
+      var ehDoc = p.cargo === META.cargo;
+      return '<div class="patamar-card'+(ehDoc?' cargo-doc':'')+'">' +
+        '<div class="patamar-cargo">'+p.lbl+'</div>' +
+        '<div class="patamar-num">'+p.txt+'</div>' +
+        (ehDoc ? '<div class="patamar-mark">← cargo deste documento</div>' : '') +
+      '</div>';
+    }).join('');
+  }
+}
+renderPg2();
+
+// ──────────────── PÁGINA 3 — Onde defender ────────────────
+function fmtPerf(perf){
+  if(perf == null) return '—';
+  var p = (perf - 1) * 100;
+  return (p>=0?'+':'') + p.toFixed(0) + '%';
+}
+function corPerfStr(perf){
+  if(perf == null) return 'var(--muted)';
+  var d = perf - 1;
+  if(d >= 0.15) return 'var(--z-comp)';
+  if(d <= -0.15) return 'var(--z-sem)';
+  return 'var(--txt)';
+}
+function zonaBadge(z){
+  var cls = {compartilhado:'zona-comp', pessoal:'zona-pess', esperado:'zona-esp',
+             conquistar:'zona-conq', sem_espaco:'zona-sem'}[z] || 'zona-esp';
+  return '<span class="zona-badge '+cls+'">'+ZONA_LBL[z]+'</span>';
+}
+function renderTabRas(elTbl, ras, opts){
+  opts = opts || {};
+  var includeEstoque = !!opts.estoque;
+  var head = '<thead><tr>' +
+    '<th>Região</th>' +
+    '<th class="num">Votos</th>' +
+    '<th class="num">% votos</th>' +
+    '<th class="num">Performance</th>' +
+    '<th class="num">Força do campo</th>' +
+    (includeEstoque ? '<th class="num">Estoque</th>' : '<th>Zona</th>') +
+  '</tr></thead>';
+  var body = '<tbody>' + ras.map(function(r){
+    return '<tr>' +
+      '<td class="dest">'+grupoTag(r)+r.ra+'</td>' +
+      '<td class="num">'+fmt(r.votos)+'</td>' +
+      '<td class="num">'+r.pct_votos_cand.toFixed(2).replace('.', ',')+'%</td>' +
+      '<td class="num" style="color:'+corPerfStr(r.perf)+';font-weight:600">'+fmtPerf(r.perf)+'</td>' +
+      '<td class="num" style="color:'+corPerfStr(r.perf_campo)+'">'+fmtPerf(r.perf_campo)+'</td>' +
+      (includeEstoque
+        ? '<td class="num" style="font-weight:600">'+fmt(r.estoque||0)+'</td>'
+        : '<td>'+zonaBadge(r.zona)+'</td>') +
+    '</tr>';
+  }).join('') + '</tbody>';
+  elTbl.innerHTML = head + body;
+}
+
+function insightDefesa(){
+  var n = META.n_defesa;
+  var pct = META.soma_pct_defesa.toFixed(1).replace('.', ',');
+  var v = fmt(META.votos_defesa);
+  var t = META.insight_defesa_tipo;
+  if(t === 'alta'){
+    return '<strong>Concentração alta.</strong> '+n+' RAs de defesa carregam <strong>'+pct+'%</strong> dos seus votos. Defender é a parte mais importante da estratégia.';
+  }
+  if(t === 'equilibrada'){
+    return '<strong>Base equilibrada.</strong> '+n+' RAs de defesa carregam <strong>'+pct+'%</strong> dos seus votos. Defender importa, mas precisa caminhar junto com captura em <em>Espaço a conquistar</em>.';
+  }
+  return '<strong>Base diluída.</strong> Só <strong>'+pct+'%</strong> dos seus votos vêm das '+n+' RAs de defesa. O grosso está em <em>Esperado</em> — defender aqui não basta; a estratégia precisa criar reduto antes.';
+}
+
+function renderPg3(){
+  renderTabRas(document.getElementById('pg3-tbl'), META.ras_defesa);
+  document.getElementById('pg3-insight').innerHTML = insightDefesa();
+}
+renderPg3();
+
+// ──────────────── PÁGINA 4 — Onde crescer ────────────────
+function insightCresc(){
+  var n = META.n_crescimento;
+  var est = META.estoque_total;
+  var t = META.insight_cresc_tipo;
+  if(t === 'vazio'){
+    return '<strong>Sem RAs em Espaço a conquistar.</strong> Seu campo já votou em você onde podia — crescimento exige ir além da base ideológica, criando vínculo em territórios novos.';
+  }
+  var conv5 = Math.round(est * 0.05);
+  if(t === 'grande'){
+    return '<strong>Espaço grande.</strong> '+n+' RAs com <strong>'+fmt(est)+' votos</strong> do seu campo ainda capturáveis. Conversão de 5% = <strong>+'+fmt(conv5)+' votos</strong>. <em>Frente principal de crescimento</em>.';
+  }
+  if(t === 'moderado'){
+    return '<strong>Espaço moderado.</strong> '+n+' RAs com <strong>'+fmt(est)+' votos</strong> disponíveis no campo. Conversão de 5% = <strong>+'+fmt(conv5)+' votos</strong>. Boa frente complementar à defesa.';
+  }
+  return '<strong>Espaço estreito.</strong> '+n+' RA'+(n>1?'s':'')+' com pouco voto disponível no campo. Crescimento por essa via tem rendimento limitado — priorize defesa.';
+}
+
+function renderPg4(){
+  var ras = META.ras_crescimento || [];
+  if(ras.length === 0){
+    document.getElementById('pg4-tbl').innerHTML =
+      '<tbody><tr><td style="padding:14pt;text-align:center;color:var(--muted);font-style:italic">Nenhuma RA neste perfil.</td></tr></tbody>';
+  } else {
+    renderTabRas(document.getElementById('pg4-tbl'), ras, {estoque:true});
+  }
+  document.getElementById('pg4-insight').innerHTML = insightCresc();
+}
+renderPg4();
+
+// ──────────────── PÁGINA 5 — Decisões periféricas ────────────────
+function renderTabPerifericas(elTbl, rasEsp, rasSem){
+  // Tabela única: Esperado top peso primeiro, depois top 5 Sem espaço
+  var head = '<thead><tr>' +
+    '<th>Região</th>' +
+    '<th class="num">Aptos</th>' +
+    '<th class="num">Peso DF</th>' +
+    '<th class="num">Performance</th>' +
+    '<th class="num">Força do campo</th>' +
+    '<th>Zona</th>' +
+  '</tr></thead>';
+  var rows = [].concat(rasEsp || [], (rasSem || []).slice(0, 5));
+  if(rows.length === 0){
+    elTbl.innerHTML = head +
+      '<tbody><tr><td colspan="6" style="padding:12pt;text-align:center;color:var(--muted);font-style:italic">Nenhuma RA periférica relevante para você.</td></tr></tbody>';
+    return;
+  }
+  var body = '<tbody>' + rows.map(function(r){
+    return '<tr>' +
+      '<td class="dest">'+grupoTag(r)+r.ra+'</td>' +
+      '<td class="num">'+fmt(r.aptos)+'</td>' +
+      '<td class="num">'+r.peso.toFixed(1).replace('.', ',')+'%</td>' +
+      '<td class="num" style="color:'+corPerfStr(r.perf)+';font-weight:600">'+fmtPerf(r.perf)+'</td>' +
+      '<td class="num" style="color:'+corPerfStr(r.perf_campo)+'">'+fmtPerf(r.perf_campo)+'</td>' +
+      '<td>'+zonaBadge(r.zona)+'</td>' +
+    '</tr>';
+  }).join('') + '</tbody>';
+  elTbl.innerHTML = head + body;
+}
+
+function insightPerifericas(){
+  var partes = [];
+  // Esperado top
+  var nE = META.n_esperado_top;
+  if(META.insight_esp_tipo === 'nenhum'){
+    partes.push('Nenhuma RA em <em>Esperado</em> entre as de top peso — recursos liberados para Defesa e Crescimento.');
+  } else if(META.insight_esp_tipo === 'poucos'){
+    partes.push('Atenção a <strong>'+nE+'</strong> RA'+(nE>1?'s':'')+' grande'+(nE>1?'s':'')+' neutra'+(nE>1?'s':'')+' — investimento pontual com retorno proporcional ao volume.');
+  } else {
+    partes.push('<strong>'+nE+'</strong> RAs grandes neutras — risco de dispersão; escolher 1-2 com narrativa mais clara em vez de pulverizar.');
+  }
+  // Sem espaço
+  var nS = META.n_sem_espaco;
+  var pct = META.pct_aptos_descartado.toFixed(1).replace('.', ',');
+  if(META.insight_sem_tipo === 'alto'){
+    partes.push('Em <strong>Sem espaço pelo campo</strong>: <strong>'+pct+'%</strong> do eleitorado do DF está fora do raio realista de captura ('+nS+' RAs) — perfil hiperconcentrado, reforça a importância da defesa.');
+  } else if(META.insight_sem_tipo === 'medio'){
+    partes.push('Em <strong>Sem espaço pelo campo</strong>: <strong>'+nS+' RAs</strong> descartadas, <strong>'+pct+'%</strong> do eleitorado do DF — eleitorado fora do raio direto.');
+  } else {
+    partes.push('Em <strong>Sem espaço pelo campo</strong>: apenas <strong>'+pct+'%</strong> do eleitorado descartado em '+nS+' RA'+(nS>1?'s':'')+' — perfil distribuído, a campanha cobre quase todo o DF.');
+  }
+  return partes.join(' ');
+}
+
+function renderPg5(){
+  renderTabPerifericas(
+    document.getElementById('pg5-tbl'),
+    META.ras_esperado_top,
+    META.ras_sem_espaco
+  );
+  document.getElementById('pg5-insight').innerHTML = insightPerifericas();
+}
+renderPg5();
+
+// ──────────────── PÁGINA 6 — Perfil dos grupos + Manual de comunicação ────────────────
+var PDAD_LINHAS = [
+  {key:'renda_pc',     lbl:'Renda per capita',    fmt:'rs',  thr:0.10, isAbs:false},
+  {key:'classe_ab',    lbl:'Classe A/B',          fmt:'pct', thr:5,    isAbs:true },
+  {key:'superior',     lbl:'Ensino superior',     fmt:'pct', thr:5,    isAbs:true },
+  {key:'serv_fed',     lbl:'Servidor federal',    fmt:'pct', thr:1.5,  isAbs:true },
+  {key:'serv_dist',    lbl:'Servidor distrital',  fmt:'pct', thr:1.5,  isAbs:true },
+  {key:'benef_social', lbl:'Beneficiário social', fmt:'pct', thr:2,    isAbs:true },
+  {key:'nativo_df',    lbl:'Nativo do DF',        fmt:'pct', thr:5,    isAbs:true },
+  {key:'idosos_60',    lbl:'Idosos 60+',          fmt:'pct', thr:3,    isAbs:true },
+];
+
+function fmtRs(v){ return 'R$ ' + Math.round(v).toLocaleString('pt-BR') }
+function fmtPct(v){ return v.toFixed(1).replace('.', ',') + '%' }
+
+function sinalCelula(card, valor, ref){
+  var d = valor - ref;
+  var dRel = card.isAbs ? d : (ref ? d / ref : 0);
+  if(Math.abs(dRel) < card.thr) return 'flat';
+  return d >= 0 ? 'up' : 'down';
+}
+
+// Manual de comunicação por grupo (Camada 1 — varia só na ordem por % votos)
+var COMUNICACAO_GRUPOS = {
+  "Brasília Central": {
+    mensagem: "Cosmopolita, debate público de qualidade, agenda nacional",
+    canal:    "Redes digitais qualificadas, mídia tradicional, eventos institucionais",
+    tom:      "Conceitual, com nuance e dados",
+  },
+  "Regiões Consolidadas": {
+    mensagem: "Pragmática, agenda concreta, segurança e mobilidade urbana",
+    canal:    "Redes + presença local + rádio",
+    tom:      "Direto, com dados aplicados",
+  },
+  "Regiões em Expansão": {
+    mensagem: "Cotidiano, prestação concreta, segurança e saúde",
+    canal:    "Rádio comunitário, presença territorial, WhatsApp",
+    tom:      "Acessível, vivo",
+  },
+  "Regiões em Formação": {
+    mensagem: "Prestação direta, vínculo personalíssimo, infraestrutura básica",
+    canal:    "Presença territorial, lideranças locais, boca-a-boca",
+    tom:      "Pessoal, mão na massa",
+  },
+};
+
+function renderPg6Tabela(){
+  var grupos = META.grupos_ped || [];
+  var df = DADOS.df_baseline || {};
+  // <colgroup> dá controle exato de larguras (evita quebra na col DF)
+  var colgroup = '<colgroup>' +
+    '<col class="col-var">' +
+    grupos.map(function(){ return '<col class="col-grupo">'; }).join('') +
+    '<col class="col-df">' +
+  '</colgroup>';
+  // Cabeçalho
+  var head = '<thead><tr>' +
+    '<th>Variável</th>' +
+    grupos.map(function(g){
+      return '<th class="num grupo-col">'+g.nome+'</th>';
+    }).join('') +
+    '<th class="num">DF</th>' +
+  '</tr></thead>';
+  // Corpo: 1 linha por variável
+  var body = '<tbody>' + PDAD_LINHAS.map(function(linha){
+    var refDF = df[linha.key];
+    var fmtVal = function(v){
+      if(v == null) return '—';
+      return linha.fmt === 'rs' ? fmtRs(v) : fmtPct(v);
+    };
+    var celulasGrupos = grupos.map(function(g){
+      var v = (g.pdad || {})[linha.key];
+      if(v == null) return '<td class="num">—</td>';
+      var sin = sinalCelula(linha, v, refDF);
+      return '<td class="num '+sin+'">'+fmtVal(v)+'</td>';
+    }).join('');
+    return '<tr>' +
+      '<td class="var-lbl">'+linha.lbl+'</td>' +
+      celulasGrupos +
+      '<td class="num df-col">'+fmtVal(refDF)+'</td>' +
+    '</tr>';
+  }).join('') + '</tbody>';
+  document.getElementById('pg6-tbl').innerHTML = colgroup + head + body;
+}
+
+function insightHeterogeneidade(){
+  // Detecta o spread Classe AB entre grupos (proxy mais robusto)
+  var grupos = META.grupos_ped || [];
+  if(grupos.length < 2) return 'Sem dados suficientes para análise de heterogeneidade.';
+  var vals = grupos.map(function(g){ return (g.pdad||{}).classe_ab; }).filter(function(v){ return v!=null; });
+  if(vals.length < 2) return '';
+  var maxV = Math.max.apply(null, vals);
+  var minV = Math.min.apply(null, vals);
+  var spread = maxV - minV;
+
+  // Grupo dominante (maior % votos)
+  var dom = grupos.slice().sort(function(a,b){ return b.pct_votos - a.pct_votos; })[0];
+
+  if(spread > 50){
+    return '<strong>Eleitorado radicalmente heterogêneo.</strong> A diferença entre os grupos é tão grande que falar com Brasília Central e com Regiões em Formação exige <em>duas estratégias separadas</em> — não a mesma campanha em volumes diferentes. Seu maior peso está em <strong>'+dom.nome+'</strong> ('+dom.pct_votos.toFixed(1).replace('.', ',')+'% dos seus votos).';
+  }
+  if(spread > 25){
+    return '<strong>Eleitorado heterogêneo.</strong> Os grupos divergem o bastante para mensagem e canal precisarem ser ajustados em cada um. Concentração em <strong>'+dom.nome+'</strong> ('+dom.pct_votos.toFixed(1).replace('.', ',')+'% dos votos) — sua mensagem-âncora deve sair daí, mas precisa ter variantes.';
+  }
+  return '<strong>Eleitorado relativamente homogêneo.</strong> A campanha pode operar com mensagem unificada com pequenos ajustes regionais. Maior peso em <strong>'+dom.nome+'</strong> ('+dom.pct_votos.toFixed(1).replace('.', ',')+'% dos votos).';
+}
+
+function renderPg6Mensagem(){
+  // Cards ordenados por % dos votos do candidato (descendente)
+  var grupos = (META.grupos_ped || []).slice()
+    .sort(function(a,b){ return b.pct_votos - a.pct_votos; });
+  var html = grupos.map(function(g){
+    var c = COMUNICACAO_GRUPOS[g.nome] || {mensagem:'—', canal:'—', tom:'—'};
+    var pctVotos = g.pct_votos.toFixed(1).replace('.', ',') + '% dos votos';
+    return '<div class="mensagem-card">' +
+      '<div class="mensagem-card-head">' +
+        '<div class="mensagem-card-tit">'+g.nome+'</div>' +
+        '<div class="mensagem-card-pct">'+pctVotos+'</div>' +
+      '</div>' +
+      '<div class="mensagem-card-line">' +
+        '<div class="mensagem-card-lbl">Mensagem</div>' +
+        '<div class="mensagem-card-val">'+c.mensagem+'</div>' +
+      '</div>' +
+      '<div class="mensagem-card-line">' +
+        '<div class="mensagem-card-lbl">Canal</div>' +
+        '<div class="mensagem-card-val">'+c.canal+'</div>' +
+      '</div>' +
+      '<div class="mensagem-card-line">' +
+        '<div class="mensagem-card-lbl">Tom</div>' +
+        '<div class="mensagem-card-val">'+c.tom+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  document.getElementById('pg6-mensagem').innerHTML = html;
+}
+
+function renderPg6(){
+  renderPg6Tabela();
+  document.getElementById('pg6-insight').innerHTML = insightHeterogeneidade();
+  renderPg6Mensagem();
+}
+
+renderPg6();
+
+// ──────────────── PÁGINA 7 — Alocação + Síntese ────────────────
+function renderPg7Aloc(){
+  var a = META.alocacao || {};
+  var dD = a.defesa || 0, dC = a.crescimento || 0, dE = a.esperado || 0;
+  var dS = 100 - dD - dC - dE; // sempre = 0 nas regras atuais, mas calculável
+  var head = '<thead><tr>' +
+    '<th>Frente</th><th class="num" style="width:120pt">% do esforço</th><th>Detalhe</th>' +
+  '</tr></thead>';
+  var linhas = [
+    {cls:'def',  zona:'comp', lbl:'Defesa', sub:'Reduto consolidado + Voto pessoal',
+     pct:dD, det: META.n_defesa+' RAs · '+fmt(META.votos_defesa)+' votos · '+META.soma_pct_defesa.toFixed(1).replace('.', ',')+'% da sua base'},
+    {cls:'cresc',zona:'conq', lbl:'Crescimento', sub:'Espaço a conquistar',
+     pct:dC, det: META.n_crescimento+' RAs · estoque '+fmt(META.estoque_total)+' votos do campo'},
+    {cls:'esp',  zona:'esp', lbl:'Esperado top', sub:'RAs grandes neutras (peso ≥ 5%)',
+     pct:dE, det: (META.n_esperado_top||0)+' RA'+(META.n_esperado_top===1?'':'s')},
+    {cls:'sem',  zona:'sem', lbl:'Sem espaço pelo campo', sub:'Alto investimento, baixo retorno',
+     pct:dS, det: META.n_sem_espaco+' RAs · '+META.pct_aptos_descartado.toFixed(1).replace('.', ',')+'% do eleitorado descartado'},
+  ];
+  var body = '<tbody>' + linhas.map(function(l){
+    return '<tr>' +
+      '<td>' +
+        '<div class="aloc-frente">' +
+          '<span class="zona-badge zona-'+l.zona+'">'+l.lbl+'</span>' +
+        '</div>' +
+        '<div class="aloc-detalhe" style="margin-top:3pt">'+l.sub+'</div>' +
+      '</td>' +
+      '<td class="num">' +
+        '<div style="display:flex;align-items:center;gap:8pt;justify-content:flex-end">' +
+          '<div class="aloc-bar-wrap"><div class="aloc-bar '+l.cls+'" style="width:'+l.pct+'%"></div></div>' +
+          '<span class="aloc-pct">'+l.pct+'%</span>' +
+        '</div>' +
+      '</td>' +
+      '<td class="aloc-detalhe">'+l.det+'</td>' +
+    '</tr>';
+  }).join('') + '</tbody>';
+  document.getElementById('pg7-aloc').innerHTML = head + body;
+}
+
+function justificativaAlocacao(){
+  var c = META.caso_alocacao;
+  // Usa distância ao limiar de eleição (mesma referência da Pág. 1)
+  var refPct = META.distancia_limiar_pct != null ? META.distancia_limiar_pct : META.patamar_pct;
+  var pp = Math.abs(refPct).toFixed(0);
+  var dir = refPct >= 0 ? 'acima' : 'abaixo';
+  if(c === 1){
+    return 'Base concentrada em poucas RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — sua eleição já tem folga. Defesa carrega a maior parte do esforço; Crescimento entra como frente complementar para capturar o estoque do campo.';
+  }
+  if(c === 2){
+    return 'Base distribuída entre várias RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — eleição com folga. Equilíbrio entre proteger o que já tem e expandir nas RAs onde o campo já vota.';
+  }
+  if(c === 3){
+    return 'Base concentrada em poucas RAs e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — tem reduto forte mas falta volume. Defesa e Crescimento dividem o esforço, com leve vantagem para Crescimento.';
+  }
+  return 'Sem reduto definido e <strong>'+pp+'% '+dir+' do limiar de eleição</strong> — Crescimento é a frente principal. Antes de defender, é preciso construir base.';
+}
+
+function renderPg7Orcamento(){
+  // ⚠ VALORES SIMULADOS — substituir por cálculo TSE 2022 quando disponível
+  var KPIS = [
+    {num:'R$ 1,2 mi',  lbl:'Limite legal de gastos', sub:'TSE 2022 — Distrital DF (1º turno)'},
+    {num:'R$ 380 mil', lbl:'Gasto mediano dos eleitos', sub:'simulado · valor pendente cálculo SPCE'},
+    {num:'R$ 17',      lbl:'Custo médio por voto', sub:'simulado · gasto eleito ÷ votos recebidos'},
+  ];
+  document.getElementById('pg7-orcamento').innerHTML = KPIS.map(function(k){
+    return '<div class="orcamento-card">' +
+      '<div class="orcamento-num">'+k.num+'</div>' +
+      '<div class="orcamento-lbl">'+k.lbl+'</div>' +
+      '<div class="orcamento-sub">'+k.sub+'</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderPg7Ancoras(){
+  // ① Identidade — só números, sem julgamento qualitativo
+  var refPct = META.distancia_limiar_pct != null ? META.distancia_limiar_pct : META.patamar_pct;
+  var pp = Math.abs(refPct).toFixed(0);
+  var dir = refPct >= 0 ? 'acima' : 'abaixo';
+  var soma_def = META.soma_pct_defesa.toFixed(1).replace('.', ',');
+  var ancora1 = '<strong>'+pp+'% '+dir+' do limiar de eleição</strong>. <strong>'+META.n_defesa+' RAs</strong> de Defesa carregam <strong>'+soma_def+'%</strong> dos seus votos.';
+
+  // ② Maior força — RA topo (já vem ordenada por Performance desc)
+  var topo = (META.ras_defesa || [])[0];
+  var ancora2;
+  if(topo){
+    var perfP = ((topo.perf - 1) * 100).toFixed(0);
+    var campoP = ((topo.perf_campo - 1) * 100).toFixed(0);
+    var sgnCampo = (campoP >= 0 ? '+' : '') + campoP + '%';
+    if(topo.zona === 'compartilhado'){
+      ancora2 = '<strong>'+topo.ra+'</strong> é seu reduto consolidado — Performance <strong>+'+perfP+'%</strong>, e o campo inteiro vai bem ali ('+sgnCampo+'). Onde você está em casa.';
+    } else {
+      ancora2 = '<strong>'+topo.ra+'</strong> é voto pessoal — Performance <strong>+'+perfP+'%</strong>, mas o campo é '+sgnCampo+'. Voto vinculado a você, não ao bloco — proteja a relação.';
+    }
+  } else {
+    ancora2 = 'Sem RA com Performance positiva no histórico.';
+  }
+
+  // ③ Maior espaço — RA topo de estoque (já ordenadas por estoque desc)
+  var topoE = (META.ras_crescimento || [])[0];
+  var ancora3;
+  if(topoE){
+    ancora3 = '<strong>'+topoE.ra+'</strong>: o campo já entrega <strong>'+fmt(topoE.votos_campo)+'</strong> votos lá e você captou só <strong>'+fmt(topoE.votos)+'</strong>. <strong>'+fmt(topoE.estoque)+' votos</strong> ainda disponíveis.';
+  } else {
+    ancora3 = 'Sem RAs em <em>Espaço a conquistar</em>. O campo já votou em você onde podia — crescimento exige ir além da base ideológica.';
+  }
+
+  // ④ Restrição — escolhe a mais marcante
+  var ancora4;
+  if(META.pct_aptos_descartado >= 30){
+    ancora4 = '<strong>'+META.pct_aptos_descartado.toFixed(1).replace('.', ',')+'%</strong> do eleitorado do DF está em <em>Sem espaço pelo campo</em> — território fora do raio realista. Alto investimento e baixo retorno por padrão.';
+  } else if(META.soma_pct_defesa < 40){
+    ancora4 = 'Base diluída: só <strong>'+META.soma_pct_defesa.toFixed(1).replace('.', ',')+'%</strong> dos votos vêm das RAs de Defesa. Antes de qualquer expansão, é preciso criar reduto.';
+  } else if(META.perfil === 'Concentrado' && (META.distancia_limiar_pct != null ? META.distancia_limiar_pct : META.patamar_pct) < 0){
+    ancora4 = '<strong>Base concentrada e abaixo do limiar</strong> — depende de poucas RAs e ainda assim falta volume. Risco de uma RA fraca derrubar a eleição.';
+  } else {
+    ancora4 = 'Sem restrição estrutural óbvia — sua base cobre território suficiente para a margem atual.';
+  }
+
+  var ancoras = [
+    {cls:'ident',  tit:'① IDENTIDADE',   txt:ancora1},
+    {cls:'forca',  tit:'② MAIOR FORÇA',  txt:ancora2},
+    {cls:'espaco', tit:'③ MAIOR ESPAÇO', txt:ancora3},
+    {cls:'restr',  tit:'④ RESTRIÇÃO',    txt:ancora4},
+  ];
+  document.getElementById('pg7-ancoras').innerHTML = ancoras.map(function(a){
+    return '<div class="ancora-card '+a.cls+'">' +
+      '<div class="ancora-tit">'+a.tit+'</div>' +
+      '<div class="ancora-txt">'+a.txt+'</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderPg7(){
+  renderPg7Aloc();
+  document.getElementById('pg7-justif').innerHTML = justificativaAlocacao();
+  renderPg7Orcamento();
+  renderPg7Ancoras();
+}
+renderPg7();
+
+// ──────────────── PÁGINA 8 — Apêndice 33 RAs ────────────────
+var ZONA_ORD_APENDICE = {compartilhado:1, pessoal:2, esperado:3, conquistar:4, sem_espaco:5};
+var ZONA_ROW_CLS = {compartilhado:'row-comp', pessoal:'row-pess',
+                    esperado:'', conquistar:'row-conq', sem_espaco:''};
+
+function renderPg8(){
+  var ras = (META.ras_apendice || []).slice();
+  // Ordena por Status (zona) → Performance desc
+  ras.sort(function(a,b){
+    var oa = ZONA_ORD_APENDICE[a.zona] || 99;
+    var ob = ZONA_ORD_APENDICE[b.zona] || 99;
+    if(oa !== ob) return oa - ob;
+    return (b.perf || 0) - (a.perf || 0);
+  });
+  var colgroup = '<colgroup>' +
+    '<col class="col-ra">' +
+    '<col class="col-num">' +
+    '<col class="col-num">' +
+    '<col class="col-num">' +
+    '<col class="col-num">' +
+    '<col class="col-zona">' +
+  '</colgroup>';
+  var head = '<thead><tr>' +
+    '<th>Região</th>' +
+    '<th class="num">Aptos</th>' +
+    '<th class="num">Votos</th>' +
+    '<th class="num">Perf.</th>' +
+    '<th class="num">Campo</th>' +
+    '<th>Status</th>' +
+  '</tr></thead>';
+  var body = '<tbody>' + ras.map(function(r){
+    var rowCls = ZONA_ROW_CLS[r.zona] || '';
+    return '<tr class="'+rowCls+'">' +
+      '<td class="ra-nome">'+grupoTag(r)+r.ra+'</td>' +
+      '<td class="num">'+fmt(r.aptos)+'</td>' +
+      '<td class="num">'+fmt(r.votos)+'</td>' +
+      '<td class="num" style="color:'+corPerfStr(r.perf)+';font-weight:600">'+fmtPerf(r.perf)+'</td>' +
+      '<td class="num" style="color:'+corPerfStr(r.perf_campo)+'">'+fmtPerf(r.perf_campo)+'</td>' +
+      '<td>'+zonaBadge(r.zona)+'</td>' +
+    '</tr>';
+  }).join('') + '</tbody>';
+  document.getElementById('pg8-tbl').innerHTML = colgroup + head + body;
+
+  // Bloco metodológico — listagem das RAs por grupo
+  var GRUPOS_DEF = [
+    ["Brasília Central",      ["Brasília (Plano Piloto)", "Jardim Botânico", "Lago Norte", "Lago Sul", "Park Way", "Sudoeste/Octogonal"]],
+    ["Regiões Consolidadas",  ["Águas Claras", "Candangolândia", "Cruzeiro", "Gama", "Guará", "Núcleo Bandeirante", "Sobradinho", "Sobradinho II", "Taguatinga", "Vicente Pires"]],
+    ["Regiões em Expansão",   ["Brazlândia", "Ceilândia", "Planaltina", "Riacho Fundo", "Riacho Fundo II", "SIA", "Samambaia", "Santa Maria", "São Sebastião", "Arniqueira"]],
+    ["Regiões em Formação",   ["Fercal", "Itapoã", "Paranoá", "Recanto das Emas", "SCIA/Estrutural", "Varjão", "Sol Nascente/Pôr do Sol"]],
+  ];
+  var html = GRUPOS_DEF.map(function(g){
+    var sigla = GRUPO_SIGLA[g[0]] || '';
+    return '<div>' +
+      '<div class="metodo-grupo-tit">' +
+        '<span style="display:inline-block;background:var(--s2);padding:1pt 5pt;border-radius:4pt;font-size:7pt;color:var(--amber);margin-right:4pt;font-weight:700">'+sigla+'</span>' +
+        g[0] +
+        ' <span style="color:var(--muted);font-weight:400">· '+g[1].length+' RAs</span>' +
+      '</div>' +
+      '<div class="metodo-grupo-ras">'+g[1].join(' · ')+'</div>' +
+    '</div>';
+  }).join('');
+  document.getElementById('pg8-metodo-grupos').innerHTML = html;
+}
+renderPg8();
+
+// Handshake — avisa o dashboard (opener) que estamos prontos para receber dados.
+// Insistimos algumas vezes para garantir que o listener do dashboard esteja registrado.
+_avisarReady();
+var _readyTries = 0;
+var _readyIv = setInterval(function(){
+  _readyTries++;
+  if(_readyTries > 10){ clearInterval(_readyIv); return; }
+  _avisarReady();
+}, 200);
+</script>
+</body>
+</html>

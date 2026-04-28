@@ -1,0 +1,591 @@
+"""
+Gera os dados consolidados de um candidato para alimentar o protótipo
+do playbook standalone (playbook_<NOME>.html).
+
+Saída: playbook_dados_<APELIDO>.json — embutido inline no HTML.
+
+Uso: python gerar_playbook_dados.py MANZONI
+"""
+import csv
+import json
+import sys
+import unicodedata
+from pathlib import Path
+
+ROOT = Path(__file__).parent
+
+# ────────── candidatos suportados ──────────────────────────────────
+CANDIDATOS = {
+    "MANZONI": {
+        "match": "MANZONI",
+        "apelido": "MANZONI",
+        "nome_curto": "THIAGO MANZONI",
+    },
+    "FELIX": {
+        "match": "FÁBIO FELIX",
+        "apelido": "FELIX",
+        "nome_curto": "FÁBIO FELIX",
+    },
+}
+
+# ────────── thresholds (alinhados com fase4_v2.py) ─────────────────
+T_PERF = 0.15  # ±15% para classificar
+T_CAMPO = 0.15
+
+# Configurações por cargo
+VAGAS_CARGO = {
+    "GOVERNADOR": 1, "SENADOR": 2,
+    "DEPUTADO_FEDERAL": 8, "DEPUTADO_DISTRITAL": 24,
+}
+PATAMAR_CARGO = {
+    "GOVERNADOR": 700000, "SENADOR": 550000,
+    "DEPUTADO_FEDERAL": 30000, "DEPUTADO_DISTRITAL": 18000,
+}
+
+# ────────── grupos PED-DF (DIEESE) — agrupamento socioeconômico ───
+# Adaptação editorial: "Satélites" → "Regiões"; "Fronteiras Urbanas" → "em Formação"
+GRUPOS_PED = [
+    ("Brasília Central", [
+        "Brasília (Plano Piloto)", "Jardim Botânico", "Lago Norte",
+        "Lago Sul", "Park Way", "Sudoeste/Octogonal",
+    ]),
+    ("Regiões Consolidadas", [
+        "Águas Claras", "Candangolândia", "Cruzeiro", "Gama", "Guará",
+        "Núcleo Bandeirante", "Sobradinho", "Sobradinho II",
+        "Taguatinga", "Vicente Pires",
+    ]),
+    ("Regiões em Expansão", [
+        "Brazlândia", "Ceilândia", "Planaltina", "Riacho Fundo",
+        "Riacho Fundo II", "SIA", "Samambaia", "Santa Maria",
+        "São Sebastião", "Arniqueira",
+    ]),
+    ("Regiões em Formação", [
+        "Fercal", "Itapoã", "Paranoá", "Recanto das Emas",
+        "SCIA/Estrutural", "Varjão", "Sol Nascente/Pôr do Sol",
+    ]),
+]
+
+# ────────── helpers ────────────────────────────────────────────────
+def _norm(s):
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().upper().strip()
+
+
+def status_zona(perf, campo):
+    """Retorna a zona estratégica (5 categorias) a partir de Performance × Força do campo.
+    perf e campo são índices (1.00 = neutro)."""
+    if perf is None or campo is None:
+        return None
+    pdesv = perf - 1
+    cdesv = campo - 1
+    if pdesv >= T_PERF and cdesv >= T_CAMPO:
+        return "compartilhado"  # Reduto consolidado
+    if pdesv >= T_PERF:
+        return "pessoal"  # Voto pessoal
+    if pdesv < -T_PERF and cdesv >= T_CAMPO:
+        return "conquistar"  # Espaço a conquistar
+    if pdesv < -T_PERF:
+        return "sem_espaco"  # Sem espaço pelo campo
+    return "esperado"
+
+
+# ────────── 1. tabela mestre (aptos + PDAD) ────────────────────────
+def carregar_mestre():
+    """Retorna dict {ra_nome: {aptos, pdad...}}"""
+    out = {}
+    path = ROOT / "outputs_fase2" / "tabela_mestre_ra.csv"
+    with path.open(encoding="utf-8") as f:
+        rdr = csv.DictReader(f)
+        for r in rdr:
+            ra = r["RA_NOME"].strip()
+            try:
+                aptos = int(float(r["EL_total_aptos"]))
+            except (ValueError, TypeError):
+                aptos = 0
+            out[ra] = {
+                "aptos": aptos,
+                # PDAD selecionado para o eleitor-tipo (8 KPIs da Pág. 6)
+                "renda_pc": float(r.get("DOM_renda_pc_media", 0) or 0),
+                "classe_ab": float(r.get("DOM_pct_classe_AB", 0) or 0),
+                "superior": float(r.get("MOR_pct_superior", 0) or 0),
+                "serv_fed": float(r.get("MOR_pct_servidor_fed", 0) or 0),
+                "serv_dist": float(r.get("MOR_pct_servidor_dist", 0) or 0),
+                "benef_social": float(r.get("MOR_pct_beneficio_social", 0) or 0),
+                "nativo_df": float(r.get("MOR_pct_nativo_df", 0) or 0),
+                "idosos_60": float(r.get("EL_pct_idoso_60mais", 0) or 0),
+            }
+    return out
+
+
+# ────────── 2. votos do candidato + Performance ────────────────────
+def carregar_votos_candidato(match):
+    """Retorna dict {ra_nome: {votos, perf, campo_str, partido, total_cand}}
+    e meta {nome_oficial, campo_str, partido, total}."""
+    path = ROOT / "outputs_fase3c" / "votos_candidato_ra.csv"
+    rows = []
+    nome_match = _norm(match)
+    with path.open(encoding="utf-8") as f:
+        rdr = csv.DictReader(f)
+        for r in rdr:
+            if _norm(r["NM_CANDIDATO"]).find(nome_match) >= 0 and r["DS_CARGO"] == "DEPUTADO_DISTRITAL":
+                rows.append(r)
+    if not rows:
+        raise RuntimeError(f"Candidato '{match}' não encontrado em votos_candidato_ra.csv")
+    meta = {
+        "nome": rows[0]["NM_CANDIDATO"].strip(),
+        "campo": rows[0]["CAMPO"].strip(),
+        "partido": rows[0]["SG_PARTIDO"].strip(),
+        "cargo": rows[0]["DS_CARGO"].strip(),
+        "total": int(rows[0]["TOTAL_CAND"]),
+    }
+    por_ra = {}
+    for r in rows:
+        ra = r["RA_NOME"].strip()
+        por_ra[ra] = {
+            "votos": int(r["QT_VOTOS_RA"]),
+            "perf": float(r["INDICE_SOBRE"]),  # já é o sobre-índice
+            "pct_do_campo": float(r["PCT_DO_CAMPO"]),
+        }
+    return meta, por_ra
+
+
+# ────────── 3. votos do campo + Força do campo ─────────────────────
+def carregar_votos_campo(campo, cargo="DEPUTADO_DISTRITAL"):
+    """Retorna dict {ra_nome: votos_campo} e total do campo no DF."""
+    path = ROOT / "outputs_fase3c" / "votos_campo_ra.csv"
+    por_ra = {}
+    with path.open(encoding="utf-8") as f:
+        rdr = csv.DictReader(f)
+        for r in rdr:
+            if r["CAMPO"] == campo and r["DS_CARGO"] == cargo:
+                ra = r["RA_NOME"].strip()
+                por_ra[ra] = int(r["QT_VOTOS"])
+    total = sum(por_ra.values())
+    return por_ra, total
+
+
+# ────────── 4. consolidar tudo ─────────────────────────────────────
+def gerar_dados(apelido):
+    cfg = CANDIDATOS[apelido]
+    mestre = carregar_mestre()
+    meta, votos_cand = carregar_votos_candidato(cfg["match"])
+    votos_campo, total_campo = carregar_votos_campo(meta["campo"])
+
+    # Aptos totais DF
+    aptos_df = sum(d["aptos"] for d in mestre.values())
+
+    # Total de votos do cargo (todos os campos somados) — pra calcular PESO de cada RA
+    # Reaproveita a coluna TOTAL do votos_campo_ra.csv: TOTAL = total RA todos os campos
+    # Soma os totais únicos por RA
+    total_cargo_por_ra = {}
+    path = ROOT / "outputs_fase3c" / "votos_campo_ra.csv"
+    with path.open(encoding="utf-8") as f:
+        rdr = csv.DictReader(f)
+        for r in rdr:
+            if r["DS_CARGO"] != "DEPUTADO_DISTRITAL":
+                continue
+            ra = r["RA_NOME"].strip()
+            total_cargo_por_ra[ra] = int(r["TOTAL"])
+    total_cargo_df = sum(total_cargo_por_ra.values())
+
+    # Por RA: consolida tudo
+    ras = []
+    for ra, m in mestre.items():
+        aptos = m["aptos"]
+        if not aptos:
+            continue
+        v_cand = votos_cand.get(ra, {}).get("votos", 0)
+        perf_cand = votos_cand.get(ra, {}).get("perf")
+        v_campo = votos_campo.get(ra, 0)
+        # Força do campo: (votos_campo_ra / total_campo) / (aptos_ra / aptos_df)
+        if total_campo > 0 and aptos > 0:
+            perf_campo = (v_campo / total_campo) / (aptos / aptos_df)
+        else:
+            perf_campo = None
+        zona = status_zona(perf_cand, perf_campo)
+        # % dos votos do candidato (frequência relativa)
+        pct_votos_cand = (v_cand / meta["total"] * 100) if meta["total"] else 0
+        # Peso eleitoral (= % do cargo no DF que veio dessa RA)
+        peso = (total_cargo_por_ra.get(ra, 0) / total_cargo_df * 100) if total_cargo_df else 0
+
+        # Grupo socioeconômico (BC/RC/RE/RF)
+        grupo_ra = next((nome for nome, lst in GRUPOS_PED if ra in lst), "—")
+        ras.append({
+            "ra": ra,
+            "aptos": aptos,
+            "votos": v_cand,
+            "votos_campo": v_campo,
+            "pct_votos_cand": round(pct_votos_cand, 2),
+            "perf": perf_cand,
+            "perf_campo": perf_campo,
+            "zona": zona,
+            "grupo": grupo_ra,
+            "peso": round(peso, 2),
+            # PDAD
+            "renda_pc": m["renda_pc"],
+            "classe_ab": m["classe_ab"],
+            "superior": m["superior"],
+            "serv_fed": m["serv_fed"],
+            "serv_dist": m["serv_dist"],
+            "benef_social": m["benef_social"],
+            "nativo_df": m["nativo_df"],
+            "idosos_60": m["idosos_60"],
+        })
+
+    # Ordena por Performance descendente para análises
+    ras.sort(key=lambda x: (x["perf"] if x["perf"] is not None else -9), reverse=True)
+
+    # ─── Métricas agregadas (Pág. 1 = só descritivas) ───
+    # Perfil de votação: σ do desvio percentual da Performance (mesma regra do dashboard)
+    # σ<30 = Distribuído · 30-60 = Híbrido · ≥60 = Concentrado
+    desvios = [(r["perf"] - 1) * 100 for r in ras if r["perf"] is not None]
+    if desvios:
+        media = sum(desvios) / len(desvios)
+        var = sum((d - media) ** 2 for d in desvios) / len(desvios)
+        sigma = var ** 0.5
+    else:
+        sigma = 0
+    if sigma < 30:
+        perfil = "Distribuído"
+    elif sigma < 60:
+        perfil = "Híbrido"
+    else:
+        perfil = "Concentrado"
+    patamar_ref = PATAMAR_CARGO.get(meta["cargo"], 18000)
+    patamar_pct = round((meta["total"] / patamar_ref - 1) * 100, 1)
+    n_redutos = sum(1 for r in ras if r["zona"] in ("compartilhado", "pessoal"))
+
+    # Métricas DESCRITIVAS para a Pág. 1 (sem usar conceitos da Pág. 2)
+    pct_do_cargo = round(meta["total"] / total_cargo_df * 100, 2) if total_cargo_df else 0
+    pct_no_campo = round(meta["total"] / total_campo * 100, 2) if total_campo else 0
+    n_ras_com_voto = sum(1 for r in ras if r["votos"] > 0)
+
+    # Top 3 RAs por volume bruto de votos
+    ras_por_volume = sorted(ras, key=lambda x: x["votos"], reverse=True)
+    top3_volume = [{"ra": r["ra"], "votos": r["votos"], "pct": r["pct_votos_cand"]}
+                   for r in ras_por_volume[:3]]
+    maior_ra = top3_volume[0] if top3_volume else None
+
+    # ─── RA exemplo (Pág. 2 — usada na frase didática da Performance) ───
+    # Pega a RA com MAIOR Performance positiva entre as do candidato com voto > 0.
+    # Pré-requisitos pra ser bom exemplo: aptos > 0 e votos > 0.
+    ra_exemplo = None
+    cand_perfs = [r for r in ras if r["votos"] > 0 and r["perf"] is not None and r["perf"] > 1]
+    if cand_perfs:
+        topo = max(cand_perfs, key=lambda r: r["perf"])
+        pct_apt = round(topo["aptos"] / aptos_df * 100, 2) if aptos_df else 0
+        pct_vot = round(topo["votos"] / meta["total"] * 100, 2) if meta["total"] else 0
+        ra_exemplo = {
+            "ra": topo["ra"],
+            "aptos": topo["aptos"],
+            "votos": topo["votos"],
+            "pct_aptos_df": pct_apt,    # % do eleitorado do DF que esta RA representa
+            "pct_votos_cand": pct_vot,  # % dos votos do candidato que vieram daqui
+            "perf_pct": round((topo["perf"] - 1) * 100, 1),
+            "zona": topo["zona"],
+        }
+
+    # ─── Pág. 3 — RAs de Defesa (Reduto consolidado + Voto pessoal) ───
+    # já sorted por Performance desc desde o início (linha onde fazemos sort em ras)
+    ras_defesa = [r for r in ras if r["zona"] in ("compartilhado", "pessoal")]
+    votos_defesa = sum(r["votos"] for r in ras_defesa)
+    soma_pct_defesa = round(sum(r["pct_votos_cand"] for r in ras_defesa), 1)
+
+    # Insight: 3 templates por nível de concentração
+    if soma_pct_defesa >= 70:
+        insight_defesa_tipo = "alta"
+    elif soma_pct_defesa >= 40:
+        insight_defesa_tipo = "equilibrada"
+    else:
+        insight_defesa_tipo = "diluida"
+
+    # ─── Pág. 4 — RAs de Crescimento (Espaço a conquistar) ───
+    ras_crescimento = [r for r in ras if r["zona"] == "conquistar"]
+    # ordenar por estoque potencial (votos do campo - votos do candidato)
+    for r in ras_crescimento:
+        r["estoque"] = max(0, (r["votos_campo"] or 0) - (r["votos"] or 0))
+    ras_crescimento.sort(key=lambda x: x["estoque"], reverse=True)
+    estoque_total = sum(r["estoque"] for r in ras_crescimento)
+
+    # Insight crescimento: 4 templates
+    if not ras_crescimento:
+        insight_cresc_tipo = "vazio"
+    else:
+        ratio_estoque = estoque_total / meta["total"] if meta["total"] else 0
+        if ratio_estoque >= 0.30:
+            insight_cresc_tipo = "grande"
+        elif ratio_estoque >= 0.10:
+            insight_cresc_tipo = "moderado"
+        else:
+            insight_cresc_tipo = "estreito"
+
+    # ─── Pág. 5 — Decisões periféricas ───
+    # Esperado top peso: RAs em Esperado com peso ≥ 5% dos votos do cargo
+    ras_esperado_top = [r for r in ras if r["zona"] == "esperado" and r["peso"] >= 5.0]
+    ras_esperado_top.sort(key=lambda x: x["peso"], reverse=True)
+
+    # Insight Esperado top: 3 templates por contagem
+    n_esp_top = len(ras_esperado_top)
+    if n_esp_top == 0:
+        insight_esp_tipo = "nenhum"
+    elif n_esp_top <= 3:
+        insight_esp_tipo = "poucos"
+    else:
+        insight_esp_tipo = "muitos"
+
+    # Sem espaço pelo campo: TODAS as RAs nessa zona, ordenadas por aptos desc
+    ras_sem_espaco = [r for r in ras if r["zona"] == "sem_espaco"]
+    ras_sem_espaco.sort(key=lambda x: x["aptos"], reverse=True)
+    aptos_sem_espaco_total = sum(r["aptos"] for r in ras_sem_espaco)
+    pct_aptos_descartado = round(aptos_sem_espaco_total / aptos_df * 100, 1) if aptos_df else 0
+
+    # Insight Sem espaço: 3 templates por % aptos descartado
+    if pct_aptos_descartado >= 30:
+        insight_sem_tipo = "alto"
+    elif pct_aptos_descartado >= 10:
+        insight_sem_tipo = "medio"
+    else:
+        insight_sem_tipo = "baixo"
+
+    # ─── Distribuição por grupos PED-DF (Pág. 1) ───
+    ras_por_nome = {r["ra"]: r for r in ras}
+    pdad_keys_grupo = ["renda_pc", "classe_ab", "superior", "serv_fed",
+                       "serv_dist", "benef_social", "nativo_df", "idosos_60"]
+    grupos = []
+    for nome_grupo, lst in GRUPOS_PED:
+        aptos_g = sum(ras_por_nome[r]["aptos"] for r in lst if r in ras_por_nome)
+        votos_g = sum(ras_por_nome[r]["votos"] for r in lst if r in ras_por_nome)
+        # Perfil PDAD do grupo (ponderado por aptos)
+        pdad_grupo = {}
+        for k in pdad_keys_grupo:
+            s = 0
+            w = 0
+            for raN in lst:
+                r = ras_por_nome.get(raN)
+                if r and r["aptos"] and r.get(k) is not None:
+                    s += r[k] * r["aptos"]
+                    w += r["aptos"]
+            pdad_grupo[k] = round(s / w, 2) if w else None
+        grupos.append({
+            "nome": nome_grupo,
+            "n_ras": len(lst),
+            "aptos": aptos_g,
+            "votos": votos_g,
+            "pct_eleitorado": round(aptos_g / aptos_df * 100, 1) if aptos_df else 0,
+            "pct_votos": round(votos_g / meta["total"] * 100, 1) if meta["total"] else 0,
+            "pdad": pdad_grupo,
+        })
+
+    # Eleito? Rankeia todos os candidatos do cargo por total de votos.
+    eleito = False
+    posicao_geral = None
+    posicao_eleitos = None
+    n_candidatos_cargo = 0
+    n_vagas = VAGAS_CARGO.get(meta["cargo"], 24)
+    ranking = []
+    cand_csv = ROOT / "outputs_fase0" / "candidatos_2022.csv"
+    if cand_csv.exists():
+        # CSV usa "DEPUTADO DISTRITAL" (espaço); meta["cargo"] usa "DEPUTADO_DISTRITAL"
+        cargo_raw = meta["cargo"].replace("_", " ")
+        totais = {}
+        with cand_csv.open(encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r.get("DS_CARGO") != cargo_raw:
+                    continue
+                nome = r["NM_VOTAVEL"].strip()
+                totais[nome] = int(r["TOTAL_VOTOS"])
+        ranking = sorted(totais.items(), key=lambda x: x[1], reverse=True)
+        n_candidatos_cargo = len(ranking)
+        top = [n for n, _ in ranking[:n_vagas]]
+        eleito = meta["nome"] in top
+        for i, (n, _v) in enumerate(ranking, start=1):
+            if n == meta["nome"]:
+                posicao_geral = i
+                if eleito:
+                    posicao_eleitos = i
+                break
+
+    # ─── Distância ao limiar de eleição ───
+    # Conceito: folga sobre o ponto crítico de definição da eleição.
+    # 1º a (n_vagas-1)        → referencial = candidato na posição n_vagas (último a entrar)
+    # n_vagas (último eleito) → referencial = posição n_vagas+1 (1º suplente)
+    # Não eleitos             → referencial = posição n_vagas (último a entrar)
+    limiar_votos = None
+    limiar_posicao = None
+    limiar_nome = None
+    distancia_limiar_pct = None
+    distancia_limiar_votos = None
+    if posicao_geral is not None and n_candidatos_cargo > n_vagas:
+        if posicao_geral < n_vagas:
+            limiar_posicao = n_vagas
+        elif posicao_geral == n_vagas:
+            limiar_posicao = n_vagas + 1
+        else:
+            limiar_posicao = n_vagas
+        if limiar_posicao <= n_candidatos_cargo:
+            limiar_nome, limiar_votos = ranking[limiar_posicao - 1]
+            if limiar_votos:
+                distancia_limiar_pct = round((meta["total"] / limiar_votos - 1) * 100, 1)
+                distancia_limiar_votos = meta["total"] - limiar_votos
+
+    # ─── Pág. 7 — Alocação + Síntese ───
+    # Caso baseado em Perfil × Distância ao limiar de eleição (mesma referência da Pág. 1)
+    ref_pct = distancia_limiar_pct if distancia_limiar_pct is not None else patamar_pct
+    acima = ref_pct >= 0
+    if perfil == "Concentrado":
+        caso_aloc = 1 if acima else 3
+    else:
+        caso_aloc = 2 if acima else 4
+    ALOC_BASE = {
+        1: {"defesa": 60, "crescimento": 30, "esperado": 10},
+        2: {"defesa": 50, "crescimento": 35, "esperado": 15},
+        3: {"defesa": 45, "crescimento": 45, "esperado": 10},
+        4: {"defesa": 40, "crescimento": 45, "esperado": 15},
+    }
+    alocacao = dict(ALOC_BASE[caso_aloc])
+    # Ajuste: se não tem RA em Crescimento, redistribui 50/50 entre Defesa e Esperado top
+    if not ras_crescimento:
+        extra = alocacao["crescimento"]
+        alocacao["crescimento"] = 0
+        alocacao["defesa"] += extra // 2
+        alocacao["esperado"] += extra - (extra // 2)
+    # Ajuste: se não tem Esperado top, redistribui pra Defesa
+    if n_esp_top == 0:
+        extra = alocacao["esperado"]
+        alocacao["esperado"] = 0
+        alocacao["defesa"] += extra
+
+    # ─── PDAD baseline DF (média ponderada por aptos) ───
+    pdad_keys = ["renda_pc", "classe_ab", "superior", "serv_fed", "serv_dist",
+                 "benef_social", "nativo_df", "idosos_60"]
+    df_baseline = {}
+    for k in pdad_keys:
+        s = 0
+        w = 0
+        for ra in mestre.values():
+            if ra["aptos"] and ra[k] is not None:
+                s += ra[k] * ra["aptos"]
+                w += ra["aptos"]
+        df_baseline[k] = round(s / w, 2) if w else None
+
+    # ─── PDAD eleitor-tipo (média ponderada pelos votos do candidato) ───
+    eleitor_tipo = {}
+    for k in pdad_keys:
+        s = 0
+        w = 0
+        for r in ras:
+            if r["votos"] and r[k] is not None:
+                s += r[k] * r["votos"]
+                w += r["votos"]
+        eleitor_tipo[k] = round(s / w, 2) if w else None
+
+    return {
+        "meta": {
+            "nome": meta["nome"],
+            "nome_curto": cfg["nome_curto"],
+            "apelido": apelido,
+            "partido": meta["partido"],
+            "campo": meta["campo"],
+            "cargo": meta["cargo"],
+            "total": meta["total"],
+            "eleito": eleito,
+            "perfil": perfil,
+            "sigma_perf": round(sigma, 1),
+            "patamar_pct": patamar_pct,
+            "n_redutos": n_redutos,
+            "aptos_df": aptos_df,
+            # descritivas Pág. 1
+            "pct_do_cargo": pct_do_cargo,
+            "pct_no_campo": pct_no_campo,
+            "total_cargo_df": total_cargo_df,
+            "total_campo_df": total_campo,
+            "n_ras_com_voto": n_ras_com_voto,
+            "n_ras_total": len(ras),
+            "posicao_geral": posicao_geral,
+            "n_candidatos_cargo": n_candidatos_cargo,
+            "top3_volume": top3_volume,
+            "maior_ra": maior_ra,
+            "grupos_ped": grupos,
+            "ra_exemplo": ra_exemplo,
+            # Pág. 3
+            "ras_defesa": ras_defesa,
+            "n_defesa": len(ras_defesa),
+            "votos_defesa": votos_defesa,
+            "soma_pct_defesa": soma_pct_defesa,
+            "insight_defesa_tipo": insight_defesa_tipo,
+            # Pág. 4
+            "ras_crescimento": ras_crescimento,
+            "n_crescimento": len(ras_crescimento),
+            "estoque_total": estoque_total,
+            "insight_cresc_tipo": insight_cresc_tipo,
+            # Pág. 5
+            "ras_esperado_top": ras_esperado_top,
+            "n_esperado_top": n_esp_top,
+            "insight_esp_tipo": insight_esp_tipo,
+            "ras_sem_espaco": ras_sem_espaco,
+            "n_sem_espaco": len(ras_sem_espaco),
+            "aptos_sem_espaco_total": aptos_sem_espaco_total,
+            "pct_aptos_descartado": pct_aptos_descartado,
+            "insight_sem_tipo": insight_sem_tipo,
+            # Pág. 7
+            "caso_alocacao": caso_aloc,
+            "alocacao": alocacao,
+            # Pág. 8 — todas 33 RAs (já incluem grupo)
+            "ras_apendice": ras,
+            "n_vagas": n_vagas,
+            "limiar_posicao": limiar_posicao,
+            "limiar_votos": limiar_votos,
+            "limiar_nome": limiar_nome,
+            "distancia_limiar_pct": distancia_limiar_pct,
+            "distancia_limiar_votos": distancia_limiar_votos,
+        },
+        "ras": ras,
+        "df_baseline": df_baseline,
+        "eleitor_tipo": eleitor_tipo,
+    }
+
+
+def gerar_html(apelido, dados):
+    """Lê playbook_template.html, injeta os dados e salva como playbook_<APELIDO>.html"""
+    tpl_path = ROOT / "playbook_template.html"
+    if not tpl_path.exists():
+        print(f"  (template não encontrado: {tpl_path}; pulei a geração de HTML)")
+        return None
+    tpl = tpl_path.read_text(encoding="utf-8")
+    if "__DADOS_JSON__" not in tpl:
+        print("  ⚠ template não tem placeholder __DADOS_JSON__")
+        return None
+    json_str = json.dumps(dados, ensure_ascii=False, indent=2)
+    html = tpl.replace("__DADOS_JSON__", json_str)
+    # também substitui o título <title> e nome no <h1>, se o template usar marcadores
+    html = html.replace("THIAGO MANZONI", dados["meta"]["nome_curto"])
+    out = ROOT / f"playbook_{apelido}.html"
+    out.write_text(html, encoding="utf-8")
+    return out
+
+
+# ────────── main ───────────────────────────────────────────────────
+if __name__ == "__main__":
+    apelido = sys.argv[1] if len(sys.argv) > 1 else "MANZONI"
+    if apelido not in CANDIDATOS:
+        print(f"Candidato desconhecido: {apelido}. Disponíveis: {list(CANDIDATOS)}")
+        sys.exit(1)
+    dados = gerar_dados(apelido)
+    out_path = ROOT / f"playbook_dados_{apelido}.json"
+    with out_path.open("w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+    print(f"OK json: {out_path}")
+    html_path = gerar_html(apelido, dados)
+    if html_path:
+        print(f"OK html: {html_path}")
+    # Resumo na tela
+    m = dados["meta"]
+    print(f"\n  {m['nome']}  ({m['partido']} · {m['campo']})")
+    print(f"  Total: {m['total']:,} votos · Eleito: {m['eleito']} · Posição: {m['posicao_geral']}/{m['n_candidatos_cargo']}")
+    print(f"  % do cargo: {m['pct_do_cargo']:.2f}%  ·  RAs com voto: {m['n_ras_com_voto']}/{m['n_ras_total']}")
+    print(f"  Maior RA: {m['maior_ra']['ra']} ({m['maior_ra']['votos']:,} votos)")
+    print(f"  Perfil: {m['perfil']} (σ={m['sigma_perf']})")
+    print(f"  Patamar: {m['patamar_pct']:+.1f}% (vs 18k)")
+    print(f"  Redutos (Reduto + V.P.): {m['n_redutos']}")
+    print(f"\n  Top 5 RAs (Performance):")
+    for r in dados["ras"][:5]:
+        print(f"    {r['ra']:30s}  votos {r['votos']:>5d}  perf {(r['perf']-1)*100:+6.1f}%  campo {(r['perf_campo']-1)*100:+6.1f}%  {r['zona']}")
