@@ -1327,7 +1327,7 @@ function renderPg1(){
     dlimCls = dlim >= 0 ? 'pos' : 'neg';
     var refLbl;
     if(META.posicao_geral === META.n_vagas){
-      refLbl = 'sobre o '+ordinal(META.limiar_posicao)+' (1º suplente, '+fmt(META.limiar_votos)+' votos)';
+      refLbl = 'sobre o '+ordinal(META.limiar_posicao)+' colocado ('+fmt(META.limiar_votos)+' votos)';
     } else if(META.posicao_geral < META.n_vagas){
       refLbl = 'sobre o '+ordinal(META.limiar_posicao)+' (último eleito, '+fmt(META.limiar_votos)+' votos)';
     } else {
