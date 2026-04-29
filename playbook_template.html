@@ -344,11 +344,19 @@ body {
 .conc-block.sem  { border-left-color: var(--z-sem) }
 .conc-block-head { margin-bottom:4pt; padding-bottom:3pt; border-bottom:0.5pt solid var(--bd) }
 .conc-rival {
-  display:flex; align-items:baseline; gap:6pt; padding:3pt 0;
+  display:flex; align-items:center; gap:5pt; padding:3pt 0;
   font-size:8.5pt;
 }
 .conc-rival + .conc-rival { border-top:0.5pt dashed var(--bd) }
 .conc-rival-rank { font-size:7pt; color:var(--muted); width:9pt; flex-shrink:0; font-weight:700 }
+.conc-rival-dot {
+  display:inline-block; width:5pt; height:5pt; border-radius:50%;
+  flex-shrink:0;
+}
+.conc-rival-dot.prog { background:var(--c-prog) }
+.conc-rival-dot.mod  { background:var(--c-mod) }
+.conc-rival-dot.lib  { background:var(--c-lib) }
+.conc-rival-dot.out  { background:var(--c-out) }
 .conc-rival-nome {
   font-weight:600; color:var(--txt); flex:1;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
@@ -357,6 +365,13 @@ body {
 .conc-rival-votos {
   font-size:8pt; color:var(--txt); font-variant-numeric:tabular-nums; flex-shrink:0;
 }
+.conc-rival-vs {
+  font-size:7pt; flex-shrink:0; font-variant-numeric:tabular-nums;
+  font-weight:600; min-width:30pt; text-align:right;
+}
+.conc-rival-vs.lo  { color:var(--eleito) }   /* verde — você lidera */
+.conc-rival-vs.mid { color:var(--amber) }    /* amber — disputa equilibrada */
+.conc-rival-vs.hi  { color:#A32D2D }         /* vermelho — rival te ultrapassa */
 .conc-empty {
   font-size:8pt; color:var(--muted); font-style:italic;
   padding:8pt 0; text-align:center;
@@ -1674,11 +1689,24 @@ function renderConcorrencia(){
       bloco += '<div class="conc-empty">Sem RAs nesta zona</div>';
     } else {
       bloco += rivais.map(function(rv, i){
+        var dotCls = CAMPO_CLS[rv.campo] || 'out';
+        var pct = rv.pct_vs_cand;
+        var pctTxt, pctCls;
+        if(pct == null){
+          pctTxt = '—'; pctCls = 'mid';
+        } else {
+          pctTxt = (pct >= 1000 ? Math.round(pct) : pct.toFixed(0)) + '%';
+          if(pct < 70)        pctCls = 'lo';
+          else if(pct <= 130) pctCls = 'mid';
+          else                pctCls = 'hi';
+        }
         return '<div class="conc-rival">' +
           '<span class="conc-rival-rank">'+(i+1)+'</span>' +
-          '<span class="conc-rival-nome" title="'+rv.nome_urna+' · '+rv.partido+'">'+rv.nome_urna+'</span>' +
+          '<span class="conc-rival-dot '+dotCls+'" title="'+(CAMPO_LBL[rv.campo]||rv.campo)+'"></span>' +
+          '<span class="conc-rival-nome" title="'+rv.nome_urna+' · '+rv.partido+' · '+(CAMPO_LBL[rv.campo]||rv.campo)+'">'+rv.nome_urna+'</span>' +
           '<span class="conc-rival-partido">'+rv.partido+'</span>' +
           '<span class="conc-rival-votos">'+fmt(rv.votos)+'</span>' +
+          '<span class="conc-rival-vs '+pctCls+'" title="Volume do rival como % dos seus votos na zona">'+pctTxt+'</span>' +
         '</div>';
       }).join('');
     }

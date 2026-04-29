@@ -242,7 +242,8 @@ def carregar_rivais_por_ra(cargo, exclude_nome=None):
 def montar_rivais(ras, cargo, exclude_nome):
     """Anexa top 3 rivais (NM_URNA) a cada entrada de `ras` (in-place) e
     retorna {zona: [top 3 rivais agregados]} somando votos do rival nas RAs
-    daquela zona estratégica do candidato."""
+    daquela zona estratégica do candidato. Cada rival agregado também traz
+    pct_vs_cand = votos do rival / votos do candidato na zona × 100."""
     rivais_lookup = carregar_rivais_por_ra(cargo, exclude_nome=exclude_nome)
     nomes_urna = carregar_nomes_urna(cargo)
 
@@ -250,6 +251,7 @@ def montar_rivais(ras, cargo, exclude_nome):
         return nomes_urna.get(nome) or nome.title()
 
     acc = defaultdict(lambda: defaultdict(lambda: {"votos": 0, "partido": "", "campo": ""}))
+    votos_cand_zona = defaultdict(int)
     for r in ras:
         ra = r["ra"]
         rivais_full = rivais_lookup.get(ra, [])
@@ -262,6 +264,7 @@ def montar_rivais(ras, cargo, exclude_nome):
         zona = r.get("zona")
         if not zona:
             continue
+        votos_cand_zona[zona] += r.get("votos") or 0
         for rv in rivais_full:
             slot = acc[zona][rv["nome"]]
             slot["votos"] += rv["votos"]
@@ -270,11 +273,14 @@ def montar_rivais(ras, cargo, exclude_nome):
 
     rivais_por_zona = {}
     for zona, mapa in acc.items():
+        v_cand = votos_cand_zona.get(zona, 0)
         lista = sorted([
             {"nome_urna": _curto(nome),
              "partido": m["partido"],
              "campo": m["campo"],
-             "votos": m["votos"]}
+             "votos": m["votos"],
+             "pct_vs_cand": (round(m["votos"] / v_cand * 100, 1)
+                             if v_cand > 0 else None)}
             for nome, m in mapa.items()
         ], key=lambda x: -x["votos"])[:3]
         rivais_por_zona[zona] = lista
