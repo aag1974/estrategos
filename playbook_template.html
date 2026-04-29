@@ -744,7 +744,6 @@ __DADOS_JSON__
 
   <div class="sec-title">Suas RAs de defesa</div>
   <table class="didat-tbl" id="pg3-tbl"></table>
-  <div class="aloc-detalhe" id="pg3-foras" style="margin-top:5pt;font-style:italic"></div>
 
   <div class="insight">
     <div class="insight-tit">Leitura</div>
@@ -826,7 +825,6 @@ __DADOS_JSON__
 
   <div class="sec-title">Suas RAs de crescimento</div>
   <table class="didat-tbl" id="pg4-tbl"></table>
-  <div class="aloc-detalhe" id="pg4-foras" style="margin-top:5pt;font-style:italic"></div>
 
   <div class="insight">
     <div class="insight-tit">Leitura</div>
@@ -1428,21 +1426,6 @@ function insightDefesa(){
 function renderPg3(){
   renderTabRas(document.getElementById('pg3-tbl'), META.ras_defesa);
   document.getElementById('pg3-insight').innerHTML = insightDefesa();
-  // Linha de rodapé: o que ficou fora desta tabela
-  var ras = (DADOS.ras||[]);
-  var nDef = META.ras_defesa.length;
-  var nConq = ras.filter(function(r){return r.zona==='conquistar';}).length;
-  var nEsp = ras.filter(function(r){return r.zona==='esperado';}).length;
-  var nSem = ras.filter(function(r){return r.zona==='sem_espaco';}).length;
-  var nFora = nConq + nEsp + nSem;
-  var partes = [];
-  if(nConq) partes.push('<strong>'+nConq+'</strong> em <em>Espaço a conquistar</em> (Pág. 4)');
-  if(nEsp)  partes.push('<strong>'+nEsp+'</strong> em <em>Esperado</em> (Pág. 5 e Apêndice)');
-  if(nSem)  partes.push('<strong>'+nSem+'</strong> em <em>Sem espaço pelo campo</em> (Pág. 5)');
-  var texto = nFora === 0
-    ? 'Todas as 33 RAs estão em Defesa.'
-    : 'Outras <strong>'+nFora+'</strong> RAs do DF não entram nesta lista por não serem de Defesa: ' + partes.join(' · ') + '. A tabela completa está no Apêndice (Pág. 9).';
-  document.getElementById('pg3-foras').innerHTML = texto;
 }
 renderPg3();
 
@@ -1473,19 +1456,6 @@ function renderPg4(){
     renderTabRas(document.getElementById('pg4-tbl'), ras, {estoque:true});
   }
   document.getElementById('pg4-insight').innerHTML = insightCresc();
-  // Linha de rodapé: o que ficou fora desta tabela
-  var todas = (DADOS.ras||[]);
-  var nDef = todas.filter(function(r){return r.zona==='compartilhado' || r.zona==='pessoal';}).length;
-  var nEsp = todas.filter(function(r){return r.zona==='esperado';}).length;
-  var nSem = todas.filter(function(r){return r.zona==='sem_espaco';}).length;
-  var nFora = nDef + nEsp + nSem;
-  var partes = [];
-  if(nDef) partes.push('<strong>'+nDef+'</strong> em <em>Defesa</em> (Pág. 3)');
-  if(nEsp) partes.push('<strong>'+nEsp+'</strong> em <em>Esperado</em> (Pág. 5 e Apêndice)');
-  if(nSem) partes.push('<strong>'+nSem+'</strong> em <em>Sem espaço pelo campo</em> (Pág. 5)');
-  document.getElementById('pg4-foras').innerHTML =
-    'Outras <strong>'+nFora+'</strong> RAs do DF não entram nesta lista por não serem de Crescimento: ' +
-    partes.join(' · ') + '. A tabela completa está no Apêndice (Pág. 9).';
 }
 renderPg4();
 
@@ -1550,20 +1520,15 @@ function renderPg5(){
     META.ras_sem_espaco
   );
   document.getElementById('pg5-insight').innerHTML = insightPerifericas();
-  // Linha de rodapé: o que ficou fora desta tabela
-  // Esperado total - Esperado top (peso ≥5%) = Esperado de baixo peso, que não aparece aqui
+  // Linha de rodapé: a única zona que oculta RAs aqui é Esperado de baixo peso
   var todas = (DADOS.ras||[]);
-  var nDef = todas.filter(function(r){return r.zona==='compartilhado' || r.zona==='pessoal';}).length;
-  var nConq = todas.filter(function(r){return r.zona==='conquistar';}).length;
-  var nEspTot = todas.filter(function(r){return r.zona==='esperado';}).length;
-  var nEspTop = (META.ras_esperado_top||[]).length;
-  var nEspBaixo = nEspTot - nEspTop;
-  var partes = [];
-  if(nDef)      partes.push('<strong>'+nDef+'</strong> em <em>Defesa</em> (Pág. 3)');
-  if(nConq)     partes.push('<strong>'+nConq+'</strong> em <em>Espaço a conquistar</em> (Pág. 4)');
-  if(nEspBaixo) partes.push('<strong>'+nEspBaixo+'</strong> em <em>Esperado</em> de baixo peso (peso &lt; 5% — ver Apêndice)');
-  document.getElementById('pg5-foras').innerHTML =
-    'RAs fora desta lista: ' + partes.join(' · ') + '. A tabela completa está no Apêndice (Pág. 9).';
+  var nEspBaixo = todas.filter(function(r){return r.zona==='esperado';}).length - (META.ras_esperado_top||[]).length;
+  var el = document.getElementById('pg5-foras');
+  if(el){
+    el.innerHTML = nEspBaixo > 0
+      ? '<strong>'+nEspBaixo+'</strong> RAs em <em>Esperado</em> de baixo peso (&lt; 5% dos votos) não aparecem aqui — ver Apêndice (Pág. 9).'
+      : '';
+  }
 }
 renderPg5();
 
