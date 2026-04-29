@@ -10,6 +10,7 @@ import csv
 import json
 import sys
 import unicodedata
+from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -184,6 +185,102 @@ def carregar_votos_campo(campo, cargo="DEPUTADO_DISTRITAL"):
     return por_ra, total
 
 
+# ────────── 4. rivais por RA + agregado por zona ──────────────────
+def carregar_nomes_urna(cargo):
+    """Retorna {NM_CANDIDATO: NM_URNA} a partir do cadastro TSE 2022 (DF).
+    cargo aqui usa underscore (ex: DEPUTADO_DISTRITAL); o CSV usa espaço."""
+    out = {}
+    path = ROOT / "outputs_tse_2022_DF" / "consulta_cand_DF.csv"
+    if not path.exists():
+        return out
+    cargo_raw = cargo.replace("_", " ")
+    with path.open(encoding="latin-1") as f:
+        rdr = csv.reader(f, delimiter=";")
+        header = [c.strip('"') for c in next(rdr)]
+        idx = {c: i for i, c in enumerate(header)}
+        for row in rdr:
+            if row[idx["DS_CARGO"]].strip('"').upper() != cargo_raw:
+                continue
+            nm = row[idx["NM_CANDIDATO"]].strip('"').strip()
+            urna = row[idx["NM_URNA_CANDIDATO"]].strip('"').strip()
+            if nm and urna:
+                out[nm] = urna
+    return out
+
+
+def carregar_rivais_por_ra(cargo, exclude_nome=None):
+    """Para cada RA, ranking decrescente de candidatos do cargo por QT_VOTOS_RA.
+    Retorna {ra: [{'nome', 'partido', 'campo', 'votos'}, ...]}."""
+    path = ROOT / "outputs_fase3c" / "votos_candidato_ra.csv"
+    by_ra = {}
+    excl = _norm(exclude_nome) if exclude_nome else None
+    with path.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["DS_CARGO"] != cargo:
+                continue
+            nome = r["NM_CANDIDATO"].strip()
+            if excl and _norm(nome) == excl:
+                continue
+            try:
+                v = int(r["QT_VOTOS_RA"])
+            except ValueError:
+                continue
+            if v <= 0:
+                continue
+            ra = r["RA_NOME"].strip()
+            by_ra.setdefault(ra, []).append({
+                "nome": nome,
+                "partido": r["SG_PARTIDO"].strip(),
+                "campo": r["CAMPO"].strip(),
+                "votos": v,
+            })
+    for ra in by_ra:
+        by_ra[ra].sort(key=lambda x: -x["votos"])
+    return by_ra
+
+
+def montar_rivais(ras, cargo, exclude_nome):
+    """Anexa top 3 rivais (NM_URNA) a cada entrada de `ras` (in-place) e
+    retorna {zona: [top 3 rivais agregados]} somando votos do rival nas RAs
+    daquela zona estratégica do candidato."""
+    rivais_lookup = carregar_rivais_por_ra(cargo, exclude_nome=exclude_nome)
+    nomes_urna = carregar_nomes_urna(cargo)
+
+    def _curto(nome):
+        return nomes_urna.get(nome) or nome.title()
+
+    acc = defaultdict(lambda: defaultdict(lambda: {"votos": 0, "partido": "", "campo": ""}))
+    for r in ras:
+        ra = r["ra"]
+        rivais_full = rivais_lookup.get(ra, [])
+        r["top_rivais"] = [{
+            "nome_urna": _curto(rv["nome"]),
+            "partido": rv["partido"],
+            "campo": rv["campo"],
+            "votos": rv["votos"],
+        } for rv in rivais_full[:3]]
+        zona = r.get("zona")
+        if not zona:
+            continue
+        for rv in rivais_full:
+            slot = acc[zona][rv["nome"]]
+            slot["votos"] += rv["votos"]
+            slot["partido"] = rv["partido"]
+            slot["campo"] = rv["campo"]
+
+    rivais_por_zona = {}
+    for zona, mapa in acc.items():
+        lista = sorted([
+            {"nome_urna": _curto(nome),
+             "partido": m["partido"],
+             "campo": m["campo"],
+             "votos": m["votos"]}
+            for nome, m in mapa.items()
+        ], key=lambda x: -x["votos"])[:3]
+        rivais_por_zona[zona] = lista
+    return rivais_por_zona
+
+
 # ────────── 4. consolidar tudo ─────────────────────────────────────
 def gerar_dados(apelido, sim_cargo=None, sim_nivel=None, sim_nome=None):
     """Gera dados do playbook. Quando sim_cargo + sim_nivel são informados,
@@ -293,6 +390,11 @@ def gerar_dados(apelido, sim_cargo=None, sim_nivel=None, sim_nome=None):
 
     # Ordena por Performance descendente para análises
     ras.sort(key=lambda x: (x["perf"] if x["perf"] is not None else -9), reverse=True)
+
+    # ─── Rivais por RA + agregado por zona (Concorrência F1+F2) ───
+    # Usa o nome civil real para excluir self. Em cenário simulado, o candidato
+    # não aparece no cargo destino — exclude_nome vira inócuo.
+    rivais_por_zona = montar_rivais(ras, cargo, meta["nome"])
 
     # ─── Métricas agregadas (Pág. 1 = só descritivas) ───
     # Perfil de votação: σ do desvio percentual da Performance (mesma regra do dashboard)
@@ -681,6 +783,8 @@ def gerar_dados(apelido, sim_cargo=None, sim_nivel=None, sim_nome=None):
             "alocacao": alocacao,
             "orcamento": orcamento,
             "simulado": simulado_info,
+            # Concorrência (Pág. 3, 4 e nova — top 3 rivais agregados por zona)
+            "rivais_por_zona": rivais_por_zona,
             # Pág. 8 — todas 33 RAs (já incluem grupo)
             "ras_apendice": ras,
             "n_vagas": n_vagas,

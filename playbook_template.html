@@ -205,6 +205,18 @@ body {
 .didat-tbl tr:last-child td { border-bottom:none }
 .didat-tbl td.dest { font-weight:600 }
 
+/* Coluna de rivais — 3 linhas stack, NM_URNA + votos */
+.didat-tbl td.rivais { vertical-align:top; padding:2pt 6pt; line-height:1.15 }
+.didat-tbl td.rivais > div {
+  font-size:6pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  max-width:42mm;
+}
+.didat-tbl td.rivais .v {
+  color:var(--muted); font-variant-numeric:tabular-nums;
+  margin-left:4pt;
+}
+.didat-tbl td.rivais .empty { color:var(--muted); font-style:italic; font-size:6pt }
+
 /* Etiqueta de grupo socioeconômico (BC/RC/RE/RF) — antes dos nomes de RAs */
 .grupo-tag {
   display:inline-block;
@@ -313,6 +325,42 @@ body {
   list-style:disc; font-size:8.5pt; line-height:1.5;
 }
 .zona-block-acoes li { margin-bottom:1pt }
+
+/* PÁGINA Concorrência — top 3 rivais agregados por zona */
+.conc-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:7pt; margin-top:5pt;
+}
+.conc-block {
+  border-radius:5pt; padding:7pt 10pt;
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+  border-left:2.5pt solid var(--amber);
+}
+.conc-block.comp { border-left-color: var(--z-comp) }
+.conc-block.pess { border-left-color: var(--z-pess) }
+.conc-block.esp  { border-left-color: var(--z-esp) }
+.conc-block.conq { border-left-color: var(--z-conq) }
+.conc-block.sem  { border-left-color: var(--z-sem) }
+.conc-block-head { margin-bottom:4pt; padding-bottom:3pt; border-bottom:0.5pt solid var(--bd) }
+.conc-rival {
+  display:flex; align-items:baseline; gap:6pt; padding:3pt 0;
+  font-size:8.5pt;
+}
+.conc-rival + .conc-rival { border-top:0.5pt dashed var(--bd) }
+.conc-rival-rank { font-size:7pt; color:var(--muted); width:9pt; flex-shrink:0; font-weight:700 }
+.conc-rival-nome {
+  font-weight:600; color:var(--txt); flex:1;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.conc-rival-partido { font-size:7pt; color:var(--muted); flex-shrink:0 }
+.conc-rival-votos {
+  font-size:8pt; color:var(--txt); font-variant-numeric:tabular-nums; flex-shrink:0;
+}
+.conc-empty {
+  font-size:8pt; color:var(--muted); font-style:italic;
+  padding:8pt 0; text-align:center;
+}
 
 /* PÁGINA 6 — Perfil dos grupos + manual de comunicação */
 .pdad-tbl {
@@ -594,6 +642,10 @@ __DADOS_JSON__
         <div class="sum-sub">Esperado em RAs grandes + Sem espaço pelo campo</div>
       </div>
       <div>
+        <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Concorrência por zona</span></div>
+        <div class="sum-sub">Top 3 rivais agregados em cada zona estratégica</div>
+      </div>
+      <div>
         <div class="sum-item"><span class="sum-bullet">•</span><span class="sum-tit">Quem é meu eleitor</span></div>
         <div class="sum-sub">Perfil socioeconômico agregado (PDAD)</div>
       </div>
@@ -613,7 +665,7 @@ __DADOS_JSON__
   </div>
 
   <div class="foot">
-    Página 1 de 9 · Fontes: <strong>PDAD 2021</strong> (IPEDF) · <strong>TSE 2022</strong> · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 1 de 10 · Fontes: <strong>PDAD 2021</strong> (IPEDF) · <strong>TSE 2022</strong> · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -627,7 +679,7 @@ __DADOS_JSON__
         <div class="hd-sub">O vocabulário deste documento</div>
       </div>
     </div>
-    <div class="hd-data">Página 2 de 9</div>
+    <div class="hd-data">Página 2 de 10</div>
   </div>
 
   <!-- Bloco 1: Performance + Força do campo (unificados) -->
@@ -723,7 +775,7 @@ __DADOS_JSON__
   <div class="patamar-grid" id="pg2-patamar"></div>
 
   <div class="foot">
-    Página 2 de 9 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 2 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -736,7 +788,7 @@ __DADOS_JSON__
         <div class="hd-sub">Reduto consolidado + Voto pessoal</div>
       </div>
     </div>
-    <div class="hd-data">Página 3 de 9</div>
+    <div class="hd-data">Página 3 de 10</div>
   </div>
 
   <div class="conceito-bloco">
@@ -804,7 +856,7 @@ __DADOS_JSON__
   </div>
 
   <div class="foot">
-    Página 3 de 9 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 3 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -817,7 +869,7 @@ __DADOS_JSON__
         <div class="hd-sub">Espaço a conquistar</div>
       </div>
     </div>
-    <div class="hd-data">Página 4 de 9</div>
+    <div class="hd-data">Página 4 de 10</div>
   </div>
 
   <div class="conceito-bloco">
@@ -859,7 +911,7 @@ __DADOS_JSON__
   </div>
 
   <div class="foot">
-    Página 4 de 9 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 4 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -872,7 +924,7 @@ __DADOS_JSON__
         <div class="hd-sub">Esperado em RAs grandes + Sem espaço pelo campo</div>
       </div>
     </div>
-    <div class="hd-data">Página 5 de 9</div>
+    <div class="hd-data">Página 5 de 10</div>
   </div>
 
   <div class="conceito-bloco">
@@ -939,7 +991,32 @@ __DADOS_JSON__
   </div>
 
   <div class="foot">
-    Página 5 de 9 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 5 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+  </div>
+</div>
+
+<div class="page" id="pgConc">
+  <div class="hd">
+    <div class="hd-l">
+      <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
+      <div class="hd-title-grp">
+        <div class="hd-title">Concorrência por zona</div>
+        <div class="hd-sub">Top 3 rivais agregados em cada zona estratégica</div>
+      </div>
+    </div>
+    <div class="hd-data">Página 6 de 10</div>
+  </div>
+
+  <div class="conceito-bloco">
+    <p>Quem disputa votos com você em cada zona estratégica? Cada bloco mostra os <strong>3 candidatos do mesmo cargo</strong> que mais somaram votos nas suas RAs daquela zona — referência rápida para identificar adversários consolidados (no <em>Reduto</em>) e principais rivais a vencer (no <em>Espaço a conquistar</em>).</p>
+  </div>
+
+  <div class="conc-grid" id="pg-conc-grid"></div>
+
+  <div class="aloc-detalhe" style="margin-top:9pt;font-style:italic">Para a leitura RA-a-RA da concorrência, com filtro por candidato e cargo, consulte o painel Estrategos.</div>
+
+  <div class="foot">
+    Página 6 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -952,7 +1029,7 @@ __DADOS_JSON__
         <div class="hd-sub">Perfil socioeconômico agregado (PDAD)</div>
       </div>
     </div>
-    <div class="hd-data">Página 6 de 9</div>
+    <div class="hd-data">Página 7 de 10</div>
   </div>
 
   <div class="conceito-bloco">
@@ -976,7 +1053,7 @@ __DADOS_JSON__
   </div>
 
   <div class="foot">
-    Página 6 de 9 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 7 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -989,7 +1066,7 @@ __DADOS_JSON__
         <div class="hd-sub">Limite legal · mediana eleitos · rubricas dos vencedores</div>
       </div>
     </div>
-    <div class="hd-data">Página 7 de 9</div>
+    <div class="hd-data">Página 8 de 10</div>
   </div>
 
   <div class="conceito-bloco">
@@ -1012,7 +1089,7 @@ __DADOS_JSON__
   </div>
 
   <div class="foot">
-    Página 7 de 9 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 8 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -1025,7 +1102,7 @@ __DADOS_JSON__
         <div class="hd-sub">Iniciativas por zona e os 4 achados-âncora</div>
       </div>
     </div>
-    <div class="hd-data">Página 8 de 9</div>
+    <div class="hd-data">Página 9 de 10</div>
   </div>
 
   <div class="conceito-bloco">
@@ -1039,7 +1116,7 @@ __DADOS_JSON__
   <div class="ancora-grid" id="pg7-ancoras"></div>
 
   <div class="foot">
-    Página 8 de 9 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 9 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -1052,7 +1129,7 @@ __DADOS_JSON__
         <div class="hd-sub">Tabela completa para consulta</div>
       </div>
     </div>
-    <div class="hd-data">Página 9 de 9</div>
+    <div class="hd-data">Página 10 de 10</div>
   </div>
 
   <div class="conceito-bloco">
@@ -1062,7 +1139,7 @@ __DADOS_JSON__
   <table class="apendice-tbl" id="pg8-tbl"></table>
 
   <div class="foot">
-    Página 9 de 9 · Fontes: <strong>PDAD 2021</strong> (IPEDF) · <strong>TSE 2022</strong> · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
+    Página 10 de 10 · Fontes: <strong>PDAD 2021</strong> (IPEDF) · <strong>TSE 2022</strong> · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
   </div>
 </div>
 
@@ -1153,6 +1230,7 @@ function rerenderAll(){
     if(typeof renderPg3 === 'function') renderPg3();
     if(typeof renderPg4 === 'function') renderPg4();
     if(typeof renderPg5 === 'function') renderPg5();
+    if(typeof renderConcorrencia === 'function') renderConcorrencia();
     if(typeof renderPg6 === 'function') renderPg6();
     if(typeof renderPg7 === 'function') renderPg7();
     if(typeof renderPg8 === 'function') renderPg8();
@@ -1451,6 +1529,14 @@ function renderTabRas(elTbl, ras, opts){
   elTbl.innerHTML = head + body;
 }
 
+function rivaisCell(rivais){
+  if(!rivais || !rivais.length) return '<div class="empty">—</div>';
+  return rivais.map(function(rv){
+    return '<div title="'+rv.nome_urna+' · '+rv.partido+'">'+rv.nome_urna+
+           '<span class="v">'+fmt(rv.votos)+'</span></div>';
+  }).join('');
+}
+
 function insightDefesa(){
   var n = META.n_defesa;
   var pct = META.soma_pct_defesa.toFixed(1).replace('.', ',');
@@ -1573,6 +1659,35 @@ function renderPg5(){
   }
 }
 renderPg5();
+
+// ──────────────── PÁGINA Concorrência — top 3 rivais por zona ────────────────
+function renderConcorrencia(){
+  var rpz = (META && META.rivais_por_zona) || {};
+  var zonas = ['compartilhado','pessoal','conquistar','esperado','sem_espaco'];
+  var clsMap = {compartilhado:'comp', pessoal:'pess', conquistar:'conq',
+                esperado:'esp', sem_espaco:'sem'};
+  var html = zonas.map(function(z){
+    var rivais = rpz[z] || [];
+    var bloco = '<div class="conc-block '+clsMap[z]+'">' +
+      '<div class="conc-block-head">'+zonaBadge(z)+'</div>';
+    if(!rivais.length){
+      bloco += '<div class="conc-empty">Sem RAs nesta zona</div>';
+    } else {
+      bloco += rivais.map(function(rv, i){
+        return '<div class="conc-rival">' +
+          '<span class="conc-rival-rank">'+(i+1)+'</span>' +
+          '<span class="conc-rival-nome" title="'+rv.nome_urna+' · '+rv.partido+'">'+rv.nome_urna+'</span>' +
+          '<span class="conc-rival-partido">'+rv.partido+'</span>' +
+          '<span class="conc-rival-votos">'+fmt(rv.votos)+'</span>' +
+        '</div>';
+      }).join('');
+    }
+    return bloco + '</div>';
+  }).join('');
+  var el = document.getElementById('pg-conc-grid');
+  if(el) el.innerHTML = html;
+}
+renderConcorrencia();
 
 // ──────────────── PÁGINA 6 — Perfil dos grupos + Manual de comunicação ────────────────
 var PDAD_LINHAS = [
