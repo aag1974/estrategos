@@ -562,6 +562,8 @@ __DADOS_JSON__
     <div class="hd-data" id="pg1-data"></div>
   </div>
 
+  <div id="pg1-simulado-banner" style="display:none"></div>
+
   <div class="cand-box" id="pg1-cand"></div>
 
   <div class="kpis" id="pg1-kpis"></div>
@@ -1262,6 +1264,22 @@ function renderPg1(){
                    DEPUTADO_FEDERAL:'Dep. Federal', DEPUTADO_DISTRITAL:'Dep. Distrital'};
   var subEl = document.getElementById('pg1-sub');
   if(subEl){ subEl.textContent = (CARGO_LBL[META.cargo] || META.cargo || '—') + ' · 2026'; }
+
+  // Banner de cenário simulado (Eleição para outro cargo / Novo candidato)
+  var sim = META.simulado;
+  var bannerEl = document.getElementById('pg1-simulado-banner');
+  if(bannerEl && sim){
+    var nivelLbl = {conservador:'Conservador (mínimo eleito)', possivel:'Possível (mediana eleitos)', favoravel:'Favorável (líder em votos)'}[sim.nivel] || sim.nivel;
+    var fatorPct = (sim.fator * 100).toFixed(0);
+    var refTxt = sim.tipo === 'estreante'
+      ? 'Performance projetada com base em <strong>'+sim.referencia+'</strong> ('+CARGO_LBL[sim.cargo_origem]+').'
+      : 'Mesma base territorial de <strong>'+sim.referencia+'</strong> ('+CARGO_LBL[sim.cargo_origem]+'), reescalada para o cargo destino.';
+    bannerEl.style.display = 'block';
+    bannerEl.style.cssText = 'display:block;background:#FEF3C7;border:0.5pt solid #D4A017;border-radius:5pt;padding:7pt 11pt;margin-bottom:8pt;font-size:9pt;line-height:1.4;color:#633806';
+    bannerEl.innerHTML =
+      '<div style="font-size:8pt;letter-spacing:1pt;text-transform:uppercase;color:#A16207;font-weight:700;margin-bottom:3pt">⚠ Cenário simulado · '+(sim.tipo==='estreante'?'Novo candidato':'Eleição para outro cargo')+'</div>' +
+      refTxt + ' Volume ajustado para o nível <strong>'+nivelLbl+'</strong> ('+fatorPct+'% do volume original).';
+  }
 
   // Bloco do candidato (sem "Perfil" — esse conceito é da Pág. 2)
   var box = document.getElementById('pg1-cand');

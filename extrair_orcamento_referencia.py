@@ -75,21 +75,27 @@ for cargo, lst in por_cargo.items():
     n = N_VAGAS_2022.get(cargo, 0)
     eleitos_sq.update(c["sq"] for c in lst[:n])
 
-# 4. Stats por cargo (entre eleitos)
+# 4. Stats por cargo (entre eleitos): GASTO + VOTOS
 def stats_cargo(cargo):
-    eleitos = sorted([gasto_por_sq[sq] for sq in eleitos_sq
-                      if meta_por_sq[sq]["cargo"] == cargo])
-    if not eleitos:
+    eleitos_cargo = [sq for sq in eleitos_sq if meta_por_sq[sq]["cargo"] == cargo]
+    if not eleitos_cargo:
         return None
-    n = len(eleitos)
+    gastos = sorted([gasto_por_sq[sq] for sq in eleitos_cargo])
+    votos = sorted([votos_chave.get((meta_por_sq[sq]["nr"], cargo), 0) for sq in eleitos_cargo])
+    n = len(eleitos_cargo)
     return {
         "n_eleitos": n,
-        "min": eleitos[0],
-        "p10": eleitos[max(0, int(n * 0.1) - 1)] if n >= 10 else eleitos[0],
-        "mediana": statistics.median(eleitos),
-        "p90": eleitos[min(n - 1, int(n * 0.9))] if n >= 10 else eleitos[-1],
-        "max": eleitos[-1],
-        "valores": eleitos,
+        # GASTO
+        "min": gastos[0],
+        "p10": gastos[max(0, int(n * 0.1) - 1)] if n >= 10 else gastos[0],
+        "mediana": statistics.median(gastos),
+        "p90": gastos[min(n - 1, int(n * 0.9))] if n >= 10 else gastos[-1],
+        "max": gastos[-1],
+        "valores": gastos,
+        # VOTOS — referências para projeção de cenários simulados
+        "votos_min": votos[0],
+        "votos_mediana": int(statistics.median(votos)),
+        "votos_lider": votos[-1],
     }
 
 referencia = {

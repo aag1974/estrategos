@@ -17,7 +17,10 @@
       "max": 6938995.150000036,
       "valores": [
         6938995.150000036
-      ]
+      ],
+      "votos_min": 830071,
+      "votos_mediana": 830071,
+      "votos_lider": 830071
     },
     "SENADOR": {
       "n_eleitos": 1,
@@ -28,7 +31,10 @@
       "max": 3880194.9899999998,
       "valores": [
         3880194.9899999998
-      ]
+      ],
+      "votos_min": 713269,
+      "votos_mediana": 713269,
+      "votos_lider": 713269
     },
     "DEPUTADO FEDERAL": {
       "n_eleitos": 8,
@@ -46,7 +52,10 @@
         2549854.4400000004,
         2604856.559999998,
         2927811.3399999994
-      ]
+      ],
+      "votos_min": 45823,
+      "votos_mediana": 98316,
+      "votos_lider": 214321
     },
     "DEPUTADO DISTRITAL": {
       "n_eleitos": 24,
@@ -80,7 +89,10 @@
         1094826.4500000002,
         1238313.96,
         1270000.0
-      ]
+      ],
+      "votos_min": 17187,
+      "votos_mediana": 20890,
+      "votos_lider": 51781
     }
   },
   "gasto_por_candidato": {
