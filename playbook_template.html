@@ -568,7 +568,7 @@ __DADOS_JSON__
 
   <div class="kpis" id="pg1-kpis"></div>
 
-  <div class="sec-title">Resumo da eleição 2022</div>
+  <div class="sec-title" id="pg1-resumo-titulo">Resumo da eleição 2022</div>
   <div class="resumo" id="pg1-resumo"></div>
 
   <div class="sec-title">Distribuição dos votos por grupo de regiões</div>
@@ -1174,7 +1174,7 @@ function fmtData(){
 }
 // Labels canônicos (alinhados com o dashboard)
 var CAMPO_LBL = {progressista:'Progressista', moderado:'Moderado',
-                 liberal_conservador:'Liberal/Cons.', outros:'Outros'};
+                 liberal_conservador:'Liberal/Cons', outros:'Outros'};
 var CAMPO_CLS = {progressista:'prog', moderado:'mod',
                  liberal_conservador:'lib', outros:'out'};
 var ZONA_LBL = {compartilhado:'Reduto consolidado', pessoal:'Voto pessoal',
@@ -1307,16 +1307,17 @@ function renderPg1(){
     liberal_conservador: 'var(--c-lib)', outros: 'var(--c-out)'
   }[META.campo] || 'var(--c-out)';
   box.style.borderLeftColor = corCampo;
+  var refAno = META.simulado ? '2026 (simulado)' : '2022';
   box.innerHTML =
     '<div class="cand-nome">' + (META.nome || META.nome_curto) + '</div>' +
     '<div class="cand-line">' +
       '<span class="cand-tag '+CAMPO_CLS[META.campo]+'">'+CAMPO_LBL[META.campo]+'</span>' +
       '<span class="cand-info">'+META.partido+'</span>' +
       eleitoBadge +
-      '<span class="cand-info">· '+(CARGO_LBL[META.cargo] || META.cargo)+' · 2022</span>' +
+      '<span class="cand-info">· '+(CARGO_LBL[META.cargo] || META.cargo)+' · '+refAno+'</span>' +
     '</div>';
 
-  // 4 KPIs — todos descritivos da eleição 2022 (nada da Pág. 2)
+  // 4 KPIs — descritivos da eleição (real ou simulada)
   var maior = META.maior_ra || {ra:'—', votos:0, pct:0};
   // KPI distância ao limiar de eleição
   var dlim = META.distancia_limiar_pct;
@@ -1337,11 +1338,14 @@ function renderPg1(){
   } else {
     dlimNum = '—'; dlimLbl = 'Limiar de eleição'; dlimSub = 'Sem dado'; dlimCls = '';
   }
+  var subTotal = META.simulado ? 'Volume projetado' : 'Eleição 2022';
+  var subPos = META.simulado
+    ? 'estimativa pelo nível ' + ({conservador:'conservador',possivel:'possível',favoravel:'favorável'}[META.simulado.nivel] || META.simulado.nivel)
+    : 'de '+fmt(META.n_candidatos_cargo)+' que disputaram o cargo';
   var kpis = [
-    {num: fmt(META.total), lbl:'Total de votos', sub:'Eleição 2022'},
+    {num: fmt(META.total), lbl:'Total de votos', sub: subTotal},
     {num: dlimNum, lbl: dlimLbl, sub: dlimSub, cls: dlimCls},
-    {num: ordinal(META.posicao_geral), lbl:'Posição entre candidatos',
-     sub:'de '+fmt(META.n_candidatos_cargo)+' que disputaram o cargo'},
+    {num: ordinal(META.posicao_geral), lbl:'Posição entre candidatos', sub: subPos},
     {num: fmt(maior.votos), lbl:'Maior RA por volume',
      sub: maior.ra + ' · ' + maior.pct.toFixed(1).replace('.', ',') + '% dos seus votos'},
   ];
@@ -1354,6 +1358,9 @@ function renderPg1(){
   }).join('');
 
   // Resumo descritivo (factual)
+  // Título da seção: real (2022) vs simulado
+  var resumoTit = document.getElementById('pg1-resumo-titulo');
+  if(resumoTit){ resumoTit.textContent = META.simulado ? 'Resumo do cenário simulado' : 'Resumo da eleição 2022'; }
   document.getElementById('pg1-resumo').innerHTML = resumoDescritivo();
   // Distribuição por grupos PED-DF
   renderGrupos();
