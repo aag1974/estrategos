@@ -403,7 +403,6 @@ def gerar_dados(apelido):
                 nome = r["NM_VOTAVEL"].strip()
                 totais[nome] = int(r["TOTAL_VOTOS"])
         ranking = sorted(totais.items(), key=lambda x: x[1], reverse=True)
-        n_candidatos_cargo = len(ranking)
         top = [n for n, _ in ranking[:n_vagas]]
         eleito = meta["nome"] in top
         for i, (n, _v) in enumerate(ranking, start=1):
@@ -412,6 +411,24 @@ def gerar_dados(apelido):
                 if eleito:
                     posicao_eleitos = i
                 break
+
+    # n_candidatos_cargo vem do CADASTRO OFICIAL TSE (consulta_cand), não do CSV
+    # filtrado por voto. Em DF 2022: 610 Distrital, 216 Federal, 13 Senador, 12 Gov.
+    cargo_raw_full = meta["cargo"].replace("_", " ")
+    consulta_csv = ROOT / "outputs_tse_2022_DF" / "consulta_cand_DF.csv"
+    if consulta_csv.exists():
+        candidatos_unicos = set()
+        with consulta_csv.open(encoding="latin-1") as f:
+            rdr = csv.reader(f, delimiter=";")
+            header = [c.strip('"') for c in next(rdr)]
+            idx_cargo = header.index("DS_CARGO")
+            idx_sq = header.index("SQ_CANDIDATO")
+            for row in rdr:
+                if row[idx_cargo].strip('"') == cargo_raw_full:
+                    candidatos_unicos.add(row[idx_sq].strip('"'))
+        n_candidatos_cargo = len(candidatos_unicos)
+    if n_candidatos_cargo == 0:
+        n_candidatos_cargo = len(ranking)
 
     # ─── Distância ao limiar de eleição ───
     # Conceito: folga sobre o ponto crítico de definição da eleição.
@@ -463,17 +480,24 @@ def gerar_dados(apelido):
         alocacao["esperado"] = 0
         alocacao["defesa"] += extra
 
-    # ─── Presença mínima em Sem espaço pelo campo (k=2) ───
-    # Quando ≥25% do eleitorado está em RAs descartadas, reservar % simbólico
-    # para presença política, derivado dos dados:
-    #   presença = piso × √(24/vagas) × (pct_descartado/25)
-    # com piso=2 (k aprovado), arredondado, clamp [1, 12].
+    # ─── Presença mínima em Sem espaço pelo campo ───
+    # Proporcional (Distrital/Federal): trigger 25%, fórmula com fator de cargo
+    #   presença = 2 × √(24/vagas) × (pct_descartado/25), clamp [1, 12]
+    # Majoritário (Senador/Governador): toda RA conta — cada voto soma para o
+    # totalizador único do DF — não há "descarte" estratégico territorial.
+    #   trigger 5%, presença = pct_descartado × 0,5, piso 3, clamp [3, 20]
     import math
+    cargo_majoritario = meta["cargo"] in ("SENADOR", "GOVERNADOR")
     presenca_min = 0
-    if pct_aptos_descartado >= 25:
-        fator_cargo = math.sqrt(24 / n_vagas)
-        fator_volume = pct_aptos_descartado / 25
-        presenca_min = max(1, min(12, round(2 * fator_cargo * fator_volume)))
+    if cargo_majoritario:
+        if pct_aptos_descartado >= 5:
+            presenca_min = max(3, min(20, round(pct_aptos_descartado * 0.5)))
+    else:
+        if pct_aptos_descartado >= 25:
+            fator_cargo = math.sqrt(24 / n_vagas)
+            fator_volume = pct_aptos_descartado / 25
+            presenca_min = max(1, min(12, round(2 * fator_cargo * fator_volume)))
+    if presenca_min > 0:
         # Subtrai proporcionalmente de Defesa + Crescimento
         soma = alocacao["defesa"] + alocacao["crescimento"]
         if soma > 0:
@@ -482,6 +506,34 @@ def gerar_dados(apelido):
             alocacao["defesa"] = max(0, alocacao["defesa"] - delta_def)
             alocacao["crescimento"] = max(0, alocacao["crescimento"] - delta_cresc)
     alocacao["sem_espaco"] = presenca_min
+
+    # ─── Orçamento por RA (Performance-ponderado) ───
+    # Carrega referências TSE 2022: limite legal, mediana entre eleitos, mínimo eleito.
+    # Base do cálculo = mediana entre eleitos do cargo (régua do que funcionou).
+    # Distribuição por RA: uniforme (∝ aptos) e ponderada (∝ aptos × Performance).
+    cargo_ds = meta["cargo"].replace("_", " ")
+    ref_path = ROOT / "outputs_tse_2022_DF" / "orcamento_referencia.json"
+    orcamento = {"limite_legal": None, "mediana_eleitos": None, "min_eleito": None,
+                 "historico_candidato": None, "n_eleitos": None}
+    if ref_path.exists():
+        ref = json.loads(ref_path.read_text(encoding="utf-8"))
+        orcamento["limite_legal"] = ref["limite_legal"].get(cargo_ds)
+        s = ref["stats_eleitos"].get(cargo_ds) or {}
+        orcamento["mediana_eleitos"] = s.get("mediana")
+        orcamento["min_eleito"] = s.get("min")
+        orcamento["n_eleitos"] = s.get("n_eleitos")
+        chave_cand = f"{_norm(meta['nome'])}|{cargo_ds}"
+        orcamento["historico_candidato"] = ref["gasto_por_candidato"].get(chave_cand)
+    base = orcamento["mediana_eleitos"] or orcamento["limite_legal"] or 0
+    orcamento["base"] = base
+    # Soma ponderada = aptos × perf. Quando perf é None (RA sem voto do candidato),
+    # cai pra 0 — orc_pond da RA será 0, mas não quebra a soma.
+    soma_pond = sum(r["aptos"] * (r["perf"] or 0) for r in ras) or 1
+    for r in ras:
+        perf_safe = r["perf"] if r["perf"] is not None else 0
+        r["orc_unif"] = round(base * r["aptos"] / aptos_df) if aptos_df else 0
+        r["orc_pond"] = round(base * r["aptos"] * perf_safe / soma_pond)
+        r["mult_orc"] = round(r["orc_pond"] / r["orc_unif"], 2) if r["orc_unif"] else 0
 
     # ─── PDAD baseline DF (média ponderada por aptos) ───
     pdad_keys = ["renda_pc", "classe_ab", "superior", "serv_fed", "serv_dist",
@@ -558,6 +610,7 @@ def gerar_dados(apelido):
             # Pág. 7
             "caso_alocacao": caso_aloc,
             "alocacao": alocacao,
+            "orcamento": orcamento,
             # Pág. 8 — todas 33 RAs (já incluem grupo)
             "ras_apendice": ras,
             "n_vagas": n_vagas,

@@ -38,6 +38,11 @@ outputs_fase0b/
 outputs_fase1/
 outputs_fase3b/
 
+# TSE 2022 DF — CSVs brutos pesados ignorados; só versionar JSON processado e cadastro pequeno
+outputs_tse_2022_DF/despesas_*.csv
+outputs_tse_2022_DF/receitas_*.csv
+outputs_tse_2022_DF/gasto_por_candidato.csv
+
 # Versões antigas/debug (mantidas localmente, não públicas)
 fase0_historico.py
 fase0b_pdad2018.py
