@@ -1208,11 +1208,21 @@ function resumoDescritivo(){
   };
   var cargoNom = CARGO_NOMINATIVO[META.cargo] || 'candidato';
   var partes = [];
-  var sit = META.eleito
-    ? '<strong>Eleito</strong> ' + cargoNom + ' em 2022 com <strong>'+fmt(META.total)+'</strong> votos'
-    : 'Concorreu a ' + cargoNom + ' em 2022 com <strong>'+fmt(META.total)+'</strong> votos';
-  if(META.posicao_geral){
-    sit += ', ficando em <strong>'+ordinal(META.posicao_geral)+'</strong> lugar entre '+fmt(META.n_candidatos_cargo)+' candidatos ao cargo';
+  var sit;
+  if(META.simulado){
+    // Cenário simulado: descreve a projeção, não o histórico real
+    var nivelLbl = {conservador:'mínimo eleito', possivel:'mediana dos eleitos', favoravel:'líder em votos'}[META.simulado.nivel] || META.simulado.nivel;
+    sit = 'Cenário projetado para ' + cargoNom + ' com <strong>'+fmt(META.total)+'</strong> votos (nível: ' + nivelLbl + ')';
+    if(META.posicao_geral && META.n_vagas){
+      sit += ', estimando <strong>'+ordinal(META.posicao_geral)+'</strong> lugar entre os <strong>'+META.n_vagas+'</strong> eleitos';
+    }
+  } else {
+    sit = META.eleito
+      ? '<strong>Eleito</strong> ' + cargoNom + ' em 2022 com <strong>'+fmt(META.total)+'</strong> votos'
+      : 'Concorreu a ' + cargoNom + ' em 2022 com <strong>'+fmt(META.total)+'</strong> votos';
+    if(META.posicao_geral){
+      sit += ', ficando em <strong>'+ordinal(META.posicao_geral)+'</strong> lugar entre '+fmt(META.n_candidatos_cargo)+' candidatos ao cargo';
+    }
   }
   partes.push(sit + '.');
   // Cobertura territorial + escala (% do cargo + % do campo político)
@@ -1283,7 +1293,13 @@ function renderPg1(){
 
   // Bloco do candidato (sem "Perfil" — esse conceito é da Pág. 2)
   var box = document.getElementById('pg1-cand');
-  var eleitoBadge = META.eleito ? '<span class="cand-tag eleito">Eleito</span>' : '';
+  // Em cenário simulado, o badge é "Candidato/a" (não "Eleito"); só Reeleição mostra "Eleito"
+  var eleitoBadge;
+  if(META.simulado){
+    eleitoBadge = '<span class="cand-tag eleito">Candidato/a</span>';
+  } else {
+    eleitoBadge = META.eleito ? '<span class="cand-tag eleito">Eleito</span>' : '';
+  }
   // Borda esquerda do bloco usa a cor do campo do candidato
   var corCampo = {
     progressista: 'var(--c-prog)', moderado: 'var(--c-mod)',
