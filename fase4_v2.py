@@ -390,6 +390,14 @@ def montar_candidatos():
         (r["NR_ZONA"].strip(), r["NR_SECAO"].strip()): r["RA_NOME"].strip()
         for _, r in df_loc.iterrows()
     }
+    # Override: seções "órfãs" no enriched (sem coordenada) que existem no CSV
+    # bruto. Sem isso, perdemos votos no agregado por RA. Espelha o override em
+    # extrair_votos_candidato_ra.py.
+    SECOES_OVERRIDE = {
+        ("9", "2022"): "SIA",  # CPP - Centro de Progressão Penitenciária (Trecho 4 SIA)
+    }
+    for k, ra in SECOES_OVERRIDE.items():
+        secao_ra.setdefault(k, ra)
     print(f" {len(secao_ra):,} seções mapeadas")
 
     print("   Lendo votação por seção...", end="", flush=True)
