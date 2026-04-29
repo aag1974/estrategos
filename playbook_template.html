@@ -390,13 +390,14 @@ body {
 .conc-row .conc-dot.out  { background:var(--c-out) }
 .conc-row.you .conc-dot { background:var(--amber) }
 .conc-row .conc-nome {
-  flex:0 0 auto; max-width:88pt;
+  flex:0 0 92pt;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   color:var(--txt);
 }
 .conc-row .conc-partido {
-  font-size:6.5pt; color:var(--muted); flex:0 0 auto;
-  white-space:nowrap;
+  font-size:6.5pt; color:var(--muted); flex:0 0 28pt;
+  text-align:right; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
 }
 .conc-row .conc-bar-wrap {
   flex:1; height:7pt; background:transparent;
@@ -1068,6 +1069,7 @@ __DADOS_JSON__
 
   <div class="conceito-bloco">
     <p>Quem disputa votos com você em cada zona estratégica? Cada bloco mostra os <strong>3 candidatos do mesmo cargo</strong> que mais somaram votos nas suas RAs daquela zona — referência rápida para identificar adversários consolidados (no <em>Reduto</em>) e principais rivais a vencer (no <em>Espaço a conquistar</em>).</p>
+    <p style="font-size:7.8pt;color:var(--muted);margin-top:4pt"><strong>Como ler:</strong> as <strong>zonas</strong> (Reduto, Voto pessoal, etc.) são <em>padrões relativos</em> — onde sua Performance é alta e seu campo é forte. Já o <strong>% da zona</strong> mede o volume absoluto: quanto cada candidato tirou do total de votos do cargo nessas RAs. As duas leituras são complementares — um candidato pode ter "reduto" pelo padrão e ainda ter rivais maiores em volume.</p>
   </div>
 
   <div class="conc-legend">
