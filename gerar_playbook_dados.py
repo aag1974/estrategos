@@ -47,6 +47,17 @@ VAGAS_CARGO = {
     "GOVERNADOR": 1, "SENADOR": 2,
     "DEPUTADO_FEDERAL": 8, "DEPUTADO_DISTRITAL": 24,
 }
+
+# Referências de votos para cenários simulados (paridade com PB_STATS_ELEITOS_2022 do dashboard).
+# SENADOR 2026 elege 2 vagas: 3 cenários por nº de candidatos competitivos esperados
+#   (~1,7M válidos × 80% / N).
+# GOVERNADOR: 1 vaga; cenário único (~maioria absoluta dos válidos = Ibaneis 2022).
+STATS_VOTOS_2022 = {
+    "GOVERNADOR":         {"min": 830071, "mediana": 830071, "lider": 830071, "n_eleitos": 1},
+    "SENADOR":            {"min": 340000, "mediana": 450000, "lider": 680000, "n_eleitos": 2},
+    "DEPUTADO_FEDERAL":   {"min": 45823,  "mediana": 98316,  "lider": 214321, "n_eleitos": 8},
+    "DEPUTADO_DISTRITAL": {"min": 17187,  "mediana": 20890,  "lider": 51781,  "n_eleitos": 24},
+}
 PATAMAR_CARGO = {
     "GOVERNADOR": 700000, "SENADOR": 550000,
     "DEPUTADO_FEDERAL": 30000, "DEPUTADO_DISTRITAL": 18000,
@@ -174,12 +185,52 @@ def carregar_votos_campo(campo, cargo="DEPUTADO_DISTRITAL"):
 
 
 # ────────── 4. consolidar tudo ─────────────────────────────────────
-def gerar_dados(apelido):
+def gerar_dados(apelido, sim_cargo=None, sim_nivel=None, sim_nome=None):
+    """Gera dados do playbook. Quando sim_cargo + sim_nivel são informados,
+    aplica projeção do candidato base para o cargo destino preservando Performance:
+    - Carrega votos reais do candidato base (de seu cargo original).
+    - Aplica fator multiplicativo em todas as RAs para atingir votos_alvo do cargo
+      destino (mín / mediana / líder).
+    - Atualiza meta.cargo, meta.total. Os cálculos posteriores (zonas, alocação,
+      orçamento) refletem o cargo destino.
+    - sim_nome: troca o nome (cenário "Novo candidato").
+    """
     cfg = CANDIDATOS[apelido]
-    cargo = cfg.get("cargo", "DEPUTADO_DISTRITAL")
+    cargo_origem = cfg.get("cargo", "DEPUTADO_DISTRITAL")
+    cargo = cargo_origem
     mestre = carregar_mestre()
-    meta, votos_cand = carregar_votos_candidato(cfg["match"], cargo=cargo)
-    votos_campo, total_campo = carregar_votos_campo(meta["campo"], cargo=cargo)
+    meta, votos_cand = carregar_votos_candidato(cfg["match"], cargo=cargo_origem)
+    votos_campo, total_campo = carregar_votos_campo(meta["campo"], cargo=cargo_origem)
+
+    # ─── Projeção (cenário simulado) ───
+    simulado_info = None
+    if sim_cargo and sim_nivel:
+        if sim_cargo not in STATS_VOTOS_2022:
+            raise ValueError(f"Cargo simulado desconhecido: {sim_cargo}")
+        stats = STATS_VOTOS_2022[sim_cargo]
+        votos_alvo_map = {"conservador": stats["min"], "possivel": stats["mediana"], "favoravel": stats["lider"]}
+        if sim_nivel not in votos_alvo_map:
+            raise ValueError(f"Nível simulado desconhecido: {sim_nivel}")
+        votos_alvo = votos_alvo_map[sim_nivel]
+        total_atual = meta["total"] or 1
+        fator = votos_alvo / total_atual
+        # Aplica fator nas RAs (preserva Performance, todas as razões mantidas)
+        for ra in votos_cand:
+            votos_cand[ra]["votos"] = round(votos_cand[ra]["votos"] * fator)
+        meta["total"] = int(round(total_atual * fator))
+        meta["cargo"] = sim_cargo
+        cargo = sim_cargo
+        if sim_nome:
+            meta["nome"] = sim_nome
+        simulado_info = {
+            "tipo": "estreante" if sim_nome else "outro_cargo",
+            "referencia": cfg.get("nome_curto") or apelido,
+            "cargo_origem": cargo_origem,
+            "cargo_destino": sim_cargo,
+            "nivel": sim_nivel,
+            "fator": round(fator, 4),
+            "votos_alvo": votos_alvo,
+        }
 
     # Aptos totais DF
     aptos_df = sum(d["aptos"] for d in mestre.values())
@@ -559,10 +610,28 @@ def gerar_dados(apelido):
                 w += r["votos"]
         eleitor_tipo[k] = round(s / w, 2) if w else None
 
+    # ─── Override para cenário simulado ───
+    # O ranking real do cargo destino não inclui o candidato projetado.
+    # Estimamos limiar/posição/eleito a partir das referências de votos.
+    if simulado_info:
+        eleito = True
+        n_vagas_dest = VAGAS_CARGO.get(cargo, 24)
+        if sim_nivel == "favoravel":     posicao_geral = 1
+        elif sim_nivel == "conservador": posicao_geral = n_vagas_dest
+        else:                             posicao_geral = max(1, round((1 + n_vagas_dest) / 2))
+        stats_dest = STATS_VOTOS_2022[cargo]
+        limiar_votos    = stats_dest["min"]
+        limiar_posicao  = n_vagas_dest + 1
+        limiar_nome     = "mínimo eleito 2022"
+        distancia_limiar_pct   = round((meta["total"] / limiar_votos - 1) * 100, 1) if limiar_votos else 0
+        distancia_limiar_votos = meta["total"] - limiar_votos
+
+    nome_curto_final = sim_nome if sim_nome else cfg["nome_curto"]
+
     return {
         "meta": {
             "nome": meta["nome"],
-            "nome_curto": cfg["nome_curto"],
+            "nome_curto": nome_curto_final,
             "apelido": apelido,
             "partido": meta["partido"],
             "campo": meta["campo"],
@@ -611,6 +680,7 @@ def gerar_dados(apelido):
             "caso_alocacao": caso_aloc,
             "alocacao": alocacao,
             "orcamento": orcamento,
+            "simulado": simulado_info,
             # Pág. 8 — todas 33 RAs (já incluem grupo)
             "ras_apendice": ras,
             "n_vagas": n_vagas,
@@ -677,14 +747,19 @@ def gerar_pdf(apelido, html_path):
 
 
 # ────────── main ───────────────────────────────────────────────────
-def _processar(apelido, com_pdf=True):
-    """Gera JSON + HTML + PDF para um candidato. Retorna (dados, html_path, pdf_path)."""
-    dados = gerar_dados(apelido)
-    out_json = ROOT / f"playbook_dados_{apelido}.json"
+def _processar(apelido, com_pdf=True, sim_cargo=None, sim_nivel=None, sim_nome=None, suffix=""):
+    """Gera JSON + HTML + PDF para um candidato. Retorna (dados, html_path, pdf_path).
+
+    Para cenário simulado, passa sim_cargo + sim_nivel (e opcionalmente sim_nome
+    para "Novo candidato"). suffix é apenso ao nome dos arquivos de saída.
+    """
+    dados = gerar_dados(apelido, sim_cargo=sim_cargo, sim_nivel=sim_nivel, sim_nome=sim_nome)
+    out_apelido = (apelido + suffix) if suffix else apelido
+    out_json = ROOT / f"playbook_dados_{out_apelido}.json"
     with out_json.open("w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=2)
-    html_path = gerar_html(apelido, dados)
-    pdf_path = gerar_pdf(apelido, html_path) if (com_pdf and html_path) else None
+    html_path = gerar_html(out_apelido, dados)
+    pdf_path = gerar_pdf(out_apelido, html_path) if (com_pdf and html_path) else None
     return dados, html_path, pdf_path
 
 
@@ -698,6 +773,20 @@ def _print_resumo(apelido, dados, html_path, pdf_path=None):
         print(f"  → {pdf_path.name} ({pdf_path.stat().st_size // 1024} KB)")
     elif html_path:
         print(f"  → {html_path.name}")
+
+
+def _parse_sim_args(args):
+    """Extrai args opcionais --sim-cargo, --sim-nivel, --sim-nome do sys.argv.
+    Retorna (sim_cargo, sim_nivel, sim_nome)."""
+    sim_cargo = sim_nivel = sim_nome = None
+    for i, a in enumerate(args):
+        if a == "--sim-cargo" and i + 1 < len(args):
+            sim_cargo = args[i + 1]
+        elif a == "--sim-nivel" and i + 1 < len(args):
+            sim_nivel = args[i + 1]
+        elif a == "--sim-nome" and i + 1 < len(args):
+            sim_nome = args[i + 1]
+    return sim_cargo, sim_nivel, sim_nome
 
 
 if __name__ == "__main__":
@@ -724,7 +813,25 @@ if __name__ == "__main__":
         print(f"Candidato desconhecido: {arg}.")
         print(f"Disponíveis: {sorted(CANDIDATOS.keys())}")
         print(f"Ou use --batch para gerar a lista completa de revisão.")
+        print(f"Ou use cenário simulado:")
+        print(f"  python {sys.argv[0]} <APELIDO> --sim-cargo SENADOR --sim-nivel possivel")
+        print(f"  python {sys.argv[0]} <APELIDO> --sim-cargo DEPUTADO_FEDERAL --sim-nivel favoravel --sim-nome 'João da Silva'")
         sys.exit(1)
+
+    sim_cargo, sim_nivel, sim_nome = _parse_sim_args(sys.argv[2:])
+    if sim_cargo or sim_nivel:
+        if not (sim_cargo and sim_nivel):
+            print("Erro: --sim-cargo e --sim-nivel devem vir juntos.")
+            sys.exit(1)
+        # suffix nos arquivos de output: APELIDO_SIMULADO_CARGO_NIVEL[_NOME]
+        suf = f"_SIM_{sim_cargo}_{sim_nivel}"
+        if sim_nome:
+            suf += f"_{_norm(sim_nome).replace(' ', '_')[:20]}"
+        dados, html, pdf = _processar(arg, com_pdf=True, sim_cargo=sim_cargo,
+                                       sim_nivel=sim_nivel, sim_nome=sim_nome, suffix=suf)
+        print(f"OK simulado: cargo={sim_cargo} nivel={sim_nivel}" + (f" nome={sim_nome}" if sim_nome else ""))
+        _print_resumo(arg + suf, dados, html, pdf)
+        sys.exit(0)
 
     dados, html, pdf = _processar(arg, com_pdf=True)
     print(f"OK json: playbook_dados_{arg}.json")

@@ -1308,7 +1308,7 @@ function renderPg1(){
   }[META.campo] || 'var(--c-out)';
   box.style.borderLeftColor = corCampo;
   box.innerHTML =
-    '<div class="cand-nome">' + META.nome_curto + '</div>' +
+    '<div class="cand-nome">' + (META.nome || META.nome_curto) + '</div>' +
     '<div class="cand-line">' +
       '<span class="cand-tag '+CAMPO_CLS[META.campo]+'">'+CAMPO_LBL[META.campo]+'</span>' +
       '<span class="cand-info">'+META.partido+'</span>' +
