@@ -239,11 +239,15 @@ def carregar_rivais_por_ra(cargo, exclude_nome=None):
     return by_ra
 
 
-def montar_rivais(ras, cargo, exclude_nome):
+def montar_rivais(ras, cargo, exclude_nome, total_cand):
     """Anexa top 3 rivais (NM_URNA) a cada entrada de `ras` (in-place) e
-    retorna {zona: [top 3 rivais agregados]} somando votos do rival nas RAs
-    daquela zona estratégica do candidato. Cada rival agregado também traz
-    pct_vs_cand = votos do rival / votos do candidato na zona × 100."""
+    retorna {zona: {votos_cand, n_ras, pct_dos_votos, share_cand, rivais: [...]}}.
+
+    Cada rival na lista vem com share = votos do rival / total da zona × 100
+    (denominador inclui o candidato + todos os outros do cargo nas RAs daquela
+    zona). share_cand é o equivalente do candidato. pct_dos_votos é o % do
+    total do candidato que vem dessa zona — mede a importância da zona pro
+    jogo dele."""
     rivais_lookup = carregar_rivais_por_ra(cargo, exclude_nome=exclude_nome)
     nomes_urna = carregar_nomes_urna(cargo)
 
@@ -252,6 +256,8 @@ def montar_rivais(ras, cargo, exclude_nome):
 
     acc = defaultdict(lambda: defaultdict(lambda: {"votos": 0, "partido": "", "campo": ""}))
     votos_cand_zona = defaultdict(int)
+    n_ras_zona = defaultdict(int)
+    total_zona = defaultdict(int)  # candidato + todos os rivais (denominador do share)
     for r in ras:
         ra = r["ra"]
         rivais_full = rivais_lookup.get(ra, [])
@@ -264,8 +270,12 @@ def montar_rivais(ras, cargo, exclude_nome):
         zona = r.get("zona")
         if not zona:
             continue
-        votos_cand_zona[zona] += r.get("votos") or 0
+        v_cand = r.get("votos") or 0
+        votos_cand_zona[zona] += v_cand
+        n_ras_zona[zona] += 1
+        total_zona[zona] += v_cand
         for rv in rivais_full:
+            total_zona[zona] += rv["votos"]
             slot = acc[zona][rv["nome"]]
             slot["votos"] += rv["votos"]
             slot["partido"] = rv["partido"]
@@ -274,16 +284,23 @@ def montar_rivais(ras, cargo, exclude_nome):
     rivais_por_zona = {}
     for zona, mapa in acc.items():
         v_cand = votos_cand_zona.get(zona, 0)
+        denom = total_zona.get(zona, 0) or 1
         lista = sorted([
             {"nome_urna": _curto(nome),
              "partido": m["partido"],
              "campo": m["campo"],
              "votos": m["votos"],
-             "pct_vs_cand": (round(m["votos"] / v_cand * 100, 1)
-                             if v_cand > 0 else None)}
+             "share": round(m["votos"] / denom * 100, 1)}
             for nome, m in mapa.items()
         ], key=lambda x: -x["votos"])[:3]
-        rivais_por_zona[zona] = lista
+        rivais_por_zona[zona] = {
+            "votos_cand": v_cand,
+            "n_ras": n_ras_zona.get(zona, 0),
+            "pct_dos_votos": (round(v_cand / total_cand * 100, 1)
+                              if total_cand else 0),
+            "share_cand": round(v_cand / denom * 100, 1),
+            "rivais": lista,
+        }
     return rivais_por_zona
 
 
@@ -400,7 +417,7 @@ def gerar_dados(apelido, sim_cargo=None, sim_nivel=None, sim_nome=None):
     # ─── Rivais por RA + agregado por zona (Concorrência F1+F2) ───
     # Usa o nome civil real para excluir self. Em cenário simulado, o candidato
     # não aparece no cargo destino — exclude_nome vira inócuo.
-    rivais_por_zona = montar_rivais(ras, cargo, meta["nome"])
+    rivais_por_zona = montar_rivais(ras, cargo, meta["nome"], meta["total"])
 
     # ─── Métricas agregadas (Pág. 1 = só descritivas) ───
     # Perfil de votação: σ do desvio percentual da Performance (mesma regra do dashboard)
