@@ -130,7 +130,16 @@ def main():
         (r["NR_ZONA"], r["NR_SECAO"]): r["RA_NOME"]
         for _, r in df_loc.iterrows()
     }
-    print(f"   {len(secao_ra):,} seções mapeadas → {df_loc['RA_NOME'].nunique()} RAs")
+    # Override: seções "órfãs" no enriched (sem coordenada → não geocodificadas)
+    # mas com votos no CSV bruto. Sem isso, perdemos votos no agregado por RA.
+    # Detectado em 2026-04-29: 136 votos da CPP-SIA somem (Kicis perde 11).
+    SECOES_OVERRIDE = {
+        ("9", "2022"): "SIA",  # CPP - Centro de Progressão Penitenciária (Trecho 4 SIA)
+    }
+    for k, ra in SECOES_OVERRIDE.items():
+        if k not in secao_ra:
+            secao_ra[k] = ra
+    print(f"   {len(secao_ra):,} seções mapeadas → {df_loc['RA_NOME'].nunique()} RAs (+{len(SECOES_OVERRIDE)} override)")
 
     # ── 2. Votação por seção ─────────────────────────────────
     print("\n[2/3] Lendo votação por seção (pode demorar)...")

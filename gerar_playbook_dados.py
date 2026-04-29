@@ -50,17 +50,31 @@ VAGAS_CARGO = {
 }
 
 # Referências de votos para cenários simulados (paridade com PB_STATS_ELEITOS_2022 do dashboard).
-# SENADOR 2026 elege 2 vagas: 3 cenários por nº de candidatos competitivos esperados
-#   (~1,7M válidos × 80% / N).
+# SENADOR 2026 elege 2 vagas: cada eleitor vota em 2 → universo de votos no cargo
+#   ≈ 2× comparecimento. Top 2 não dividem fatias distintas: ambos podem ser
+#   escolhidos pelo mesmo eleitor. Modelagem realista usa "% de aderência dos top
+#   candidatos sobre o comparecimento (~1,7M)" e calibra 3 cenários distintos
+#   (não 3 níveis de intensidade do mesmo cenário). Defaults aqui = ESTRUTURADO.
 # GOVERNADOR: 1 vaga; cenário único (~maioria absoluta dos válidos = Ibaneis 2022).
 STATS_VOTOS_2022 = {
     "GOVERNADOR":         {"min": 830071, "mediana": 830071, "lider": 830071, "n_eleitos": 1},
-    "SENADOR":            {"min": 340000, "mediana": 450000, "lider": 680000, "n_eleitos": 2},
+    "SENADOR":            {"min": 680000, "mediana": 765000, "lider": 850000, "n_eleitos": 2},
     "DEPUTADO_FEDERAL":   {"min": 45823,  "mediana": 98316,  "lider": 214321, "n_eleitos": 8},
     "DEPUTADO_DISTRITAL": {"min": 17187,  "mediana": 20890,  "lider": 51781,  "n_eleitos": 24},
 }
+# Cenários SENADOR 2026 — usados no diag config quando o usuário seleciona simulação
+# para Senador. Cada cenário traz a expectativa do líder, mediana e mínimo eleito,
+# ancorada em 2018 (último DF com 2 vagas) e em hipóteses de polarização.
+SENADOR_CENARIOS = {
+    "polarizado":  {"min": 1190000, "mediana": 1232000, "lider": 1275000,
+                    "label": "2 nomes dominam · ambos top fazem ~70% (Damares+Ibaneis)"},
+    "estruturado": {"min":  680000, "mediana":  765000, "lider":  850000,
+                    "label": "3 nomes competitivos · top 2 fazem ~45% cada (cenário base)"},
+    "fragmentado": {"min":  425000, "mediana":  467000, "lider":  510000,
+                    "label": "5+ nomes competitivos · top 2 fazem ~28% cada (perfil 2018)"},
+}
 PATAMAR_CARGO = {
-    "GOVERNADOR": 700000, "SENADOR": 550000,
+    "GOVERNADOR": 700000, "SENADOR": 765000,
     "DEPUTADO_FEDERAL": 30000, "DEPUTADO_DISTRITAL": 18000,
 }
 
@@ -328,10 +342,15 @@ def gerar_dados(apelido, sim_cargo=None, sim_nivel=None, sim_nome=None):
         if sim_cargo not in STATS_VOTOS_2022:
             raise ValueError(f"Cargo simulado desconhecido: {sim_cargo}")
         stats = STATS_VOTOS_2022[sim_cargo]
-        votos_alvo_map = {"conservador": stats["min"], "possivel": stats["mediana"], "favoravel": stats["lider"]}
-        if sim_nivel not in votos_alvo_map:
-            raise ValueError(f"Nível simulado desconhecido: {sim_nivel}")
-        votos_alvo = votos_alvo_map[sim_nivel]
+        # Para Senador, sim_nivel é um cenário (polarizado/estruturado/fragmentado).
+        # Para os demais cargos, é intensidade (favoravel/possivel/conservador).
+        if sim_cargo == "SENADOR" and sim_nivel in SENADOR_CENARIOS:
+            votos_alvo = SENADOR_CENARIOS[sim_nivel]["mediana"]
+        else:
+            votos_alvo_map = {"conservador": stats["min"], "possivel": stats["mediana"], "favoravel": stats["lider"]}
+            if sim_nivel not in votos_alvo_map:
+                raise ValueError(f"Nível simulado desconhecido: {sim_nivel}")
+            votos_alvo = votos_alvo_map[sim_nivel]
         total_atual = meta["total"] or 1
         fator = votos_alvo / total_atual
         # Aplica fator nas RAs (preserva Performance, todas as razões mantidas)
@@ -741,13 +760,20 @@ def gerar_dados(apelido, sim_cargo=None, sim_nivel=None, sim_nome=None):
     if simulado_info:
         eleito = True
         n_vagas_dest = VAGAS_CARGO.get(cargo, 24)
-        if sim_nivel == "favoravel":     posicao_geral = 1
-        elif sim_nivel == "conservador": posicao_geral = n_vagas_dest
-        else:                             posicao_geral = max(1, round((1 + n_vagas_dest) / 2))
-        stats_dest = STATS_VOTOS_2022[cargo]
-        limiar_votos    = stats_dest["min"]
-        limiar_posicao  = n_vagas_dest + 1
-        limiar_nome     = "mínimo eleito 2022"
+        # Posição: top 1 no cenário polarizado/favorável, último eleito no
+        # fragmentado/conservador, intermediária no estruturado/possível.
+        if sim_nivel in ("favoravel", "polarizado"):  posicao_geral = 1
+        elif sim_nivel in ("conservador", "fragmentado"): posicao_geral = n_vagas_dest
+        else:                                          posicao_geral = max(1, round((1 + n_vagas_dest) / 2))
+        # Limiar de eleição (mínimo eleito): para Senador usa o cenário escolhido.
+        if cargo == "SENADOR" and sim_nivel in SENADOR_CENARIOS:
+            limiar_votos = SENADOR_CENARIOS[sim_nivel]["min"]
+            limiar_nome  = f"mínimo eleito (cenário {sim_nivel})"
+        else:
+            stats_dest = STATS_VOTOS_2022[cargo]
+            limiar_votos = stats_dest["min"]
+            limiar_nome  = "mínimo eleito 2022"
+        limiar_posicao = n_vagas_dest + 1
         distancia_limiar_pct   = round((meta["total"] / limiar_votos - 1) * 100, 1) if limiar_votos else 0
         distancia_limiar_votos = meta["total"] - limiar_votos
 
