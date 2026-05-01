@@ -44,32 +44,8 @@ outputs_tse_2022_DF/despesas_*.csv
 outputs_tse_2022_DF/receitas_*.csv
 outputs_tse_2022_DF/gasto_por_candidato.csv
 
-# Versões antigas/debug (mantidas localmente, não públicas)
-fase0_historico.py
-fase0b_pdad2018.py
-fase1_correspondencia_zona_ra.py
-fase1_fix_aptos.py
-fase2_tabela_mestre.py
-fase2_tabela_mestre_v2.py
-fase3_ipe.py
-fase3b_comparacao.py
-fase4_dashboard.py
-fase4_v2_16.py
-fase_candidato.py
-geopolitica.py
-geopolitica_df.html
-injeta_geopolitica_0.py
-gerar_relatorio.js
-gerar_relatorio_candidato.js
-gerar_narrativas_ra.py
-classificacao_base.py
-diagnostico_abstencao.py
-gerar_relatorio_diag.py
-servidor_diag.py
-inspecionar_pdad.py
-valida_beneficio.py
-debug_*.py
-simulador_quociente.html
+# Arquivo de scripts/HTMLs sem referência ativa (mantidos localmente p/ histórico)
+_arquivo/
 
 # Backups
 *.bak
