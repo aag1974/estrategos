@@ -12,12 +12,10 @@ Solução de Inteligência Política da **Opinião Informação Estratégica**.
 ## Conteúdo
 
 ```
-fase4_v2.py                   # Build base do dashboard (HTML + JS + dados)
-injeta_geopolitica.py         # Adiciona o módulo Geopolítica > Território
-injeta_candidato.py           # Adiciona o módulo Geopolítica > Candidato + Paper PDF
+gerar_estrategos.py           # Build unificado: lê template, monta dados, escreve index.html
+estrategos_template.html      # Template com 9 placeholders preenchidos por gerar_estrategos
 gerar_credencial.py           # Helper para criar/atualizar usuários do login
-exemplo_relatorio_pdf.py      # Gera relatório PDF de candidato (standalone)
-exemplo_contexto_pdf.py       # Gera relatório PDF de contexto DF (standalone)
+gerar_playbook_dados.py       # Gera JSON do playbook por candidato
 
 fase3c_campo_politico.py      # Pipeline de cálculo do campo político por RA
 extrair_votos_candidato_ra.py # Extração de votação por candidato × RA
@@ -30,9 +28,8 @@ candidatos_2022_DF.csv        # Lista de candidatos DF 2022 (TSE)
 Limite_RA_20190.json          # GeoJSON das 33 regiões administrativas
 logo_opiniao.png              # Logomarca da Opinião
 
-DECISOES_PROJETO.md           # Decisões canônicas (vocabulário, UX, métricas)
-STORYTELLING_SPEC.md          # Especificação narrativa
-SPE_PROJETO.md                # Histórico do projeto
+docs/                         # Decisões, metodologia, storytelling, inventário
+_arquivo/                     # Scripts/HTMLs sem referência ativa (histórico)
 ```
 
 ---
@@ -57,13 +54,14 @@ Esse arquivo **não é versionado** — fica só na sua máquina.
 
 ### 2. Construa o dashboard
 
-A cadeia de build tem 3 etapas (ordem importa):
-
 ```bash
-python3 fase4_v2.py            # gera dashboard_spe_df.html (base)
-python3 injeta_geopolitica.py  # gera dashboard_com_geo.html (+ Território)
-python3 injeta_candidato.py    # gera index.html (final)
+python3 gerar_estrategos.py    # gera index.html
 ```
+
+O script lê `estrategos_template.html` (template com 9 placeholders),
+monta os dados (D, A5_CANDS, GEO_DATA, GC_DATA, etc.) a partir dos
+`outputs_fase*/` + `dados_tse_cache/` + `Limite_RA_20190.json`, e escreve
+o `index.html` final.
 
 Abra `index.html` no browser. O nome `index.html` é exigido por
 hospedagens estáticas (GitHub Pages, Cloudflare Pages, Netlify) — basta
@@ -88,15 +86,6 @@ Três caminhos no dashboard:
 
 Tudo em A4 paisagem.
 
-Há também os scripts standalone para gerar amostras sem rodar o dashboard:
-
-```bash
-python3 exemplo_contexto_pdf.py            # gera relatorio_contexto_DF.html
-python3 exemplo_relatorio_pdf.py DAMARES   # gera relatorio_DAMARES.html
-```
-
-Abrir no browser e Cmd+P → Salvar como PDF.
-
 ---
 
 ## Dados não versionados
@@ -117,7 +106,7 @@ Para refazer todo o pipeline a partir das fontes:
 
 ## Vocabulário canônico
 
-Veja [DECISOES_PROJETO.md](DECISOES_PROJETO.md) para o vocabulário de
+Veja [docs/DECISOES_PROJETO.md](docs/DECISOES_PROJETO.md) para o vocabulário de
 produto (Performance, Status, Reduto consolidado, Voto pessoal, Aliança
 eleitoral, Dobradinha, etc.) e as decisões de UX/dados.
 

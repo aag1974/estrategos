@@ -2,7 +2,7 @@
 gerar_narrativas_ra.py — Gera narrativas ELI5 para cada RA do DF.
 
 Lê os dados da PDAD 2021 + TSE 2022 que o pipeline já carrega
-(via fase4_v2.carregar / montar_dados) e produz uma narrativa
+(via gerar_estrategos.carregar / montar_dados) e produz uma narrativa
 parametrizada por RA, em tom conversacional e sem prescrição.
 
 Saída:
@@ -17,7 +17,7 @@ Uso:
 from pathlib import Path
 import csv, sys
 
-from fase4_v2 import carregar, montar_dados
+from gerar_estrategos import carregar, montar_dados
 
 OUT_PATH = Path("outputs_fase3/narrativas_ra.csv")
 RA_SEM_ZONA = {"Park Way", "SIA", "Fercal", "Sol Nascente/Pôr do Sol", "Arniqueira"}

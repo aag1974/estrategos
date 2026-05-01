@@ -46,9 +46,8 @@ def index():
     p = ROOT / DASHBOARD_FILE
     if not p.exists():
         return (f"<h1>{DASHBOARD_FILE} não encontrado</h1>"
-                f"<p>Rode o pipeline antes: <code>python3 fase4_v2.py "
-                f"&amp;&amp; python3 injeta_geopolitica.py "
-                f"&amp;&amp; python3 injeta_candidato.py</code></p>"), 404
+                f"<p>Rode o pipeline antes: "
+                f"<code>python3 gerar_estrategos.py</code></p>"), 404
     return send_from_directory(str(ROOT), DASHBOARD_FILE)
 
 

@@ -33,7 +33,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
-from fase4_v2 import carregar, montar_dados, montar_candidatos
+from gerar_estrategos import carregar, montar_dados, montar_candidatos
 
 # ── Constantes ────────────────────────────────────────────────────────────────
 
