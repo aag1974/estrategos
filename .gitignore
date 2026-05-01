@@ -33,6 +33,7 @@ diag_config_*.json
 
 # Outputs intermediários (somente outputs_fase2, fase3, fase3c são curados e versionados)
 outputs_candidato/
+outputs_export/
 outputs_fase0/
 outputs_fase0b/
 outputs_fase1/
