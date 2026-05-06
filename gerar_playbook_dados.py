@@ -255,26 +255,30 @@ def carregar_rivais_por_ra(cargo, exclude_nome=None):
 
 def montar_rivais(ras, cargo, exclude_nome, total_cand):
     """Anexa top 3 rivais (NM_URNA) a cada entrada de `ras` (in-place) e
-    retorna {zona: {votos_cand, n_ras, pct_dos_votos, share_cand, rivais: [...]}}.
+    retorna {zona: {votos_cand, n_ras, pct_dos_votos, share_cand, total_zona,
+    por_campo: {progressista: [top 2], moderado: [top 2], liberal_conservador: [top 2]}}}.
 
-    Cada rival na lista vem com share = votos do rival / total da zona × 100
-    (denominador inclui o candidato + todos os outros do cargo nas RAs daquela
-    zona). share_cand é o equivalente do candidato. pct_dos_votos é o % do
-    total do candidato que vem dessa zona — mede a importância da zona pro
-    jogo dele."""
+    `share_cand` e o `share` de cada rival usam denominador único: total real
+    de votos do cargo nas RAs da zona (todos os candidatos somados). Campo
+    'outros' é descartado. `pct_dos_votos` mede a importância da zona pro
+    candidato (% do total dele que vem desta zona)."""
     rivais_lookup = carregar_rivais_por_ra(cargo, exclude_nome=exclude_nome)
     nomes_urna = carregar_nomes_urna(cargo)
 
     def _curto(nome):
         return nomes_urna.get(nome) or nome.title()
 
-    acc = defaultdict(lambda: defaultdict(lambda: {"votos": 0, "partido": "", "campo": ""}))
+    CAMPOS_OK = ("progressista", "moderado", "liberal_conservador")
+    # acc[zona][campo][nome] = {votos, partido}
+    acc = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: {"votos": 0, "partido": ""})))
     votos_cand_zona = defaultdict(int)
     n_ras_zona = defaultdict(int)
-    total_zona = defaultdict(int)  # candidato + todos os rivais (denominador do share)
+    total_zona = defaultdict(int)  # candidato + TODOS os outros (denominador real)
+
     for r in ras:
         ra = r["ra"]
         rivais_full = rivais_lookup.get(ra, [])
+        # Anexa top 3 rivais por RA (mantém pra Pág 3/4)
         r["top_rivais"] = [{
             "nome_urna": _curto(rv["nome"]),
             "partido": rv["partido"],
@@ -290,30 +294,35 @@ def montar_rivais(ras, cargo, exclude_nome, total_cand):
         total_zona[zona] += v_cand
         for rv in rivais_full:
             total_zona[zona] += rv["votos"]
-            slot = acc[zona][rv["nome"]]
+            campo = rv["campo"]
+            if campo not in CAMPOS_OK:
+                continue
+            slot = acc[zona][campo][rv["nome"]]
             slot["votos"] += rv["votos"]
             slot["partido"] = rv["partido"]
-            slot["campo"] = rv["campo"]
 
     rivais_por_zona = {}
-    for zona, mapa in acc.items():
+    for zona, n_ras in n_ras_zona.items():
         v_cand = votos_cand_zona.get(zona, 0)
         denom = total_zona.get(zona, 0) or 1
-        lista = sorted([
-            {"nome_urna": _curto(nome),
-             "partido": m["partido"],
-             "campo": m["campo"],
-             "votos": m["votos"],
-             "share": round(m["votos"] / denom * 100, 1)}
-            for nome, m in mapa.items()
-        ], key=lambda x: -x["votos"])[:3]
+        por_campo = {}
+        for campo in CAMPOS_OK:
+            mapa = acc.get(zona, {}).get(campo, {})
+            lista = sorted([
+                {"nome_urna": _curto(nome),
+                 "partido":   m["partido"],
+                 "votos":     m["votos"],
+                 "share":     round(m["votos"] / denom * 100, 1)}
+                for nome, m in mapa.items()
+            ], key=lambda x: -x["votos"])[:2]
+            por_campo[campo] = lista
         rivais_por_zona[zona] = {
-            "votos_cand": v_cand,
-            "n_ras": n_ras_zona.get(zona, 0),
-            "pct_dos_votos": (round(v_cand / total_cand * 100, 1)
-                              if total_cand else 0),
-            "share_cand": round(v_cand / denom * 100, 1),
-            "rivais": lista,
+            "votos_cand":    v_cand,
+            "n_ras":         n_ras,
+            "pct_dos_votos": (round(v_cand / total_cand * 100, 1) if total_cand else 0),
+            "share_cand":    round(v_cand / denom * 100, 1),
+            "total_zona":    denom,
+            "por_campo":     por_campo,
         }
     return rivais_por_zona
 

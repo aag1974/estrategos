@@ -431,6 +431,86 @@ body {
   padding:8pt 0; text-align:center;
 }
 
+/* Concorrência v2 — banner do ego + 3 colunas (Prog · Mod · Lib-Cons) × 2 candidatos */
+.conc2-block {
+  border-radius:5pt; padding:5pt 9pt 5pt;
+  border-top:0.5pt solid var(--bd);
+  border-right:0.5pt solid var(--bd);
+  border-bottom:0.5pt solid var(--bd);
+  border-left:2.5pt solid var(--amber);
+  margin-bottom:5pt;
+}
+.conc2-block.comp { border-left-color: var(--z-comp) }
+.conc2-block.pess { border-left-color: var(--z-pess) }
+.conc2-block.esp  { border-left-color: var(--z-esp) }
+.conc2-block.conq { border-left-color: var(--z-conq) }
+.conc2-block.sem  { border-left-color: var(--z-sem) }
+.conc2-block-head {
+  display:flex; align-items:center; gap:6pt;
+  margin-bottom:3pt; padding-bottom:3pt;
+  border-bottom:0.5pt solid var(--bd);
+}
+.conc2-block-meta {
+  font-size:7pt; color:var(--muted); margin-left:auto;
+}
+.conc2-banner {
+  display:flex; align-items:center; gap:10pt;
+  padding:3pt 7pt; margin:2pt 0 4pt;
+  background:var(--s2);
+  border-radius:3pt;
+  font-size:7.5pt;
+  font-variant-numeric:tabular-nums;
+}
+.conc2-you-badge {
+  font-size:7.5pt; font-weight:700;
+  color:var(--amber);
+  white-space:nowrap;
+}
+.conc2-you-stat { color:var(--muted); white-space:nowrap; }
+.conc2-you-stat strong { color:var(--txt); font-weight:600; }
+.conc2-cols { display:grid; grid-template-columns:1fr 1fr 1fr; gap:7pt; }
+.conc2-col { padding-left:5pt; border-left:1.5pt solid var(--bd); }
+.conc2-col.ego-col {
+  border-left-color: var(--amber);
+  background: rgba(217, 119, 6, 0.04);
+  padding-right:3pt; border-radius:0 3pt 3pt 0;
+}
+.conc2-col-head {
+  font-size:6.5pt; font-weight:700;
+  text-transform:uppercase; letter-spacing:.5pt;
+  margin-bottom:3pt;
+  display:flex; align-items:center; gap:3pt;
+}
+.conc2-col-head.prog { color: var(--c-prog) }
+.conc2-col-head.mod  { color: var(--c-mod) }
+.conc2-col-head.lib  { color: var(--c-lib) }
+.conc2-col-head .conc2-star { color: var(--amber); font-size:7pt; }
+.conc2-cand { padding:1.5pt 0; }
+.conc2-cand + .conc2-cand { border-top:0.5pt dashed var(--bd); }
+.conc2-cand-line1 {
+  display:flex; align-items:baseline; gap:4pt;
+  font-size:8pt;
+}
+.conc2-cand-line1 .conc2-nome {
+  flex:1; white-space:nowrap; overflow:hidden;
+  text-overflow:ellipsis; color:var(--txt); font-weight:500;
+}
+.conc2-cand-line1 .conc2-part {
+  font-size:6.5pt; color:var(--muted);
+  flex-shrink:0;
+}
+.conc2-cand-line2 {
+  display:flex; gap:6pt; margin-top:1pt;
+  font-size:7pt; color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.conc2-cand-line2 .conc2-votos { color: var(--txt); }
+.conc2-cand-line2 .conc2-share { margin-left:auto; }
+.conc2-empty-cell {
+  font-size:7pt; color:var(--muted);
+  font-style:italic; padding:3pt 0;
+}
+
 /* PÁGINA 6 — Perfil dos grupos + manual de comunicação */
 .pdad-tbl {
   width:100%; border-collapse:collapse; font-size:8.5pt; margin-top:5pt;
@@ -1064,31 +1144,28 @@ __DADOS_JSON__
       <img class="hd-logo-img" src="logo_opiniao.png" alt="Opinião" onerror="this.outerHTML='&lt;div class=&quot;hd-logo&quot;&gt;opinião&lt;/div&gt;'"/>
       <div class="hd-title-grp">
         <div class="hd-title">Concorrência por zona</div>
-        <div class="hd-sub">Top 3 rivais agregados em cada zona estratégica</div>
+        <div class="hd-sub">Top 2 rivais por campo político em cada zona estratégica</div>
       </div>
     </div>
     <div class="hd-data">Página 6 de 10</div>
   </div>
 
   <div class="conceito-bloco">
-    <p>Quem disputa votos com você em cada zona estratégica? Cada bloco mostra os <strong>3 candidatos do mesmo cargo</strong> que mais somaram votos nas suas RAs daquela zona — referência rápida para identificar adversários consolidados (no <em>Reduto</em>) e principais rivais a vencer (no <em>Espaço a conquistar</em>).</p>
+    <p>Quem disputa votos com você em cada zona estratégica? Cada card mostra <strong>seu desempenho</strong> e os <strong>2 maiores candidatos por campo político</strong> nas RAs daquela zona — referência rápida para identificar adversários do seu campo (★) e a força dos blocos ideológicos vizinhos.</p>
   </div>
 
   <div class="callout">
-    <strong>Como ler:</strong> as <strong>zonas</strong> (Reduto, Voto pessoal, etc.) são <em>padrões relativos</em> — onde sua Performance é alta e seu campo é forte. Já o <strong>% da zona</strong> mede o volume absoluto: quanto cada candidato tirou do total de votos do cargo nessas RAs. As duas leituras são complementares — um candidato pode ter "reduto" pelo padrão e ainda ter rivais maiores em volume.
+    <strong>Como ler:</strong> as <strong>zonas</strong> (Reduto, Voto pessoal, etc.) são <em>padrões relativos</em> — onde sua Performance é alta e seu campo é forte. Já o <strong>% da zona</strong> mede o volume absoluto: quanto cada candidato tirou do <em>total de votos do cargo nessas RAs</em>. A coluna marcada com ★ é o seu campo — onde a competição é mais direta.
   </div>
 
   <div class="conc-legend">
     <span><span class="conc-dot prog"></span>Progressista</span>
     <span><span class="conc-dot mod"></span>Moderado</span>
     <span><span class="conc-dot lib"></span>Liberal/Cons</span>
-    <span><span class="conc-dot out"></span>Outros</span>
-    <span><span class="conc-dot you"></span>Você</span>
+    <span><span class="conc-dot you"></span>Você (★)</span>
   </div>
 
   <div class="conc-grid" id="pg-conc-grid"></div>
-
-  <div class="aloc-detalhe" style="margin-top:9pt;font-style:italic">Para a leitura RA-a-RA da concorrência, com filtro por candidato e cargo, consulte o painel Estrategos.</div>
 
   <div class="foot">
     Página 6 de 10 · Instrumento gerado pelo painel <strong>Estrategos</strong> — <strong>Opinião Informação Estratégica</strong>
@@ -1735,86 +1812,76 @@ function renderPg5(){
 }
 renderPg5();
 
-// ──────────────── PÁGINA Concorrência — top 3 rivais por zona ────────────────
+// ──────────────── PÁGINA Concorrência — banner + 3 colunas (Prog · Mod · Lib-Cons) ────────────────
 // Cada zona vira um card com:
-//  - Header: badge da zona + KPIs (seus votos, n RAs, % dos seus votos totais)
-//  - Linhas: você + top 3 rivais ordenados por volume, com barra · votos · share
+//  - Banner: você (votos · % da zona · % dos seus votos)
+//  - 3 colunas (1 por campo político), top 2 candidatos por campo
 function renderConcorrencia(){
   var rpz = (META && META.rivais_por_zona) || {};
   var zonas = ['compartilhado','pessoal','conquistar','esperado','sem_espaco'];
   var clsMap = {compartilhado:'comp', pessoal:'pess', conquistar:'conq',
                 esperado:'esp', sem_espaco:'sem'};
+  var camposCfg = [
+    {key:'progressista',         lbl:'Progressista', cls:'prog'},
+    {key:'moderado',             lbl:'Moderado',     cls:'mod'},
+    {key:'liberal_conservador',  lbl:'Lib-Cons',     cls:'lib'},
+  ];
+  var egoCampo = META.campo;
 
-  // Dados do candidato pra entrar como uma "linha" igual aos rivais
-  var candCampoCls = CAMPO_CLS[META.campo] || 'out';
-  var candNome = META.nome_curto || META.nome || 'Você';
-
-  function rowHtml(opts){
-    // opts: { isYou, nome, partido, campo, votos, share, max }
-    var dotCls = opts.isYou ? '' : (CAMPO_CLS[opts.campo] || 'out');
-    var barCls = opts.isYou ? '' : (CAMPO_CLS[opts.campo] || 'out');
-    var pct = opts.max > 0 ? (opts.votos / opts.max * 100) : 0;
-    var rowCls = 'conc-row' + (opts.isYou ? ' you' : '');
-    return '<div class="'+rowCls+'">' +
-      '<span class="conc-dot '+dotCls+'"></span>' +
-      '<span class="conc-nome" title="'+opts.nome+(opts.partido?(' · '+opts.partido):'')+'">'+(opts.isYou ? 'Você' : opts.nome)+'</span>' +
-      (opts.partido ? '<span class="conc-partido">'+opts.partido+'</span>' : '<span class="conc-partido"></span>') +
-      '<span class="conc-bar-wrap"><span class="conc-bar '+barCls+'" style="width:'+pct.toFixed(1)+'%"></span></span>' +
-      '<span class="conc-votos">'+fmt(opts.votos)+'</span>' +
-      '<span class="conc-share">'+(opts.share!=null ? opts.share.toFixed(0)+'%' : '—')+'</span>' +
-    '</div>';
+  function colHtml(zona, cfg, isEgo){
+    var lista = (rpz[zona] && rpz[zona].por_campo && rpz[zona].por_campo[cfg.key]) || [];
+    var clsCol = 'conc2-col' + (isEgo ? ' ego-col' : '');
+    var head = '<div class="conc2-col-head '+cfg.cls+'">' + cfg.lbl +
+               (isEgo ? '<span class="conc2-star">★</span>' : '') + '</div>';
+    if(!lista.length){
+      return '<div class="'+clsCol+'">' + head +
+             '<div class="conc2-empty-cell">—</div></div>';
+    }
+    var rows = lista.map(function(c){
+      return '<div class="conc2-cand">' +
+        '<div class="conc2-cand-line1">' +
+          '<span class="conc2-nome" title="'+c.nome_urna+(c.partido?(' · '+c.partido):'')+'">'+c.nome_urna+'</span>' +
+          (c.partido ? '<span class="conc2-part">'+c.partido+'</span>' : '') +
+        '</div>' +
+        '<div class="conc2-cand-line2">' +
+          '<span class="conc2-votos">'+fmt(c.votos)+'</span>' +
+          '<span class="conc2-share">'+(c.share!=null ? c.share.toFixed(1).replace('.',',')+'%' : '—')+'</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    return '<div class="'+clsCol+'">' + head + rows + '</div>';
   }
 
   var html = zonas.map(function(z){
     var z_data = rpz[z];
-    var bloco = '<div class="conc-block '+clsMap[z]+'">';
-    if(!z_data || (!(z_data.rivais && z_data.rivais.length) && !z_data.votos_cand)){
-      bloco += '<div class="conc-block-head">'+zonaBadge(z)+'</div>';
+    var bloco = '<div class="conc2-block '+clsMap[z]+'">';
+    if(!z_data || !z_data.n_ras){
+      bloco += '<div class="conc2-block-head">'+zonaBadge(z)+'</div>';
       bloco += '<div class="conc-empty">Sem RAs nesta zona</div>';
       return bloco + '</div>';
     }
-    // Header: badge + KPIs
-    var nRAs = z_data.n_ras || 0;
-    var vCand = z_data.votos_cand || 0;
+    var nRAs    = z_data.n_ras || 0;
+    var vCand   = z_data.votos_cand || 0;
     var pctVotos = z_data.pct_dos_votos || 0;
-    var kpi =
-      '<strong>'+fmt(vCand)+' votos seus</strong> em ' +
-      '<strong>'+nRAs+' RA'+(nRAs===1?'':'s')+'</strong>' +
-      ' · <strong>'+pctVotos.toFixed(0)+'%</strong> dos seus votos totais';
-    bloco += '<div class="conc-block-head">'+zonaBadge(z) +
-             '<div class="conc-kpi">'+kpi+'</div></div>';
+    var shareC  = z_data.share_cand || 0;
 
-    // Cabeçalho das colunas numéricas
-    bloco += '<div class="conc-cols-head">' +
-             '<span class="sp"></span>' +
-             '<span class="h-votos">Votos</span>' +
-             '<span class="h-share">% da zona</span>' +
+    bloco += '<div class="conc2-block-head">' + zonaBadge(z) +
+             '<span class="conc2-block-meta">'+nRAs+' RA'+(nRAs===1?'':'s')+'</span></div>';
+
+    bloco += '<div class="conc2-banner">' +
+             '<span class="conc2-you-badge">★ Você</span>' +
+             '<span class="conc2-you-stat"><strong>'+fmt(vCand)+'</strong> votos</span>' +
+             '<span class="conc2-you-stat"><strong>'+shareC.toFixed(1).replace('.',',')+'%</strong> da zona</span>' +
+             '<span class="conc2-you-stat"><strong>'+pctVotos.toFixed(0)+'%</strong> dos seus votos</span>' +
              '</div>';
 
-    // Lista: você + rivais, sorted desc por votos
-    var todos = (z_data.rivais || []).slice();
-    todos.push({
-      isYou: true,
-      nome: candNome,
-      partido: META.partido,
-      campo: META.campo,
-      votos: vCand,
-      share: z_data.share_cand,
+    bloco += '<div class="conc2-cols">';
+    camposCfg.forEach(function(cfg){
+      bloco += colHtml(z, cfg, cfg.key === egoCampo);
     });
-    todos.sort(function(a, b){ return (b.votos||0) - (a.votos||0); });
-    var maxVotos = Math.max.apply(null, todos.map(function(t){ return t.votos||0; })) || 1;
-    bloco += todos.map(function(t){
-      return rowHtml({
-        isYou: !!t.isYou,
-        nome: t.nome_urna || t.nome,
-        partido: t.partido,
-        campo: t.campo,
-        votos: t.votos || 0,
-        share: t.share,
-        max: maxVotos,
-      });
-    }).join('');
-    return bloco + '</div>';
+    bloco += '</div>';
+    bloco += '</div>';
+    return bloco;
   }).join('');
   var el = document.getElementById('pg-conc-grid');
   if(el) el.innerHTML = html;
