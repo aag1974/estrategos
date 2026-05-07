@@ -1640,6 +1640,94 @@ document.addEventListener('keydown', function(e){
         }
         #s-pesquisas .pq-cen-cand.ego { background:#FAC775; color:#5C2A00; font-weight:500; }
         #s-pesquisas .pq-cen-cand .pq-part { color:var(--muted); margin-left:3px; font-size:9px; }
+
+        /* Tabela de % quando extração tem resultados */
+        #s-pesquisas .pq-cen-tabela { width:100%; border-collapse:collapse; margin-top:4px; font-size:11px; }
+        #s-pesquisas .pq-cen-tabela td { padding:3px 4px; border-bottom:0.5px solid var(--bd); }
+        #s-pesquisas .pq-cen-tabela .pq-row-cand.ego td { background:rgba(250,199,117,0.18); }
+        #s-pesquisas .pq-cen-tabela .pq-cell-nome { font-weight:500; color:var(--txt); }
+        #s-pesquisas .pq-cen-tabela .pq-cell-part { color:var(--muted); font-size:10px; padding-left:3px; }
+        #s-pesquisas .pq-cen-tabela .pq-cell-bar { width:55%; }
+        #s-pesquisas .pq-cen-bar { height:9px; border-radius:2px; }
+        #s-pesquisas .pq-cen-tabela .pq-cell-pct {
+          text-align:right; font-variant-numeric:tabular-nums; font-weight:500;
+          width:45px; color:var(--txt);
+        }
+        #s-pesquisas .pq-cen-tabela tr.pq-row-resto td { color:var(--muted); font-style:italic; padding:2px 4px; }
+        #s-pesquisas .pq-cen-meta-pct { font-size:10px; color:var(--muted); margin-top:3px; }
+        #s-pesquisas .pq-cen-meta-pct strong { color:var(--txt); }
+
+        /* Badge DEMO */
+        #s-pesquisas .pq-demo-badge {
+          font-size:9px; padding:2px 7px; border-radius:10px;
+          background:#534AB7; color:#fff; font-weight:600;
+          letter-spacing:.5px; text-transform:uppercase;
+        }
+        #s-pesquisas .pq-card.demo { border-left:3px solid #534AB7; }
+
+        /* Síntese editorial automática */
+        #s-pesquisas .pq-sintese {
+          margin-top:8px; padding:6px 10px;
+          background:rgba(83,74,183,0.06); border-left:2px solid #534AB7;
+          border-radius:0 4px 4px 0; font-size:11px; color:var(--txt);
+        }
+        #s-pesquisas .pq-sintese strong { color:#3C3489; }
+        #s-pesquisas .pq-sintese-up { color:#0F6E56; font-weight:600; }
+        #s-pesquisas .pq-sintese-dn { color:#A32D2D; font-weight:600; }
+
+        /* Painel "Evolução cross-rodada" */
+        #s-pesquisas .pq-tendencia {
+          margin:14px 22px; padding:14px 18px;
+          background:var(--s1); border:0.5px solid var(--bd); border-radius:10px;
+          flex-shrink:0;
+        }
+        #s-pesquisas .pq-tendencia-head {
+          display:flex; align-items:baseline; gap:10px; margin-bottom:8px;
+        }
+        #s-pesquisas .pq-tendencia-titulo { font-size:13px; font-weight:600; color:var(--txt); }
+        #s-pesquisas .pq-tendencia-sub { font-size:10px; color:var(--muted); }
+        #s-pesquisas .pq-tendencia-cargo-tabs { display:flex; gap:6px; margin-bottom:10px; }
+        #s-pesquisas .pq-tendencia-tab {
+          font-size:10px; padding:3px 10px; border-radius:14px;
+          border:0.5px solid var(--bd2); background:var(--s1);
+          cursor:pointer; color:var(--muted); font-family:inherit;
+        }
+        #s-pesquisas .pq-tendencia-tab.on { background:#534AB7; color:#fff; border-color:#534AB7; }
+        #s-pesquisas .pq-tend-row {
+          display:grid; grid-template-columns:140px 1fr 56px;
+          gap:8px; align-items:center; margin-bottom:5px;
+          font-size:11px;
+        }
+        #s-pesquisas .pq-tend-nome {
+          color:var(--txt); white-space:nowrap;
+          overflow:hidden; text-overflow:ellipsis;
+        }
+        #s-pesquisas .pq-tend-nome .pq-part { color:var(--muted); font-size:10px; margin-left:4px; }
+        #s-pesquisas .pq-tend-spark {
+          height:18px; position:relative;
+          background:var(--s2); border-radius:3px;
+        }
+        #s-pesquisas .pq-tend-pt {
+          position:absolute; width:10px; height:10px; border-radius:50%;
+          background:#534AB7; top:4px; transform:translateX(-50%);
+        }
+        #s-pesquisas .pq-tend-line {
+          position:absolute; top:8px; height:2px; background:#534AB7; opacity:.5;
+        }
+        #s-pesquisas .pq-tend-delta {
+          text-align:right; font-variant-numeric:tabular-nums;
+          font-size:11px; font-weight:500;
+        }
+        #s-pesquisas .pq-tend-delta.up { color:#0F6E56; }
+        #s-pesquisas .pq-tend-delta.dn { color:#A32D2D; }
+        #s-pesquisas .pq-tend-delta.eq { color:var(--muted); }
+        #s-pesquisas .pq-tend-rotulo-x {
+          display:grid; grid-template-columns:140px 1fr 56px; gap:8px;
+          margin-top:4px; font-size:9px; color:var(--muted);
+        }
+        #s-pesquisas .pq-tend-rotulo-x .pq-rotulos {
+          display:flex; justify-content:space-between;
+        }
         #s-pesquisas .pq-actions { margin-top:10px; }
         #s-pesquisas .pq-link {
           font-size:11px; color:#185FA5; text-decoration:none;
@@ -1682,6 +1770,12 @@ document.addEventListener('keydown', function(e){
         <strong>Extração IA pendente.</strong> O catálogo está atualizado, mas os cenários estruturados (cargos, candidatos testados, tipo) ainda não foram extraídos por IA. Para ativar, defina <code>ANTHROPIC_API_KEY</code> e rode <code>python3 extrair_pesquisas.py</code>.
       </div>
 
+      <div id="pq-aviso-demo" class="pq-aviso" style="background:rgba(83,74,183,0.08);color:#3C3489;border-left:2px solid #534AB7;display:none">
+        <strong style="color:#3C3489">Cards marcados <span class="pq-demo-badge" style="font-size:8px">DEMO</span> são pesquisas de demonstração</strong> com candidatos reais (do questionário Veritá) e percentuais sintéticos plausíveis. Servem para ilustrar capability de análise de resultados — quando o cliente fornecer relatórios reais ou for ativado o pipeline de coleta, esses dados são substituídos.
+      </div>
+
+      <div id="pq-tendencia" class="pq-tendencia" style="display:none"></div>
+
       <div class="pq-list" id="pq-list"></div>
 
       <script>
@@ -1703,8 +1797,99 @@ document.addEventListener('keydown', function(e){
         return (CAND_ATIVO.nome || '').toLowerCase();
       }
 
-      function pqCardHtml(p){
+      function pqFmtNum(n, casas){ casas = casas==null?1:casas; return n.toFixed(casas).replace('.',','); }
+
+      // Cores por campo político — usa NOME_CAMPO_MAJOR + número do partido
+      var PQ_PARTIDO_COR = {
+        'PT':'#534AB7','PSB':'#534AB7','PV':'#534AB7','PCdoB':'#534AB7','PSOL':'#534AB7','PDT':'#0F6E56',
+        'MDB':'#0F6E56','PSD':'#0F6E56','PSDB':'#0F6E56','União':'#0F6E56','UB':'#0F6E56','Cidadania':'#0F6E56',
+        'PL':'#854F0B','Republicanos':'#854F0B','Rep.':'#854F0B','PP':'#854F0B','Novo':'#854F0B','PSC':'#854F0B','PRTB':'#854F0B'
+      };
+      function pqCorPartido(part){ return PQ_PARTIDO_COR[part] || '#9CA3AF'; }
+
+      function pqCenarioTabelaHtml(c, ego){
+        var cands = (c.candidatos || []).slice();
+        var temPct = cands.some(function(cd){ return typeof cd.pct === 'number'; });
+
+        if (!temPct) {
+          // Sem percentuais (extração só estrutural): renderiza tags compactas
+          var tags = cands.map(function(cd){
+            var nm = cd.nome || '';
+            var isEgo = ego && nm.toLowerCase().includes(ego);
+            return '<span class="pq-cen-cand'+(isEgo?' ego':'')+'">'+nm+
+                   (cd.partido ? '<span class="pq-part">'+cd.partido+'</span>' : '')+'</span>';
+          }).join('');
+          return '<div class="pq-cen-cands">'+(tags||'<em style="color:var(--muted)">sem candidatos listados</em>')+'</div>';
+        }
+
+        // Com percentuais: tabela com barra horizontal proporcional
+        cands.sort(function(a,b){ return (b.pct||0) - (a.pct||0); });
+        var maxPct = Math.max.apply(null, cands.map(function(cd){return cd.pct||0;})) || 1;
+        var rows = cands.map(function(cd){
+          var nm = cd.nome || '';
+          var isEgo = ego && nm.toLowerCase().includes(ego);
+          var w = Math.round((cd.pct||0) / maxPct * 100);
+          var cor = pqCorPartido(cd.partido);
+          return '<tr class="pq-row-cand'+(isEgo?' ego':'')+'">' +
+            '<td class="pq-cell-nome">'+nm+
+              (cd.partido?'<span class="pq-cell-part">'+cd.partido+'</span>':'')+'</td>' +
+            '<td class="pq-cell-bar"><div class="pq-cen-bar" style="width:'+w+'%;background:'+cor+'"></div></td>' +
+            '<td class="pq-cell-pct">'+pqFmtNum(cd.pct||0,1)+'%</td>' +
+          '</tr>';
+        }).join('');
+        var resto = '';
+        if (typeof c.branco_nulo_pct === 'number' || typeof c.ns_nr_pct === 'number') {
+          var partes = [];
+          if (typeof c.branco_nulo_pct === 'number')
+            partes.push('Branco/Nulo: <strong>'+pqFmtNum(c.branco_nulo_pct,1)+'%</strong>');
+          if (typeof c.ns_nr_pct === 'number')
+            partes.push('NS/NR: <strong>'+pqFmtNum(c.ns_nr_pct,1)+'%</strong>');
+          if (typeof c.ic_pp === 'number')
+            partes.push('Margem: <strong>±'+pqFmtNum(c.ic_pp,1)+'pp</strong>');
+          resto = '<div class="pq-cen-meta-pct">'+partes.join(' · ')+'</div>';
+        }
+        return '<table class="pq-cen-tabela">'+rows+'</table>'+resto;
+      }
+
+      // Síntese editorial automática: maior subida e maior queda dentro do conjunto demo
+      function pqSinteseHtml(p, todasPesquisas){
+        if (!p.is_demo) return '';  // só pra demo (cross-rodada confiável)
+        var rodadasSorted = todasPesquisas.filter(function(x){ return x.is_demo; })
+          .sort(function(a,b){ return (a.data_divulgacao||'').localeCompare(b.data_divulgacao||''); });
+        if (rodadasSorted.length < 2) return '';
+        if (p.protocolo !== rodadasSorted[rodadasSorted.length-1].protocolo) return '';  // só na última
+
+        // Coleta delta por candidato (últma vs primeira)
+        var primeira = rodadasSorted[0];
+        var ultima   = rodadasSorted[rodadasSorted.length-1];
+
+        var deltas = [];
+        ['Governador','Senador'].forEach(function(cargo){
+          var c1 = (primeira.extracao.cenarios||[]).find(function(c){return c.cargo===cargo;});
+          var c2 = (ultima.extracao.cenarios||[]).find(function(c){return c.cargo===cargo;});
+          if (!c1 || !c2) return;
+          c2.candidatos.forEach(function(cd){
+            var p1 = (c1.candidatos||[]).find(function(x){return x.nome===cd.nome;});
+            if (!p1 || typeof p1.pct !== 'number' || typeof cd.pct !== 'number') return;
+            deltas.push({ nome:cd.nome, partido:cd.partido, cargo:cargo, delta:cd.pct-p1.pct, pct_atual:cd.pct });
+          });
+        });
+        if (!deltas.length) return '';
+        deltas.sort(function(a,b){ return b.delta - a.delta; });
+        var top = deltas[0];
+        var bot = deltas[deltas.length-1];
+        var html = '<div class="pq-sintese"><strong>Síntese cross-rodada:</strong> ';
+        var partes = [];
+        if (top.delta >= 1) partes.push('<span class="pq-sintese-up">'+top.nome+' ('+top.cargo+') +'+pqFmtNum(top.delta,1)+'pp</span>');
+        if (bot.delta <= -1) partes.push('<span class="pq-sintese-dn">'+bot.nome+' ('+bot.cargo+') '+pqFmtNum(bot.delta,1)+'pp</span>');
+        var n = rodadasSorted.length;
+        html += partes.join(' · ') + ' &middot; ' + n + ' rodadas no período.</div>';
+        return html;
+      }
+
+      function pqCardHtml(p, todas){
         var st = (p.extracao && p.extracao.status) || 'pendente';
+        var isDemo = !!p.is_demo;
         var cargosBadges = (p.cargo || []).map(function(c){
           return '<span class="pq-cargo-badge">'+c+'</span>';
         }).join('');
@@ -1717,58 +1902,178 @@ document.addEventListener('keydown', function(e){
         if (p.n_entrevistados) {
           meta += '<span><strong>'+p.n_entrevistados.toLocaleString('pt-BR')+'</strong> entrevistas</span>';
         }
-        if (p.pesquisa_propria) {
+        if (p.pesquisa_propria && !isDemo) {
           meta += '<span style="color:#0F6E56">Pesquisa própria</span>';
         }
-        if (p.estatistico) {
+        if (p.estatistico && !isDemo) {
           meta += '<span><strong>Estatístico:</strong> '+p.estatistico+(p.conre?' (CONRE '+p.conre+')':'')+'</span>';
         }
 
         var cenariosHtml = '';
         if (st === 'extraido' && p.extracao.cenarios && p.extracao.cenarios.length) {
           var ego = pqEgoNome();
+          var temPctEmAlgum = p.extracao.cenarios.some(function(c){
+            return (c.candidatos||[]).some(function(cd){return typeof cd.pct === 'number';});
+          });
           var cenList = p.extracao.cenarios.map(function(c){
-            var cands = (c.candidatos || []).map(function(cd){
-              var nm = cd.nome || '';
-              var isEgo = ego && nm.toLowerCase().includes(ego);
-              return '<span class="pq-cen-cand'+(isEgo?' ego':'')+'">'+nm+
-                     (cd.partido ? '<span class="pq-part">'+cd.partido+'</span>' : '')+'</span>';
-            }).join('');
             return '<div class="pq-cen-card">' +
               '<div class="pq-cen-head">' +
                 '<span class="pq-cen-cargo">'+(c.cargo||'?')+'</span>' +
                 '<span class="pq-cen-tipo">'+(c.tipo||'?')+'</span>' +
                 (c.questao ? '<span class="pq-cen-questao">'+c.questao+'</span>' : '') +
               '</div>' +
-              '<div class="pq-cen-cands">'+(cands||'<em style="color:var(--muted)">sem candidatos listados</em>')+'</div>' +
+              pqCenarioTabelaHtml(c, ego) +
             '</div>';
           }).join('');
+          var lblToggle = temPctEmAlgum
+            ? 'Ver '+p.extracao.cenarios.length+' cenário(s) com resultados →'
+            : 'Ver '+p.extracao.cenarios.length+' cenário(s) extraídos →';
+          // Quando demo: já abrir cenários
+          var aberto = isDemo ? ' on' : '';
           cenariosHtml =
             '<div class="pq-cenarios">' +
               '<button class="pq-cenarios-toggle" onclick="this.parentNode.querySelector(\'.pq-cenarios-body\').classList.toggle(\'on\')">' +
-                'Ver '+p.extracao.cenarios.length+' cenário(s) extraídos →' +
+                lblToggle +
               '</button>' +
-              '<div class="pq-cenarios-body">'+cenList+'</div>' +
+              '<div class="pq-cenarios-body'+aberto+'">'+cenList+'</div>' +
             '</div>';
         } else if (st === 'falhou' && p.extracao.erro) {
           cenariosHtml = '<div class="pq-cenarios" style="font-size:11px;color:#791F1F">Falha: '+p.extracao.erro+'</div>';
         }
 
-        return '<div class="pq-card">' +
+        var sintese = pqSinteseHtml(p, todas);
+        var demoBadge = isDemo ? '<span class="pq-demo-badge">DEMO</span>' : '';
+        var actions = '';
+        if (p.url_tse_pesqele) {
+          actions = '<div class="pq-actions">' +
+            '<a class="pq-link" href="'+p.url_tse_pesqele+'" target="_blank" rel="noopener">Abrir no PesqEle TSE ↗</a>' +
+          '</div>';
+        }
+
+        return '<div class="pq-card'+(isDemo?' demo':'')+'">' +
           '<div class="pq-card-head">' +
             '<span class="pq-instituto">'+(p.instituto || '—')+'</span>' +
-            '<span class="pq-status '+st+'">'+pqStatusLabel(st)+'</span>' +
+            demoBadge +
+            (isDemo ? '' : '<span class="pq-status '+st+'">'+pqStatusLabel(st)+'</span>') +
             '<span class="pq-protocolo">'+p.protocolo+'</span>' +
             '<span class="pq-data-div">Divulgada '+pqFmtData(p.data_divulgacao)+'</span>' +
           '</div>' +
           '<div class="pq-cargos">'+cargosBadges+'</div>' +
           '<div class="pq-meta-row">'+meta+'</div>' +
           cenariosHtml +
-          '<div class="pq-actions">' +
-            '<a class="pq-link" href="'+(p.url_tse_pesqele||'#')+'" target="_blank" rel="noopener">Abrir no PesqEle TSE ↗</a>' +
-          '</div>' +
+          sintese +
+          actions +
         '</div>';
       }
+
+      // Painel de evolução cross-rodada (só quando há ≥2 pesquisas demo)
+      var PQ_TEND_CARGO = 'Senador';
+      function pqRenderTendencia(){
+        var demos = (PQ.pesquisas||[]).filter(function(p){ return p.is_demo; })
+          .sort(function(a,b){ return (a.data_divulgacao||'').localeCompare(b.data_divulgacao||''); });
+        var box = document.getElementById('pq-tendencia');
+        if (!box) return;
+        if (demos.length < 2) { box.style.display = 'none'; return; }
+
+        // Datas (eixo X)
+        var datas = demos.map(function(d){ return d.data_divulgacao; });
+
+        // Coleta candidatos com ≥2 pontos no cargo escolhido
+        var pontosPorCand = {};  // nome → [pct,pct,...]
+        var partidoPorCand = {};
+        demos.forEach(function(d, idx){
+          var cen = (d.extracao.cenarios||[]).find(function(c){return c.cargo===PQ_TEND_CARGO;});
+          if (!cen) return;
+          (cen.candidatos||[]).forEach(function(cd){
+            if (typeof cd.pct !== 'number') return;
+            if (!pontosPorCand[cd.nome]) pontosPorCand[cd.nome] = new Array(demos.length).fill(null);
+            pontosPorCand[cd.nome][idx] = cd.pct;
+            partidoPorCand[cd.nome] = cd.partido;
+          });
+        });
+
+        // Filtra candidatos com ≥2 pontos válidos
+        var candidatos = Object.keys(pontosPorCand).filter(function(nm){
+          return pontosPorCand[nm].filter(function(v){return v!=null;}).length >= 2;
+        });
+
+        // Ordena por valor mais recente (último ponto) desc
+        candidatos.sort(function(a,b){
+          var av = pontosPorCand[a].slice().reverse().find(function(v){return v!=null;}) || 0;
+          var bv = pontosPorCand[b].slice().reverse().find(function(v){return v!=null;}) || 0;
+          return bv - av;
+        });
+
+        // SVG-style mini-spark com bolinhas + linha
+        var maxPct = Math.max.apply(null, candidatos.flatMap(function(nm){return pontosPorCand[nm].filter(function(v){return v!=null;});})) || 1;
+        var minPct = 0;
+        function pos(v){ return ((v - minPct) / (maxPct - minPct)) * 100; }
+
+        var rows = candidatos.map(function(nm){
+          var pts = pontosPorCand[nm];
+          var part = partidoPorCand[nm];
+          var cor = pqCorPartido(part);
+          // Cria bolinhas + linha entre pontos consecutivos
+          var spark = '';
+          var prev = null;
+          pts.forEach(function(v, idx){
+            if (v == null) return;
+            var x = (idx / (pts.length - 1)) * 100;
+            var yPct = pos(v);
+            // y invertido: maior pct = topo (top:4px), menor = base (top:14px)
+            var topPx = 14 - (yPct / 100) * 10;
+            spark += '<div class="pq-tend-pt" style="left:'+x+'%;top:'+topPx.toFixed(1)+'px;background:'+cor+'"></div>';
+            if (prev != null) {
+              var x1 = (prev.idx / (pts.length - 1)) * 100;
+              var y1Px = 14 - (pos(prev.v) / 100) * 10;
+              var x2 = x;
+              var y2Px = topPx;
+              // Linha como elemento posicionado
+              var dx = x2 - x1; var dy = y2Px - y1Px;
+              var len = Math.sqrt(dx*dx + dy*dy);
+              var ang = Math.atan2(dy * 1, dx * 1) * 180 / Math.PI;
+              spark += '<div class="pq-tend-line" style="left:'+x1+'%;top:'+(y1Px+4)+'px;width:calc('+(dx)+'% );transform:rotate('+ang+'deg);transform-origin:0 50%;background:'+cor+'"></div>';
+            }
+            prev = { idx: idx, v: v };
+          });
+          // Delta primeira × última
+          var validas = pts.filter(function(v){return v!=null;});
+          var delta = validas.length >= 2 ? (validas[validas.length-1] - validas[0]) : 0;
+          var cls = delta > 0.5 ? 'up' : (delta < -0.5 ? 'dn' : 'eq');
+          var sgn = delta >= 0 ? '+' : '';
+          return '<div class="pq-tend-row">' +
+            '<div class="pq-tend-nome">'+nm+(part?'<span class="pq-part">'+part+'</span>':'')+'</div>' +
+            '<div class="pq-tend-spark">'+spark+'</div>' +
+            '<div class="pq-tend-delta '+cls+'">'+sgn+pqFmtNum(delta,1)+'pp</div>' +
+          '</div>';
+        }).join('');
+
+        var rotulosX = datas.map(function(d){ return pqFmtData(d); }).join('<span></span>');
+
+        var cargoTabs = ['Governador','Senador'].map(function(c){
+          return '<button class="pq-tendencia-tab'+(c===PQ_TEND_CARGO?' on':'')+
+                 '" onclick="pqSetTendCargo(\''+c+'\')">'+c+'</button>';
+        }).join('');
+
+        box.innerHTML =
+          '<div class="pq-tendencia-head">' +
+            '<span class="pq-tendencia-titulo">Evolução cross-rodada</span>' +
+            '<span class="pq-tendencia-sub">★ DEMO · '+demos.length+' rodadas</span>' +
+          '</div>' +
+          '<div class="pq-tendencia-cargo-tabs">'+cargoTabs+'</div>' +
+          rows +
+          '<div class="pq-tend-rotulo-x">' +
+            '<span></span>' +
+            '<div class="pq-rotulos">'+datas.map(function(d){return '<span>'+pqFmtData(d)+'</span>';}).join('')+'</div>' +
+            '<span></span>' +
+          '</div>';
+        box.style.display = 'block';
+      }
+
+      window.pqSetTendCargo = function(c){
+        PQ_TEND_CARGO = c;
+        pqRenderTendencia();
+      };
 
       function pqFiltrar(){
         var fcargo = document.getElementById('pq-f-cargo').value;
@@ -1788,7 +2093,8 @@ document.addEventListener('keydown', function(e){
         if (!lista.length) {
           el.innerHTML = '<div class="pq-empty">Nenhuma pesquisa para esses filtros.</div>';
         } else {
-          el.innerHTML = lista.map(pqCardHtml).join('');
+          var todas = PQ.pesquisas || [];
+          el.innerHTML = lista.map(function(p){ return pqCardHtml(p, todas); }).join('');
         }
         document.getElementById('pq-stats').textContent = lista.length + ' de ' + (PQ.pesquisas||[]).length + ' pesquisas';
       }
@@ -1807,6 +2113,11 @@ document.addEventListener('keydown', function(e){
           var av = document.getElementById('pq-aviso-extracao');
           av.querySelector('strong').textContent = pendentes + ' pesquisa(s) com extração IA pendente.';
         }
+        var temDemo = (PQ.pesquisas||[]).some(function(p){ return p.is_demo; });
+        if (temDemo) {
+          document.getElementById('pq-aviso-demo').style.display = 'block';
+        }
+        pqRenderTendencia();
         pqFiltrar();
       }
       pqInit();

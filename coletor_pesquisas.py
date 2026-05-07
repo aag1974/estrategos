@@ -159,8 +159,9 @@ def coletar(uf: str, baixar_zip: bool = True, baixar_pdfs: bool = False) -> dict
     if baixar_pdfs:
         baixar_pdfs_uf(uf)
 
-    # 2. Pré-carregar extrações existentes (idempotência)
+    # 2. Pré-carregar extrações existentes (idempotência) e preservar DEMO
     existentes = carregar_existente(out_path)
+    demo_entries = [p for p in existentes.values() if p.get("is_demo")]
 
     # 3. Filtrar e estruturar
     print(f"  Filtrando UF={uf} no CSV...", end="", flush=True)
@@ -203,6 +204,9 @@ def coletar(uf: str, baixar_zip: bool = True, baixar_pdfs: bool = False) -> dict
                 },
             }
             pesquisas.append(entry)
+
+    # Re-injeta entries DEMO (preservadas)
+    pesquisas.extend(demo_entries)
 
     # Ordena: divulgação mais recente primeiro
     pesquisas.sort(key=lambda p: p.get("data_divulgacao") or "", reverse=True)

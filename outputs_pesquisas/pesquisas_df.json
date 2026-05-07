@@ -1,8 +1,8 @@
 {
-  "atualizado_em": "2026-05-07T17:41:10+00:00",
+  "atualizado_em": "2026-05-07T18:27:30+00:00",
   "fonte": "TSE Dados Abertos · https://cdn.tse.jus.br/estatistica/sead/odsele/pesquisa_eleitoral/pesquisa_eleitoral_2026.zip",
   "uf": "DF",
-  "n_pesquisas": 11,
+  "n_pesquisas": 14,
   "pesquisas": [
     {
       "protocolo": "DF083032026",
@@ -66,6 +66,138 @@
         "modelo": null,
         "erro": null,
         "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DEMO0032026",
+      "instituto": "Estrategos · DEMO POLL",
+      "instituto_razao_social": "Pesquisa de demonstração — Estrategos",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador"
+      ],
+      "data_registro": "2026-05-03",
+      "data_campo_inicio": "2026-05-01",
+      "data_campo_fim": "2026-05-04",
+      "data_divulgacao": "2026-05-05",
+      "n_entrevistados": 1500,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face a face em ponto de fluxo. Amostra representativa do eleitorado DF, estratificada por sexo, idade, escolaridade e renda.",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2.5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T18:27:30+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Governador",
+          "Senador"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Governador",
+            "tipo": "estimulada",
+            "questao": "Q. 06",
+            "candidatos": [
+              {
+                "nome": "Celina Leão",
+                "partido": "PP",
+                "pct": 26.0
+              },
+              {
+                "nome": "José Roberto Arruda",
+                "partido": "PSD",
+                "pct": 16.0
+              },
+              {
+                "nome": "Leandro Grass",
+                "partido": "PT",
+                "pct": 17.0
+              },
+              {
+                "nome": "Paula Belmonte",
+                "partido": "PSDB",
+                "pct": 13.0
+              },
+              {
+                "nome": "Ricardo Cappelli",
+                "partido": "PSB",
+                "pct": 5.0
+              },
+              {
+                "nome": "Kiko Caputo",
+                "partido": "Novo",
+                "pct": 3.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 10.0,
+            "ns_nr_pct": 10.0,
+            "ic_pp": 2.5
+          },
+          {
+            "cargo": "Senador",
+            "tipo": "estimulada",
+            "questao": "Q. 11",
+            "candidatos": [
+              {
+                "nome": "Ibaneis Rocha",
+                "partido": "MDB",
+                "pct": 31.0
+              },
+              {
+                "nome": "José Reguffe",
+                "partido": "União",
+                "pct": 14.0
+              },
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 18.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 16.0
+              },
+              {
+                "nome": "Michelle Bolsonaro",
+                "partido": "PL",
+                "pct": 9.0
+              },
+              {
+                "nome": "Leila Barros",
+                "partido": "PDT",
+                "pct": 5.0
+              },
+              {
+                "nome": "Sebastião Coelho",
+                "partido": "Novo",
+                "pct": 3.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 2.0,
+            "ns_nr_pct": 2.0,
+            "ic_pp": 2.5
+          }
+        ]
       }
     },
     {
@@ -161,6 +293,138 @@
         "modelo": null,
         "erro": null,
         "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DEMO0022026",
+      "instituto": "Estrategos · DEMO POLL",
+      "instituto_razao_social": "Pesquisa de demonstração — Estrategos",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador"
+      ],
+      "data_registro": "2026-04-08",
+      "data_campo_inicio": "2026-04-05",
+      "data_campo_fim": "2026-04-09",
+      "data_divulgacao": "2026-04-10",
+      "n_entrevistados": 1500,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face a face em ponto de fluxo. Amostra representativa do eleitorado DF, estratificada por sexo, idade, escolaridade e renda.",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2.5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T18:27:30+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Governador",
+          "Senador"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Governador",
+            "tipo": "estimulada",
+            "questao": "Q. 06",
+            "candidatos": [
+              {
+                "nome": "Celina Leão",
+                "partido": "PP",
+                "pct": 24.0
+              },
+              {
+                "nome": "José Roberto Arruda",
+                "partido": "PSD",
+                "pct": 17.0
+              },
+              {
+                "nome": "Leandro Grass",
+                "partido": "PT",
+                "pct": 15.0
+              },
+              {
+                "nome": "Paula Belmonte",
+                "partido": "PSDB",
+                "pct": 13.0
+              },
+              {
+                "nome": "Ricardo Cappelli",
+                "partido": "PSB",
+                "pct": 5.0
+              },
+              {
+                "nome": "Kiko Caputo",
+                "partido": "Novo",
+                "pct": 3.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 11.0,
+            "ns_nr_pct": 12.0,
+            "ic_pp": 2.5
+          },
+          {
+            "cargo": "Senador",
+            "tipo": "estimulada",
+            "questao": "Q. 11",
+            "candidatos": [
+              {
+                "nome": "Ibaneis Rocha",
+                "partido": "MDB",
+                "pct": 30.0
+              },
+              {
+                "nome": "José Reguffe",
+                "partido": "União",
+                "pct": 17.0
+              },
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 16.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 15.0
+              },
+              {
+                "nome": "Michelle Bolsonaro",
+                "partido": "PL",
+                "pct": 10.0
+              },
+              {
+                "nome": "Leila Barros",
+                "partido": "PDT",
+                "pct": 5.0
+              },
+              {
+                "nome": "Sebastião Coelho",
+                "partido": "Novo",
+                "pct": 3.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 2.0,
+            "ns_nr_pct": 2.0,
+            "ic_pp": 2.5
+          }
+        ]
       }
     },
     {
@@ -290,6 +554,138 @@
         "modelo": null,
         "erro": null,
         "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DEMO0012026",
+      "instituto": "Estrategos · DEMO POLL",
+      "instituto_razao_social": "Pesquisa de demonstração — Estrategos",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador"
+      ],
+      "data_registro": "2026-03-12",
+      "data_campo_inicio": "2026-03-10",
+      "data_campo_fim": "2026-03-13",
+      "data_divulgacao": "2026-03-15",
+      "n_entrevistados": 1500,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face a face em ponto de fluxo. Amostra representativa do eleitorado DF, estratificada por sexo, idade, escolaridade e renda.",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2.5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T18:27:30+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Governador",
+          "Senador"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Governador",
+            "tipo": "estimulada",
+            "questao": "Q. 06",
+            "candidatos": [
+              {
+                "nome": "Celina Leão",
+                "partido": "PP",
+                "pct": 22.0
+              },
+              {
+                "nome": "José Roberto Arruda",
+                "partido": "PSD",
+                "pct": 18.0
+              },
+              {
+                "nome": "Leandro Grass",
+                "partido": "PT",
+                "pct": 16.0
+              },
+              {
+                "nome": "Paula Belmonte",
+                "partido": "PSDB",
+                "pct": 12.0
+              },
+              {
+                "nome": "Ricardo Cappelli",
+                "partido": "PSB",
+                "pct": 4.0
+              },
+              {
+                "nome": "Kiko Caputo",
+                "partido": "Novo",
+                "pct": 4.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 12.0,
+            "ns_nr_pct": 12.0,
+            "ic_pp": 2.5
+          },
+          {
+            "cargo": "Senador",
+            "tipo": "estimulada",
+            "questao": "Q. 11",
+            "candidatos": [
+              {
+                "nome": "Ibaneis Rocha",
+                "partido": "MDB",
+                "pct": 28.0
+              },
+              {
+                "nome": "José Reguffe",
+                "partido": "União",
+                "pct": 19.0
+              },
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 15.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 14.0
+              },
+              {
+                "nome": "Michelle Bolsonaro",
+                "partido": "PL",
+                "pct": 11.0
+              },
+              {
+                "nome": "Leila Barros",
+                "partido": "PDT",
+                "pct": 5.0
+              },
+              {
+                "nome": "Sebastião Coelho",
+                "partido": "Novo",
+                "pct": 3.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 3.0,
+            "ns_nr_pct": 2.0,
+            "ic_pp": 2.5
+          }
+        ]
       }
     },
     {
