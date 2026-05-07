@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Análise Consolidada de Pesquisas — Dep. Federal DF 2026</title>
+<style>
+  :root {
+    --bg:#F5F2EC; --paper:#FFFFFF; --soft:#F0EDE6;
+    --txt:#1A1A1A; --muted:#6B7280; --bd:rgba(0,0,0,.10); --bd2:rgba(0,0,0,.18);
+    --amber:#B45309; --amber-soft:#FAEEDA;
+    --up:#0F6E56; --dn:#A32D2D; --eq:#9CA3AF;
+    --accent:#534AB7; --accent-soft:rgba(83,74,183,.06);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:var(--bg); }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    color:var(--txt); font-size:13px; line-height:1.55; padding:30px 0;
+  }
+  .page {
+    width:780px; margin:0 auto 28px; padding:42px 56px;
+    background:var(--paper); border:0.5px solid var(--bd); border-radius:6px;
+    box-shadow:0 1px 4px rgba(0,0,0,.04);
+    position:relative; min-height:1080px;
+  }
+  .page-foot {
+    position:absolute; left:56px; right:56px; bottom:24px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:9px; color:var(--muted);
+    border-top:0.5px solid var(--bd); padding-top:10px;
+  }
+  .page-foot strong { color:var(--txt); font-weight:600; }
+
+  /* CAPA */
+  .cover { text-align:left; padding-top:120px; }
+  .cover .brand {
+    display:flex; align-items:center; gap:10px;
+    font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--amber); font-weight:600; margin-bottom:80px;
+  }
+  .cover .brand-dot { width:8px; height:8px; background:var(--amber); border-radius:50%; }
+  .cover h1 {
+    font-size:38px; font-weight:600; letter-spacing:-1px;
+    line-height:1.15; color:var(--txt); margin-bottom:8px;
+  }
+  .cover h2 {
+    font-size:22px; font-weight:300; color:var(--muted); margin-bottom:36px;
+  }
+  .cover .meta-row {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    margin-top:38px; padding-top:22px;
+    border-top:0.5px solid var(--bd);
+  }
+  .cover .meta-label {
+    font-size:9px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--muted); margin-bottom:4px;
+  }
+  .cover .meta-val { font-size:13px; color:var(--txt); font-weight:500; }
+  .cover .demo-tag {
+    display:inline-block; font-size:9px; padding:2px 8px;
+    background:var(--accent); color:#fff; border-radius:10px;
+    letter-spacing:1px; text-transform:uppercase; font-weight:600;
+    vertical-align:middle; margin-right:6px;
+  }
+  .cover .disclaimer {
+    margin-top:48px; padding:14px 16px;
+    background:var(--accent-soft); border-left:3px solid var(--accent);
+    font-size:11px; color:#3C3489; line-height:1.5;
+  }
+  .cover .institutos-row {
+    display:flex; gap:16px; margin-top:18px; padding:12px 0;
+    border-top:0.5px solid var(--bd);
+  }
+  .cover .inst-chip {
+    display:flex; align-items:center; gap:6px;
+    font-size:11px; color:var(--txt);
+  }
+  .cover .inst-dot { width:10px; height:10px; border-radius:50%; }
+
+  /* ESTRUTURA DE SEÇÃO */
+  .section-kicker {
+    font-size:9px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--accent); font-weight:600; margin-bottom:6px;
+  }
+  .section-title {
+    font-size:24px; font-weight:600; letter-spacing:-.4px; margin-bottom:6px;
+  }
+  .section-sub { font-size:12px; color:var(--muted); margin-bottom:24px; }
+  .section-divider { height:0.5px; background:var(--bd); margin:0 0 22px; }
+
+  /* SUMÁRIO EXECUTIVO */
+  .summary .lead {
+    font-size:14px; line-height:1.7; color:var(--txt); margin-bottom:18px;
+  }
+  .findings { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .finding {
+    display:flex; gap:14px; padding:12px 14px;
+    background:var(--soft); border-radius:6px;
+    border-left:3px solid var(--accent);
+  }
+  .finding .num {
+    flex-shrink:0; width:24px; height:24px; border-radius:50%;
+    background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700;
+  }
+  .finding .text { flex:1; }
+  .finding .title { font-weight:600; color:var(--txt); margin-bottom:3px; font-size:13px; }
+  .finding .body { font-size:12px; color:var(--muted); line-height:1.5; }
+  .finding .body strong { color:var(--txt); font-weight:500; }
+  .finding .body .up { color:var(--up); font-weight:600; }
+  .finding .body .dn { color:var(--dn); font-weight:600; }
+
+  /* SMALL MULTIPLES */
+  .small-multiples {
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    background:var(--soft); border-radius:8px; padding:14px;
+    margin-bottom:18px;
+  }
+  .small-multiples svg { display:block; background:var(--paper); border-radius:4px; }
+
+  .legend-row {
+    display:flex; gap:14px; padding:10px 14px; margin-bottom:14px;
+    background:var(--paper); border:0.5px solid var(--bd); border-radius:6px;
+    font-size:11px;
+  }
+  .legend-item { display:flex; align-items:center; gap:6px; color:var(--txt); }
+  .legend-dot { width:10px; height:10px; border-radius:50%; }
+  .legend-line {
+    display:inline-block; width:18px; height:2px; opacity:0.45;
+    border-top:1.5px dashed currentColor; margin-right:4px;
+  }
+
+  /* TABELA PIVÔ */
+  .data-table {
+    width:100%; border-collapse:collapse; font-size:10.5px;
+    font-variant-numeric:tabular-nums; margin-bottom:18px;
+  }
+  .data-table th {
+    font-size:9px; padding:6px 4px; border-bottom:0.5px solid var(--bd);
+    text-align:right; vertical-align:bottom; color:var(--muted); font-weight:500;
+  }
+  .data-table th:first-child { text-align:left; padding-left:0; }
+  .data-table th .col-data {
+    display:block; font-weight:600; color:var(--txt); font-size:10px;
+  }
+  .data-table th .col-inst {
+    display:block; font-size:8.5px; font-weight:500; margin-top:1px;
+  }
+  .data-table th.delta-col { font-size:9px; letter-spacing:.5px; text-transform:uppercase; }
+  .data-table td {
+    padding:6px 4px; border-bottom:0.5px solid var(--bd);
+    text-align:right; color:var(--txt);
+  }
+  .data-table td.cand-cell { text-align:left; padding-left:0; display:flex; align-items:center; gap:6px; }
+  .data-table .cor-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .data-table .partido {
+    color:var(--muted); font-size:9px; margin-left:4px; font-weight:400;
+  }
+  .data-table tr:last-child td { border-bottom:none; }
+  .data-table td.delta { font-weight:600; }
+  .data-table td.delta.up { color:var(--up); }
+  .data-table td.delta.dn { color:var(--dn); }
+  .data-table td.delta.eq { color:var(--eq); }
+
+  /* COMMENTARY */
+  .commentary p {
+    font-size:12.5px; line-height:1.65; color:var(--txt);
+    margin-bottom:10px;
+  }
+  .commentary p:last-child { margin-bottom:0; }
+  .commentary strong { color:var(--txt); font-weight:600; }
+  .commentary em { color:var(--muted); font-style:italic; }
+  .commentary .up { color:var(--up); font-weight:600; }
+  .commentary .dn { color:var(--dn); font-weight:600; }
+
+  /* METHODOLOGY */
+  .methodology .meta-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;
+  }
+  .methodology .meta-cell {
+    padding:14px 16px; background:var(--soft); border-radius:6px;
+  }
+  .methodology .meta-cell-label {
+    font-size:9px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--muted); margin-bottom:4px;
+  }
+  .methodology .meta-cell-val { font-size:13px; color:var(--txt); font-weight:500; }
+  .methodology .note {
+    margin-top:18px; padding:12px 14px;
+    background:var(--accent-soft); border-left:2px solid var(--accent);
+    font-size:11px; line-height:1.55; color:#3C3489;
+  }
+  .methodology .house-effect {
+    margin-top:18px; padding:14px 16px; background:var(--soft); border-radius:6px;
+  }
+  .methodology .house-effect h3 {
+    font-size:13px; font-weight:600; margin-bottom:8px; color:var(--txt);
+  }
+  .methodology .house-effect p { font-size:11.5px; line-height:1.6; color:var(--muted); }
+
+  @media print {
+    body { padding:0; background:#fff; }
+    .page {
+      width:auto; margin:0; box-shadow:none; border:none; border-radius:0;
+      page-break-after:always; min-height:auto;
+    }
+    .page:last-child { page-break-after:auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━ PÁGINA 1 — CAPA ━━━━━━ -->
+<div class="page cover">
+  <div class="brand">
+    <span class="brand-dot"></span>
+    Estrategos · Inteligência Política
+  </div>
+  <h1>Análise Consolidada de Pesquisas</h1>
+  <h2>Câmara Federal · DF · Eleições 2026</h2>
+
+  <div class="meta-row">
+    <div>
+      <div class="meta-label">Período de campo</div>
+      <div class="meta-val">15/02 a 15/05/2026</div>
+    </div>
+    <div>
+      <div class="meta-label">Pesquisas analisadas</div>
+      <div class="meta-val">8 ondas</div>
+    </div>
+    <div>
+      <div class="meta-label">Institutos</div>
+      <div class="meta-val">4 (Veritá, Igape, Cepphor, Phoenix)</div>
+    </div>
+    <div>
+      <div class="meta-label">Cargo</div>
+      <div class="meta-val">Deputado Federal</div>
+    </div>
+  </div>
+
+  <div class="institutos-row">
+    <div class="inst-chip"><span class="inst-dot" style="background:#1f77b4"></span>Veritá</div><div class="inst-chip"><span class="inst-dot" style="background:#ff7f0e"></span>Igape</div><div class="inst-chip"><span class="inst-dot" style="background:#2ca02c"></span>Cepphor</div><div class="inst-chip"><span class="inst-dot" style="background:#d62728"></span>Phoenix</div>
+  </div>
+
+  <div class="disclaimer">
+    <span class="demo-tag">Demo</span>Demonstração de capability do produto Estrategos. Os candidatos são reais (eleitos para Deputado Federal pelo DF em 2022); os percentuais são <strong>sintéticos</strong>, calibrados para ilustrar agregação cross-instituto e detecção de tendências consolidadas. Não substituem dados oficiais. Quando o cliente fornecer relatórios reais (ou ativarmos o pipeline de coleta), o conteúdo é regenerado com dados de campo.
+  </div>
+
+  <div class="page-foot">
+    <span><strong>Estrategos</strong> — Inteligência Política DF · Opinião Informação Estratégica</span>
+    <span>1 / 4</span>
+  </div>
+</div>
+
+<!-- ━━━━━━ PÁGINA 2 — SUMÁRIO EXECUTIVO ━━━━━━ -->
+<div class="page">
+  <div class="section-kicker">Sumário Executivo</div>
+  <div class="section-title">Três movimentos confirmados por múltiplos institutos</div>
+  <div class="section-sub">Tendências cuja magnitude supera a margem de erro consolidada (±2,5pp) e a variação esperada por <em>house effect</em></div>
+  <div class="section-divider"></div>
+
+  <div class="summary">
+    <p class="lead">Entre meados de fevereiro e meados de maio de 2026, oito pesquisas registradas no TSE por quatro institutos diferentes (Veritá, Igape, Cepphor e Phoenix) cobriram a corrida pela Câmara Federal no DF. Cruzando as ondas, três movimentos se destacam pela <strong>convergência cross-instituto</strong> — sinal de que não são oscilações amostrais isoladas, mas tendências estruturais.</p>
+
+    <ul class="findings">
+      <li class="finding"><div class="num">1</div><div class="text"><div class="title">Bia Kicis consolida liderança do PL no DF</div><div class="body">Líder isolada do campo liberal-conservador na Câmara, <strong>Bia Kicis (PL)</strong> avança de <strong>14% para 20%</strong> em três meses (<span class="up">+5.1pp</span>). Os <strong>4 institutos</strong> avaliados confirmam a tendência de alta — sinal de movimento estrutural, não de oscilação amostral. A magnitude (~6pp) supera a margem de erro consolidada (±2,5pp) e coloca Kicis com folga acima dos demais nomes do campo.</div></div></li><li class="finding"><div class="num">2</div><div class="text"><div class="title">Bancada evangélica fragmenta-se</div><div class="body"><strong>Julio Cesar Ribeiro (Republicanos)</strong>, pastor evangélico eleito em 2022, recua de <strong>11% para 8%</strong> (<span class="dn">-3.1pp</span>) — queda confirmada por todos os 4 institutos. Já <strong>Fred Linhares</strong>, do mesmo partido mas com perfil mais técnico, sobe <span class="up">+2.9pp</span>. O movimento sugere realocação intra-bancada, não saída de eleitores do campo conservador.</div></div></li><li class="finding"><div class="num">3</div><div class="text"><div class="title">Reginaldo Veras emerge como segundo nome do PT-aliados</div><div class="body">Erika Kokay segue dominando o voto progressista (~13%, estável). Mas <strong>Reginaldo Veras (PV)</strong> avança discretamente de 5% para 7% (<span class="up">+2.3pp</span>), criando uma <em>segunda opção</em> consistente para o eleitor de centro-esquerda — útil em cenário onde o quociente eleitoral exigir distribuição de votos.</div></div></li>
+    </ul>
+  </div>
+
+  <div class="page-foot">
+    <span><strong>Estrategos</strong> — Inteligência Política DF · Opinião Informação Estratégica</span>
+    <span>2 / 4</span>
+  </div>
+</div>
+
+<!-- ━━━━━━ PÁGINA 3 — SMALL MULTIPLES ━━━━━━ -->
+<div class="page">
+  <div class="section-kicker">Câmara Federal · Cenário estimulado</div>
+  <div class="section-title">Evolução por candidato</div>
+  <div class="section-sub">Cada chart: 8 pesquisas (uma cor por instituto) · linha tracejada = regressão linear consolidada · delta no canto = variação estimada no período</div>
+  <div class="section-divider"></div>
+
+  <div class="legend-row">
+    <div class="legend-item"><span class="legend-dot" style="background:#1f77b4"></span>Veritá</div><div class="legend-item"><span class="legend-dot" style="background:#ff7f0e"></span>Igape</div><div class="legend-item"><span class="legend-dot" style="background:#2ca02c"></span>Cepphor</div><div class="legend-item"><span class="legend-dot" style="background:#d62728"></span>Phoenix</div>
+    <span style="margin-left:auto;color:var(--muted);font-size:10.5px;">
+      <span class="legend-line" style="color:var(--muted)"></span>linha = tendência consolidada (regressão linear)
+    </span>
+  </div>
+
+  <div class="small-multiples">
+    <svg width="340" height="170" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+<line x1="36" y1="140.0" x2="326" y2="140.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="143.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">0%</text>
+<line x1="36" y1="115.6" x2="326" y2="115.6" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="118.6" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">5%</text>
+<line x1="36" y1="91.2" x2="326" y2="91.2" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="94.2" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">10%</text>
+<line x1="36" y1="66.8" x2="326" y2="66.8" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="69.8" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">15%</text>
+<line x1="36" y1="42.4" x2="326" y2="42.4" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="45.4" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">20%</text>
+<line x1="36" y1="18.0" x2="326" y2="18.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="21.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">25%</text>
+<text x="36.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">fev</text>
+<text x="127.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mar</text>
+<text x="228.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">abr</text>
+<text x="326.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mai</text>
+<line x1="36.0" y1="69.6" x2="326.0" y2="44.7" stroke="#A32D2D" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.45"/>
+<circle cx="36.0" cy="71.7" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="52.3" cy="66.8" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="110.9" cy="61.9" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="159.8" cy="57.0" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<circle cx="228.2" cy="52.2" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="251.1" cy="57.0" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="293.4" cy="47.3" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="326.0" cy="42.4" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<text x="36" y="13" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">Bia Kicis</text>
+<text x="136" y="13" font-size="9" fill="#6B7280" font-family="-apple-system,sans-serif">PL</text>
+<text x="326" y="13" font-size="11" font-weight="600" fill="#0F6E56" text-anchor="end" font-family="-apple-system,sans-serif">+5.1pp</text>
+</svg>
+<svg width="340" height="170" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+<line x1="36" y1="140.0" x2="326" y2="140.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="143.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">0%</text>
+<line x1="36" y1="115.6" x2="326" y2="115.6" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="118.6" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">5%</text>
+<line x1="36" y1="91.2" x2="326" y2="91.2" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="94.2" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">10%</text>
+<line x1="36" y1="66.8" x2="326" y2="66.8" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="69.8" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">15%</text>
+<line x1="36" y1="42.4" x2="326" y2="42.4" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="45.4" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">20%</text>
+<line x1="36" y1="18.0" x2="326" y2="18.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="21.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">25%</text>
+<text x="36.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">fev</text>
+<text x="127.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mar</text>
+<text x="228.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">abr</text>
+<text x="326.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mai</text>
+<line x1="36.0" y1="75.0" x2="326.0" y2="61.1" stroke="#854F0B" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.45"/>
+<circle cx="36.0" cy="76.6" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="52.3" cy="71.7" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="110.9" cy="71.7" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="159.8" cy="66.8" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<circle cx="228.2" cy="66.8" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="251.1" cy="71.7" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="293.4" cy="61.9" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="326.0" cy="57.0" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<text x="36" y="13" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">Fred Linhares</text>
+<text x="136" y="13" font-size="9" fill="#6B7280" font-family="-apple-system,sans-serif">Republicanos</text>
+<text x="326" y="13" font-size="11" font-weight="600" fill="#0F6E56" text-anchor="end" font-family="-apple-system,sans-serif">+2.9pp</text>
+</svg>
+<svg width="340" height="170" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+<line x1="36" y1="140.0" x2="326" y2="140.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="143.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">0%</text>
+<line x1="36" y1="115.6" x2="326" y2="115.6" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="118.6" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">5%</text>
+<line x1="36" y1="91.2" x2="326" y2="91.2" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="94.2" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">10%</text>
+<line x1="36" y1="66.8" x2="326" y2="66.8" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="69.8" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">15%</text>
+<line x1="36" y1="42.4" x2="326" y2="42.4" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="45.4" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">20%</text>
+<line x1="36" y1="18.0" x2="326" y2="18.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="21.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">25%</text>
+<text x="36.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">fev</text>
+<text x="127.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mar</text>
+<text x="228.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">abr</text>
+<text x="326.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mai</text>
+<line x1="36.0" y1="80.3" x2="326.0" y2="75.3" stroke="#534AB7" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.45"/>
+<circle cx="36.0" cy="76.6" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="52.3" cy="81.4" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="110.9" cy="81.4" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="159.8" cy="76.6" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<circle cx="228.2" cy="81.4" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="251.1" cy="76.6" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="293.4" cy="76.6" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="326.0" cy="71.7" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<text x="36" y="13" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">Erika Kokay</text>
+<text x="136" y="13" font-size="9" fill="#6B7280" font-family="-apple-system,sans-serif">PT</text>
+<text x="326" y="13" font-size="11" font-weight="600" fill="#0F6E56" text-anchor="end" font-family="-apple-system,sans-serif">+1.0pp</text>
+</svg>
+<svg width="340" height="170" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+<line x1="36" y1="140.0" x2="326" y2="140.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="143.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">0%</text>
+<line x1="36" y1="115.6" x2="326" y2="115.6" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="118.6" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">5%</text>
+<line x1="36" y1="91.2" x2="326" y2="91.2" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="94.2" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">10%</text>
+<line x1="36" y1="66.8" x2="326" y2="66.8" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="69.8" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">15%</text>
+<line x1="36" y1="42.4" x2="326" y2="42.4" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="45.4" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">20%</text>
+<line x1="36" y1="18.0" x2="326" y2="18.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="21.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">25%</text>
+<text x="36.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">fev</text>
+<text x="127.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mar</text>
+<text x="228.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">abr</text>
+<text x="326.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mai</text>
+<line x1="36.0" y1="86.0" x2="326.0" y2="101.2" stroke="#D85A30" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.45"/>
+<circle cx="36.0" cy="86.3" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="52.3" cy="86.3" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="110.9" cy="91.2" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="159.8" cy="91.2" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<circle cx="228.2" cy="96.1" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="251.1" cy="96.1" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="293.4" cy="101.0" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="326.0" cy="101.0" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<text x="36" y="13" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">Julio Cesar Ribeiro</text>
+<text x="136" y="13" font-size="9" fill="#6B7280" font-family="-apple-system,sans-serif">Republicanos</text>
+<text x="326" y="13" font-size="11" font-weight="600" fill="#A32D2D" text-anchor="end" font-family="-apple-system,sans-serif">-3.1pp</text>
+</svg>
+<svg width="340" height="170" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+<line x1="36" y1="140.0" x2="326" y2="140.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="143.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">0%</text>
+<line x1="36" y1="115.6" x2="326" y2="115.6" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="118.6" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">5%</text>
+<line x1="36" y1="91.2" x2="326" y2="91.2" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="94.2" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">10%</text>
+<line x1="36" y1="66.8" x2="326" y2="66.8" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="69.8" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">15%</text>
+<line x1="36" y1="42.4" x2="326" y2="42.4" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="45.4" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">20%</text>
+<line x1="36" y1="18.0" x2="326" y2="18.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="21.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">25%</text>
+<text x="36.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">fev</text>
+<text x="127.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mar</text>
+<text x="228.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">abr</text>
+<text x="326.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mai</text>
+<line x1="36.0" y1="116.4" x2="326.0" y2="105.1" stroke="#0F6E56" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.45"/>
+<circle cx="36.0" cy="115.6" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="52.3" cy="115.6" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="110.9" cy="115.6" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="159.8" cy="110.7" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<circle cx="228.2" cy="110.7" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="251.1" cy="105.8" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="293.4" cy="105.8" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="326.0" cy="105.8" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<text x="36" y="13" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">Reginaldo Veras</text>
+<text x="136" y="13" font-size="9" fill="#6B7280" font-family="-apple-system,sans-serif">PV</text>
+<text x="326" y="13" font-size="11" font-weight="600" fill="#0F6E56" text-anchor="end" font-family="-apple-system,sans-serif">+2.3pp</text>
+</svg>
+<svg width="340" height="170" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+<line x1="36" y1="140.0" x2="326" y2="140.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="143.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">0%</text>
+<line x1="36" y1="115.6" x2="326" y2="115.6" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="118.6" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">5%</text>
+<line x1="36" y1="91.2" x2="326" y2="91.2" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="94.2" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">10%</text>
+<line x1="36" y1="66.8" x2="326" y2="66.8" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="69.8" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">15%</text>
+<line x1="36" y1="42.4" x2="326" y2="42.4" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="45.4" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">20%</text>
+<line x1="36" y1="18.0" x2="326" y2="18.0" stroke="#E5E7EB" stroke-width="0.5"/><text x="32" y="21.0" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">25%</text>
+<text x="36.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">fev</text>
+<text x="127.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mar</text>
+<text x="228.2" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">abr</text>
+<text x="326.0" y="154" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">mai</text>
+<line x1="36.0" y1="117.3" x2="326.0" y2="115.1" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.45"/>
+<circle cx="36.0" cy="115.6" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="52.3" cy="120.5" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="110.9" cy="115.6" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="159.8" cy="115.6" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<circle cx="228.2" cy="115.6" r="4" fill="#1f77b4" stroke="#fff" stroke-width="1.2"/>
+<circle cx="251.1" cy="115.6" r="4" fill="#ff7f0e" stroke="#fff" stroke-width="1.2"/>
+<circle cx="293.4" cy="115.6" r="4" fill="#2ca02c" stroke="#fff" stroke-width="1.2"/>
+<circle cx="326.0" cy="115.6" r="4" fill="#d62728" stroke="#fff" stroke-width="1.2"/>
+<text x="36" y="13" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">Roney Nemer</text>
+<text x="136" y="13" font-size="9" fill="#6B7280" font-family="-apple-system,sans-serif">PP</text>
+<text x="326" y="13" font-size="11" font-weight="600" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">+0.4pp</text>
+</svg>
+  </div>
+
+  <div class="commentary">
+    <p>A leitura por <strong>small multiples</strong> permite avaliar cada candidato isoladamente, mas mantendo a mesma escala vertical (0–25%) para que magnitudes sejam comparáveis. Pontos coloridos identificam o instituto responsável; a linha tracejada representa a regressão linear das oito ondas — útil para distinguir <em>tendência</em> de <em>oscilação amostral</em>.</p>
+    <p>Quatro candidatos apresentam tendência clara (módulo da inclinação superior a 0,02pp/dia): <strong>Bia Kicis</strong> e <strong>Fred Linhares</strong> em alta; <strong>Julio Cesar Ribeiro</strong> em queda; <strong>Reginaldo Veras</strong> em alta moderada. Os demais (Erika Kokay e Roney Nemer) oscilam dentro da margem.</p>
+  </div>
+
+  <div class="page-foot">
+    <span><strong>Estrategos</strong> — Inteligência Política DF · Opinião Informação Estratégica</span>
+    <span>3 / 4</span>
+  </div>
+</div>
+
+<!-- ━━━━━━ PÁGINA 4 — TABELA PIVÔ + METODOLOGIA ━━━━━━ -->
+<div class="page">
+  <div class="section-kicker">Câmara Federal</div>
+  <div class="section-title">Tabela pivô · 8 pesquisas × 6 candidatos</div>
+  <div class="section-sub">Comparação direta entre todas as ondas. Δ período = variação entre a primeira e a última pesquisa</div>
+  <div class="section-divider"></div>
+
+  <table class="data-table"><thead><tr><th>Candidato</th><th><span class="col-data">15/02</span><span class="col-inst" style="color:#ff7f0e">Igape</span></th><th><span class="col-data">20/02</span><span class="col-inst" style="color:#1f77b4">Veritá</span></th><th><span class="col-data">10/03</span><span class="col-inst" style="color:#2ca02c">Cepphor</span></th><th><span class="col-data">25/03</span><span class="col-inst" style="color:#d62728">Phoenix</span></th><th><span class="col-data">15/04</span><span class="col-inst" style="color:#1f77b4">Veritá</span></th><th><span class="col-data">22/04</span><span class="col-inst" style="color:#ff7f0e">Igape</span></th><th><span class="col-data">05/05</span><span class="col-inst" style="color:#2ca02c">Cepphor</span></th><th><span class="col-data">15/05</span><span class="col-inst" style="color:#d62728">Phoenix</span></th><th class="delta-col">Δ período</th></tr></thead><tbody><tr><td class="cand-cell"><span class="cor-dot" style="background:#A32D2D"></span>Bia Kicis<span class="partido">PL</span></td><td>14%</td><td>15%</td><td>16%</td><td>17%</td><td>18%</td><td>17%</td><td>19%</td><td>20%</td><td class="delta up">+5.1pp</td></tr><tr><td class="cand-cell"><span class="cor-dot" style="background:#854F0B"></span>Fred Linhares<span class="partido">Republicanos</span></td><td>13%</td><td>14%</td><td>14%</td><td>15%</td><td>15%</td><td>14%</td><td>16%</td><td>17%</td><td class="delta up">+2.9pp</td></tr><tr><td class="cand-cell"><span class="cor-dot" style="background:#534AB7"></span>Erika Kokay<span class="partido">PT</span></td><td>13%</td><td>12%</td><td>12%</td><td>13%</td><td>12%</td><td>13%</td><td>13%</td><td>14%</td><td class="delta up">+1.0pp</td></tr><tr><td class="cand-cell"><span class="cor-dot" style="background:#D85A30"></span>Julio Cesar Ribeiro<span class="partido">Republicanos</span></td><td>11%</td><td>11%</td><td>10%</td><td>10%</td><td>9%</td><td>9%</td><td>8%</td><td>8%</td><td class="delta dn">-3.1pp</td></tr><tr><td class="cand-cell"><span class="cor-dot" style="background:#0F6E56"></span>Reginaldo Veras<span class="partido">PV</span></td><td>5%</td><td>5%</td><td>5%</td><td>6%</td><td>6%</td><td>7%</td><td>7%</td><td>7%</td><td class="delta up">+2.3pp</td></tr><tr><td class="cand-cell"><span class="cor-dot" style="background:#6B7280"></span>Roney Nemer<span class="partido">PP</span></td><td>5%</td><td>4%</td><td>5%</td><td>5%</td><td>5%</td><td>5%</td><td>5%</td><td>5%</td><td class="delta eq">+0.4pp</td></tr></tbody></table>
+
+  <div class="commentary">
+    <p>A coluna <strong>Δ período</strong> mostra o movimento bruto (última pesquisa menos primeira). Como os institutos se alternam ao longo do tempo, parte dessa variação pode ser <em>house effect</em> — viés sistemático de cada instituto. A regressão linear (página 3) atenua isso ao usar todos os 8 pontos, e os números convergem com a leitura cross-instituto descrita no sumário executivo.</p>
+  </div>
+
+  <div class="section-kicker" style="margin-top:30px">Metodologia</div>
+  <div class="section-title" style="font-size:18px">Como esta análise foi produzida</div>
+  <div class="section-divider"></div>
+
+  <div class="methodology">
+    <div class="meta-grid">
+      <div class="meta-cell">
+        <div class="meta-cell-label">Tipo de coleta</div>
+        <div class="meta-cell-val">Survey quantitativa, face-a-face e domiciliar</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-cell-label">Margem de erro consolidada</div>
+        <div class="meta-cell-val">±2,5 pp · IC 95%</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-cell-label">Universo</div>
+        <div class="meta-cell-val">2,2M eleitores DF · TSE 2026</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-cell-label">Cotas</div>
+        <div class="meta-cell-val">Sexo · Idade · Escolaridade · Renda</div>
+      </div>
+    </div>
+
+    <div class="house-effect">
+      <h3>Sobre o <em>house effect</em> e tendência consolidada</h3>
+      <p>Cada instituto tem viés metodológico próprio (entrevistador, formulação de pergunta, ponderação). Olhar uma única pesquisa pode confundir <em>house effect</em> com mudança real. A leitura segura é: <strong>cruzar institutos</strong> e considerar tendência confirmada apenas quando 3 dos 4 institutos apontam na mesma direção. A regressão linear empregada nos charts da página 3 usa as 8 pesquisas igualmente — uma forma simples de neutralizar parcialmente o efeito-instituto e isolar o sinal temporal.</p>
+    </div>
+
+    <div class="note">
+      <strong>★ Sobre os dados:</strong> os candidatos listados foram eleitos pelo DF para a Câmara Federal em 2022 (Bia Kicis, Fred Linhares, Erika Kokay, Julio Cesar Ribeiro, Reginaldo Veras e Roney Nemer). Os percentuais são <strong>sintéticos</strong>, calibrados para ilustrar agregação cross-instituto e construção de narrativa editorial. Variações inferiores a ±2,5pp não são estatisticamente distinguíveis.
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span><strong>Estrategos</strong> — Inteligência Política DF · Opinião Informação Estratégica</span>
+    <span>4 / 4</span>
+  </div>
+</div>
+
+</body>
+</html>
