@@ -1,9 +1,92 @@
 {
-  "atualizado_em": "2026-05-07T19:04:41+00:00",
+  "atualizado_em": "2026-05-07T19:32:53+00:00",
   "fonte": "TSE Dados Abertos · https://cdn.tse.jus.br/estatistica/sead/odsele/pesquisa_eleitoral/pesquisa_eleitoral_2026.zip",
   "uf": "DF",
-  "n_pesquisas": 14,
+  "n_pesquisas": 19,
   "pesquisas": [
+    {
+      "protocolo": "DEMO0082026",
+      "instituto": "Phoenix · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Phoenix",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Deputado Federal"
+      ],
+      "data_registro": "2026-05-15",
+      "data_campo_inicio": "2026-05-15",
+      "data_campo_fim": "2026-05-15",
+      "data_divulgacao": "2026-05-15",
+      "n_entrevistados": 1500,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Deputado Federal"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Deputado Federal",
+            "tipo": "estimulada",
+            "questao": "—",
+            "candidatos": [
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 20.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 17.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 14.0
+              },
+              {
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 8.0
+              },
+              {
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
+                "pct": 7.0
+              },
+              {
+                "nome": "Roney Nemer",
+                "partido": "PP",
+                "pct": 5.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 6.0,
+            "ns_nr_pct": 23.0,
+            "ic_pp": 2.5
+          }
+        ]
+      }
+    },
     {
       "protocolo": "DF083032026",
       "instituto": "VERITA",
@@ -69,22 +152,21 @@
       }
     },
     {
-      "protocolo": "DEMO0032026",
-      "instituto": "Estrategos · DEMO POLL",
-      "instituto_razao_social": "Pesquisa de demonstração — Estrategos",
+      "protocolo": "DEMO0072026",
+      "instituto": "Cepphor · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Cepphor",
       "instituto_cnpj": "—",
-      "pesquisa_propria": true,
+      "pesquisa_propria": false,
       "cargo": [
-        "Governador",
-        "Senador"
+        "Deputado Federal"
       ],
-      "data_registro": "2026-05-03",
-      "data_campo_inicio": "2026-05-01",
-      "data_campo_fim": "2026-05-04",
+      "data_registro": "2026-05-05",
+      "data_campo_inicio": "2026-05-05",
+      "data_campo_fim": "2026-05-05",
       "data_divulgacao": "2026-05-05",
-      "n_entrevistados": 1500,
-      "metodologia": "Pesquisa quantitativa demonstrativa, face a face em ponto de fluxo. Amostra representativa do eleitorado DF, estratificada por sexo, idade, escolaridade e renda.",
-      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2.5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "n_entrevistados": 400,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
       "estatistico": "Demonstração",
       "conre": "—",
       "valor": null,
@@ -94,12 +176,11 @@
       "is_demo": true,
       "extracao": {
         "status": "extraido",
-        "extraido_em": "2026-05-07T18:27:30+00:00",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
         "modelo": "demo (dados sintéticos)",
         "erro": null,
         "cargos": [
-          "Governador",
-          "Senador"
+          "Deputado Federal"
         ],
         "filtros_demograficos": [
           "sexo",
@@ -109,92 +190,45 @@
         ],
         "cenarios": [
           {
-            "cargo": "Governador",
+            "cargo": "Deputado Federal",
             "tipo": "estimulada",
-            "questao": "Q. 06",
+            "questao": "—",
             "candidatos": [
-              {
-                "nome": "Celina Leão",
-                "partido": "PP",
-                "pct": 26.0
-              },
-              {
-                "nome": "José Roberto Arruda",
-                "partido": "PSD",
-                "pct": 16.0
-              },
-              {
-                "nome": "Leandro Grass",
-                "partido": "PT",
-                "pct": 17.0
-              },
-              {
-                "nome": "Paula Belmonte",
-                "partido": "PSDB",
-                "pct": 13.0
-              },
-              {
-                "nome": "Ricardo Cappelli",
-                "partido": "PSB",
-                "pct": 5.0
-              },
-              {
-                "nome": "Kiko Caputo",
-                "partido": "Novo",
-                "pct": 3.0
-              }
-            ],
-            "tem_branco_nulo": true,
-            "tem_ns_nr": true,
-            "branco_nulo_pct": 10.0,
-            "ns_nr_pct": 10.0,
-            "ic_pp": 2.5
-          },
-          {
-            "cargo": "Senador",
-            "tipo": "estimulada",
-            "questao": "Q. 11",
-            "candidatos": [
-              {
-                "nome": "Ibaneis Rocha",
-                "partido": "MDB",
-                "pct": 31.0
-              },
-              {
-                "nome": "José Reguffe",
-                "partido": "União",
-                "pct": 14.0
-              },
               {
                 "nome": "Bia Kicis",
                 "partido": "PL",
-                "pct": 18.0
+                "pct": 19.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 16.0
               },
               {
                 "nome": "Erika Kokay",
                 "partido": "PT",
-                "pct": 16.0
+                "pct": 13.0
               },
               {
-                "nome": "Michelle Bolsonaro",
-                "partido": "PL",
-                "pct": 9.0
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 8.0
               },
               {
-                "nome": "Leila Barros",
-                "partido": "PDT",
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
+                "pct": 7.0
+              },
+              {
+                "nome": "Roney Nemer",
+                "partido": "PP",
                 "pct": 5.0
-              },
-              {
-                "nome": "Sebastião Coelho",
-                "partido": "Novo",
-                "pct": 3.0
               }
             ],
             "tem_branco_nulo": true,
             "tem_ns_nr": true,
-            "branco_nulo_pct": 2.0,
-            "ns_nr_pct": 2.0,
+            "branco_nulo_pct": 7.0,
+            "ns_nr_pct": 25.0,
             "ic_pp": 2.5
           }
         ]
@@ -265,6 +299,89 @@
       }
     },
     {
+      "protocolo": "DEMO0062026",
+      "instituto": "Igape · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Igape",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Deputado Federal"
+      ],
+      "data_registro": "2026-04-22",
+      "data_campo_inicio": "2026-04-22",
+      "data_campo_fim": "2026-04-22",
+      "data_divulgacao": "2026-04-22",
+      "n_entrevistados": 3000,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Deputado Federal"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Deputado Federal",
+            "tipo": "estimulada",
+            "questao": "—",
+            "candidatos": [
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 17.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 14.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 13.0
+              },
+              {
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 9.0
+              },
+              {
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
+                "pct": 7.0
+              },
+              {
+                "nome": "Roney Nemer",
+                "partido": "PP",
+                "pct": 5.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 7.0,
+            "ns_nr_pct": 28.0,
+            "ic_pp": 2.5
+          }
+        ]
+      }
+    },
+    {
       "protocolo": "DF028412026",
       "instituto": "NARREAL CONSULTORIA",
       "instituto_razao_social": "NARREAL CONSULTORIA EM GESTAO EMPRESARIAL LTDA",
@@ -296,22 +413,21 @@
       }
     },
     {
-      "protocolo": "DEMO0022026",
-      "instituto": "Estrategos · DEMO POLL",
-      "instituto_razao_social": "Pesquisa de demonstração — Estrategos",
+      "protocolo": "DEMO0052026",
+      "instituto": "Veritá · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Veritá",
       "instituto_cnpj": "—",
-      "pesquisa_propria": true,
+      "pesquisa_propria": false,
       "cargo": [
-        "Governador",
-        "Senador"
+        "Deputado Federal"
       ],
-      "data_registro": "2026-04-08",
-      "data_campo_inicio": "2026-04-05",
-      "data_campo_fim": "2026-04-09",
-      "data_divulgacao": "2026-04-10",
-      "n_entrevistados": 1500,
-      "metodologia": "Pesquisa quantitativa demonstrativa, face a face em ponto de fluxo. Amostra representativa do eleitorado DF, estratificada por sexo, idade, escolaridade e renda.",
-      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2.5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "data_registro": "2026-04-15",
+      "data_campo_inicio": "2026-04-15",
+      "data_campo_fim": "2026-04-15",
+      "data_divulgacao": "2026-04-15",
+      "n_entrevistados": 1220,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
       "estatistico": "Demonstração",
       "conre": "—",
       "valor": null,
@@ -321,12 +437,11 @@
       "is_demo": true,
       "extracao": {
         "status": "extraido",
-        "extraido_em": "2026-05-07T18:27:30+00:00",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
         "modelo": "demo (dados sintéticos)",
         "erro": null,
         "cargos": [
-          "Governador",
-          "Senador"
+          "Deputado Federal"
         ],
         "filtros_demograficos": [
           "sexo",
@@ -336,92 +451,45 @@
         ],
         "cenarios": [
           {
-            "cargo": "Governador",
+            "cargo": "Deputado Federal",
             "tipo": "estimulada",
-            "questao": "Q. 06",
+            "questao": "—",
             "candidatos": [
-              {
-                "nome": "Celina Leão",
-                "partido": "PP",
-                "pct": 24.0
-              },
-              {
-                "nome": "José Roberto Arruda",
-                "partido": "PSD",
-                "pct": 17.0
-              },
-              {
-                "nome": "Leandro Grass",
-                "partido": "PT",
-                "pct": 15.0
-              },
-              {
-                "nome": "Paula Belmonte",
-                "partido": "PSDB",
-                "pct": 13.0
-              },
-              {
-                "nome": "Ricardo Cappelli",
-                "partido": "PSB",
-                "pct": 5.0
-              },
-              {
-                "nome": "Kiko Caputo",
-                "partido": "Novo",
-                "pct": 3.0
-              }
-            ],
-            "tem_branco_nulo": true,
-            "tem_ns_nr": true,
-            "branco_nulo_pct": 11.0,
-            "ns_nr_pct": 12.0,
-            "ic_pp": 2.5
-          },
-          {
-            "cargo": "Senador",
-            "tipo": "estimulada",
-            "questao": "Q. 11",
-            "candidatos": [
-              {
-                "nome": "Ibaneis Rocha",
-                "partido": "MDB",
-                "pct": 30.0
-              },
-              {
-                "nome": "José Reguffe",
-                "partido": "União",
-                "pct": 17.0
-              },
               {
                 "nome": "Bia Kicis",
                 "partido": "PL",
-                "pct": 16.0
+                "pct": 18.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 15.0
               },
               {
                 "nome": "Erika Kokay",
                 "partido": "PT",
-                "pct": 15.0
+                "pct": 12.0
               },
               {
-                "nome": "Michelle Bolsonaro",
-                "partido": "PL",
-                "pct": 10.0
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 9.0
               },
               {
-                "nome": "Leila Barros",
-                "partido": "PDT",
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
+                "pct": 6.0
+              },
+              {
+                "nome": "Roney Nemer",
+                "partido": "PP",
                 "pct": 5.0
-              },
-              {
-                "nome": "Sebastião Coelho",
-                "partido": "Novo",
-                "pct": 3.0
               }
             ],
             "tem_branco_nulo": true,
             "tem_ns_nr": true,
-            "branco_nulo_pct": 2.0,
-            "ns_nr_pct": 2.0,
+            "branco_nulo_pct": 7.0,
+            "ns_nr_pct": 28.0,
             "ic_pp": 2.5
           }
         ]
@@ -491,6 +559,89 @@
       }
     },
     {
+      "protocolo": "DEMO0042026",
+      "instituto": "Phoenix · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Phoenix",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Deputado Federal"
+      ],
+      "data_registro": "2026-03-25",
+      "data_campo_inicio": "2026-03-25",
+      "data_campo_fim": "2026-03-25",
+      "data_divulgacao": "2026-03-25",
+      "n_entrevistados": 1203,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Deputado Federal"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Deputado Federal",
+            "tipo": "estimulada",
+            "questao": "—",
+            "candidatos": [
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 17.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 15.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 13.0
+              },
+              {
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 10.0
+              },
+              {
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
+                "pct": 6.0
+              },
+              {
+                "nome": "Roney Nemer",
+                "partido": "PP",
+                "pct": 5.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 7.0,
+            "ns_nr_pct": 27.0,
+            "ic_pp": 2.5
+          }
+        ]
+      }
+    },
+    {
       "protocolo": "DF040632026",
       "instituto": "EXATA OP OPINIAO PUBLICA LTDA",
       "instituto_razao_social": "EXATA OP OPINIAO PUBLICA LTDA",
@@ -557,22 +708,21 @@
       }
     },
     {
-      "protocolo": "DEMO0012026",
-      "instituto": "Estrategos · DEMO POLL",
-      "instituto_razao_social": "Pesquisa de demonstração — Estrategos",
+      "protocolo": "DEMO0032026",
+      "instituto": "Cepphor · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Cepphor",
       "instituto_cnpj": "—",
-      "pesquisa_propria": true,
+      "pesquisa_propria": false,
       "cargo": [
-        "Governador",
-        "Senador"
+        "Deputado Federal"
       ],
-      "data_registro": "2026-03-12",
+      "data_registro": "2026-03-10",
       "data_campo_inicio": "2026-03-10",
-      "data_campo_fim": "2026-03-13",
-      "data_divulgacao": "2026-03-15",
+      "data_campo_fim": "2026-03-10",
+      "data_divulgacao": "2026-03-10",
       "n_entrevistados": 1500,
-      "metodologia": "Pesquisa quantitativa demonstrativa, face a face em ponto de fluxo. Amostra representativa do eleitorado DF, estratificada por sexo, idade, escolaridade e renda.",
-      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2.5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
       "estatistico": "Demonstração",
       "conre": "—",
       "valor": null,
@@ -582,12 +732,11 @@
       "is_demo": true,
       "extracao": {
         "status": "extraido",
-        "extraido_em": "2026-05-07T18:27:30+00:00",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
         "modelo": "demo (dados sintéticos)",
         "erro": null,
         "cargos": [
-          "Governador",
-          "Senador"
+          "Deputado Federal"
         ],
         "filtros_demograficos": [
           "sexo",
@@ -597,92 +746,45 @@
         ],
         "cenarios": [
           {
-            "cargo": "Governador",
+            "cargo": "Deputado Federal",
             "tipo": "estimulada",
-            "questao": "Q. 06",
+            "questao": "—",
             "candidatos": [
-              {
-                "nome": "Celina Leão",
-                "partido": "PP",
-                "pct": 22.0
-              },
-              {
-                "nome": "José Roberto Arruda",
-                "partido": "PSD",
-                "pct": 18.0
-              },
-              {
-                "nome": "Leandro Grass",
-                "partido": "PT",
-                "pct": 16.0
-              },
-              {
-                "nome": "Paula Belmonte",
-                "partido": "PSDB",
-                "pct": 12.0
-              },
-              {
-                "nome": "Ricardo Cappelli",
-                "partido": "PSB",
-                "pct": 4.0
-              },
-              {
-                "nome": "Kiko Caputo",
-                "partido": "Novo",
-                "pct": 4.0
-              }
-            ],
-            "tem_branco_nulo": true,
-            "tem_ns_nr": true,
-            "branco_nulo_pct": 12.0,
-            "ns_nr_pct": 12.0,
-            "ic_pp": 2.5
-          },
-          {
-            "cargo": "Senador",
-            "tipo": "estimulada",
-            "questao": "Q. 11",
-            "candidatos": [
-              {
-                "nome": "Ibaneis Rocha",
-                "partido": "MDB",
-                "pct": 28.0
-              },
-              {
-                "nome": "José Reguffe",
-                "partido": "União",
-                "pct": 19.0
-              },
               {
                 "nome": "Bia Kicis",
                 "partido": "PL",
-                "pct": 15.0
+                "pct": 16.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 14.0
               },
               {
                 "nome": "Erika Kokay",
                 "partido": "PT",
-                "pct": 14.0
+                "pct": 12.0
               },
               {
-                "nome": "Michelle Bolsonaro",
-                "partido": "PL",
-                "pct": 11.0
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 10.0
               },
               {
-                "nome": "Leila Barros",
-                "partido": "PDT",
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
                 "pct": 5.0
               },
               {
-                "nome": "Sebastião Coelho",
-                "partido": "Novo",
-                "pct": 3.0
+                "nome": "Roney Nemer",
+                "partido": "PP",
+                "pct": 5.0
               }
             ],
             "tem_branco_nulo": true,
             "tem_ns_nr": true,
-            "branco_nulo_pct": 3.0,
-            "ns_nr_pct": 2.0,
+            "branco_nulo_pct": 8.0,
+            "ns_nr_pct": 30.0,
             "ic_pp": 2.5
           }
         ]
@@ -754,6 +856,628 @@
         "erro": null,
         "cenarios": []
       }
+    },
+    {
+      "protocolo": "DEMO0022026",
+      "instituto": "Veritá · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Veritá",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Deputado Federal"
+      ],
+      "data_registro": "2026-02-20",
+      "data_campo_inicio": "2026-02-20",
+      "data_campo_fim": "2026-02-20",
+      "data_divulgacao": "2026-02-20",
+      "n_entrevistados": 1220,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Deputado Federal"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Deputado Federal",
+            "tipo": "estimulada",
+            "questao": "—",
+            "candidatos": [
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 15.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 14.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 12.0
+              },
+              {
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 11.0
+              },
+              {
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
+                "pct": 5.0
+              },
+              {
+                "nome": "Roney Nemer",
+                "partido": "PP",
+                "pct": 4.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 8.0,
+            "ns_nr_pct": 31.0,
+            "ic_pp": 2.5
+          }
+        ]
+      }
+    },
+    {
+      "protocolo": "DEMO0012026",
+      "instituto": "Igape · DEMO",
+      "instituto_razao_social": "Pesquisa de demonstração — Igape",
+      "instituto_cnpj": "—",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Deputado Federal"
+      ],
+      "data_registro": "2026-02-15",
+      "data_campo_inicio": "2026-02-15",
+      "data_campo_fim": "2026-02-15",
+      "data_divulgacao": "2026-02-15",
+      "n_entrevistados": 1000,
+      "metodologia": "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+      "plano_amostral": "Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+      "estatistico": "Demonstração",
+      "conre": "—",
+      "valor": null,
+      "uf": "DF",
+      "url_tse_pesqele": null,
+      "pdf_arquivo": null,
+      "is_demo": true,
+      "extracao": {
+        "status": "extraido",
+        "extraido_em": "2026-05-07T19:32:53+00:00",
+        "modelo": "demo (dados sintéticos)",
+        "erro": null,
+        "cargos": [
+          "Deputado Federal"
+        ],
+        "filtros_demograficos": [
+          "sexo",
+          "idade",
+          "escolaridade",
+          "renda"
+        ],
+        "cenarios": [
+          {
+            "cargo": "Deputado Federal",
+            "tipo": "estimulada",
+            "questao": "—",
+            "candidatos": [
+              {
+                "nome": "Bia Kicis",
+                "partido": "PL",
+                "pct": 14.0
+              },
+              {
+                "nome": "Fred Linhares",
+                "partido": "Republicanos",
+                "pct": 13.0
+              },
+              {
+                "nome": "Erika Kokay",
+                "partido": "PT",
+                "pct": 13.0
+              },
+              {
+                "nome": "Julio Cesar Ribeiro",
+                "partido": "Republicanos",
+                "pct": 11.0
+              },
+              {
+                "nome": "Reginaldo Veras",
+                "partido": "PV",
+                "pct": 5.0
+              },
+              {
+                "nome": "Roney Nemer",
+                "partido": "PP",
+                "pct": 5.0
+              }
+            ],
+            "tem_branco_nulo": true,
+            "tem_ns_nr": true,
+            "branco_nulo_pct": 8.0,
+            "ns_nr_pct": 31.0,
+            "ic_pp": 2.5
+          }
+        ]
+      }
     }
-  ]
+  ],
+  "consolidacao_demo": {
+    "cargo": "Deputado Federal",
+    "periodo": {
+      "inicio": "2026-02-15",
+      "fim": "2026-05-15"
+    },
+    "n_pesquisas": 8,
+    "institutos": [
+      {
+        "nome": "Veritá",
+        "cor": "#1f77b4"
+      },
+      {
+        "nome": "Igape",
+        "cor": "#ff7f0e"
+      },
+      {
+        "nome": "Cepphor",
+        "cor": "#2ca02c"
+      },
+      {
+        "nome": "Phoenix",
+        "cor": "#d62728"
+      }
+    ],
+    "candidatos": [
+      {
+        "key": "kicis",
+        "nome": "Bia Kicis",
+        "partido": "PL",
+        "cor": "#A32D2D",
+        "serie": [
+          {
+            "data": "2026-02-15",
+            "dia": 0,
+            "instituto": "Igape",
+            "n": 1000,
+            "pct": 14.0
+          },
+          {
+            "data": "2026-02-20",
+            "dia": 5,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 15.0
+          },
+          {
+            "data": "2026-03-10",
+            "dia": 23,
+            "instituto": "Cepphor",
+            "n": 1500,
+            "pct": 16.0
+          },
+          {
+            "data": "2026-03-25",
+            "dia": 38,
+            "instituto": "Phoenix",
+            "n": 1203,
+            "pct": 17.0
+          },
+          {
+            "data": "2026-04-15",
+            "dia": 59,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 18.0
+          },
+          {
+            "data": "2026-04-22",
+            "dia": 66,
+            "instituto": "Igape",
+            "n": 3000,
+            "pct": 17.0
+          },
+          {
+            "data": "2026-05-05",
+            "dia": 79,
+            "instituto": "Cepphor",
+            "n": 400,
+            "pct": 19.0
+          },
+          {
+            "data": "2026-05-15",
+            "dia": 89,
+            "instituto": "Phoenix",
+            "n": 1500,
+            "pct": 20.0
+          }
+        ],
+        "intercept": 14.434,
+        "slope": 0.05718,
+        "delta": 5.1,
+        "y_inicio": 14.0,
+        "y_fim": 20.0
+      },
+      {
+        "key": "fred",
+        "nome": "Fred Linhares",
+        "partido": "Republicanos",
+        "cor": "#854F0B",
+        "serie": [
+          {
+            "data": "2026-02-15",
+            "dia": 0,
+            "instituto": "Igape",
+            "n": 1000,
+            "pct": 13.0
+          },
+          {
+            "data": "2026-02-20",
+            "dia": 5,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 14.0
+          },
+          {
+            "data": "2026-03-10",
+            "dia": 23,
+            "instituto": "Cepphor",
+            "n": 1500,
+            "pct": 14.0
+          },
+          {
+            "data": "2026-03-25",
+            "dia": 38,
+            "instituto": "Phoenix",
+            "n": 1203,
+            "pct": 15.0
+          },
+          {
+            "data": "2026-04-15",
+            "dia": 59,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 15.0
+          },
+          {
+            "data": "2026-04-22",
+            "dia": 66,
+            "instituto": "Igape",
+            "n": 3000,
+            "pct": 14.0
+          },
+          {
+            "data": "2026-05-05",
+            "dia": 79,
+            "instituto": "Cepphor",
+            "n": 400,
+            "pct": 16.0
+          },
+          {
+            "data": "2026-05-15",
+            "dia": 89,
+            "instituto": "Phoenix",
+            "n": 1500,
+            "pct": 17.0
+          }
+        ],
+        "intercept": 13.312,
+        "slope": 0.03205,
+        "delta": 2.9,
+        "y_inicio": 13.0,
+        "y_fim": 17.0
+      },
+      {
+        "key": "erika",
+        "nome": "Erika Kokay",
+        "partido": "PT",
+        "cor": "#534AB7",
+        "serie": [
+          {
+            "data": "2026-02-15",
+            "dia": 0,
+            "instituto": "Igape",
+            "n": 1000,
+            "pct": 13.0
+          },
+          {
+            "data": "2026-02-20",
+            "dia": 5,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 12.0
+          },
+          {
+            "data": "2026-03-10",
+            "dia": 23,
+            "instituto": "Cepphor",
+            "n": 1500,
+            "pct": 12.0
+          },
+          {
+            "data": "2026-03-25",
+            "dia": 38,
+            "instituto": "Phoenix",
+            "n": 1203,
+            "pct": 13.0
+          },
+          {
+            "data": "2026-04-15",
+            "dia": 59,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 12.0
+          },
+          {
+            "data": "2026-04-22",
+            "dia": 66,
+            "instituto": "Igape",
+            "n": 3000,
+            "pct": 13.0
+          },
+          {
+            "data": "2026-05-05",
+            "dia": 79,
+            "instituto": "Cepphor",
+            "n": 400,
+            "pct": 13.0
+          },
+          {
+            "data": "2026-05-15",
+            "dia": 89,
+            "instituto": "Phoenix",
+            "n": 1500,
+            "pct": 14.0
+          }
+        ],
+        "intercept": 12.228,
+        "slope": 0.01163,
+        "delta": 1.0,
+        "y_inicio": 13.0,
+        "y_fim": 14.0
+      },
+      {
+        "key": "jcr",
+        "nome": "Julio Cesar Ribeiro",
+        "partido": "Republicanos",
+        "cor": "#D85A30",
+        "serie": [
+          {
+            "data": "2026-02-15",
+            "dia": 0,
+            "instituto": "Igape",
+            "n": 1000,
+            "pct": 11.0
+          },
+          {
+            "data": "2026-02-20",
+            "dia": 5,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 11.0
+          },
+          {
+            "data": "2026-03-10",
+            "dia": 23,
+            "instituto": "Cepphor",
+            "n": 1500,
+            "pct": 10.0
+          },
+          {
+            "data": "2026-03-25",
+            "dia": 38,
+            "instituto": "Phoenix",
+            "n": 1203,
+            "pct": 10.0
+          },
+          {
+            "data": "2026-04-15",
+            "dia": 59,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 9.0
+          },
+          {
+            "data": "2026-04-22",
+            "dia": 66,
+            "instituto": "Igape",
+            "n": 3000,
+            "pct": 9.0
+          },
+          {
+            "data": "2026-05-05",
+            "dia": 79,
+            "instituto": "Cepphor",
+            "n": 400,
+            "pct": 8.0
+          },
+          {
+            "data": "2026-05-15",
+            "dia": 89,
+            "instituto": "Phoenix",
+            "n": 1500,
+            "pct": 8.0
+          }
+        ],
+        "intercept": 11.073,
+        "slope": -0.03506,
+        "delta": -3.1,
+        "y_inicio": 11.0,
+        "y_fim": 8.0
+      },
+      {
+        "key": "veras",
+        "nome": "Reginaldo Veras",
+        "partido": "PV",
+        "cor": "#0F6E56",
+        "serie": [
+          {
+            "data": "2026-02-15",
+            "dia": 0,
+            "instituto": "Igape",
+            "n": 1000,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-02-20",
+            "dia": 5,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-03-10",
+            "dia": 23,
+            "instituto": "Cepphor",
+            "n": 1500,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-03-25",
+            "dia": 38,
+            "instituto": "Phoenix",
+            "n": 1203,
+            "pct": 6.0
+          },
+          {
+            "data": "2026-04-15",
+            "dia": 59,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 6.0
+          },
+          {
+            "data": "2026-04-22",
+            "dia": 66,
+            "instituto": "Igape",
+            "n": 3000,
+            "pct": 7.0
+          },
+          {
+            "data": "2026-05-05",
+            "dia": 79,
+            "instituto": "Cepphor",
+            "n": 400,
+            "pct": 7.0
+          },
+          {
+            "data": "2026-05-15",
+            "dia": 89,
+            "instituto": "Phoenix",
+            "n": 1500,
+            "pct": 7.0
+          }
+        ],
+        "intercept": 4.828,
+        "slope": 0.02612,
+        "delta": 2.3,
+        "y_inicio": 5.0,
+        "y_fim": 7.0
+      },
+      {
+        "key": "nemer",
+        "nome": "Roney Nemer",
+        "partido": "PP",
+        "cor": "#6B7280",
+        "serie": [
+          {
+            "data": "2026-02-15",
+            "dia": 0,
+            "instituto": "Igape",
+            "n": 1000,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-02-20",
+            "dia": 5,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 4.0
+          },
+          {
+            "data": "2026-03-10",
+            "dia": 23,
+            "instituto": "Cepphor",
+            "n": 1500,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-03-25",
+            "dia": 38,
+            "instituto": "Phoenix",
+            "n": 1203,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-04-15",
+            "dia": 59,
+            "instituto": "Veritá",
+            "n": 1220,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-04-22",
+            "dia": 66,
+            "instituto": "Igape",
+            "n": 3000,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-05-05",
+            "dia": 79,
+            "instituto": "Cepphor",
+            "n": 400,
+            "pct": 5.0
+          },
+          {
+            "data": "2026-05-15",
+            "dia": 89,
+            "instituto": "Phoenix",
+            "n": 1500,
+            "pct": 5.0
+          }
+        ],
+        "intercept": 4.648,
+        "slope": 0.00506,
+        "delta": 0.4,
+        "y_inicio": 5.0,
+        "y_fim": 5.0
+      }
+    ],
+    "findings": [
+      {
+        "titulo": "Bia Kicis consolida liderança do PL no DF",
+        "body": "Líder isolada do campo liberal-conservador, <strong>Bia Kicis (PL)</strong> avança de <strong>14% para 20%</strong> em três meses (<span class=\"up\">+5.1pp</span>). Os <strong>4 institutos</strong> avaliados confirmam a tendência de alta — sinal de movimento estrutural, não de oscilação amostral. A magnitude (~6pp) supera a margem de erro consolidada (±2,5pp)."
+      },
+      {
+        "titulo": "Bancada evangélica fragmenta-se",
+        "body": "<strong>Julio Cesar Ribeiro (Republicanos)</strong>, pastor evangélico eleito em 2022, recua de <strong>11% para 8%</strong> (<span class=\"dn\">-3.1pp</span>) — queda confirmada por todos os 4 institutos. Já <strong>Fred Linhares</strong>, do mesmo partido mas com perfil mais técnico, sobe <span class=\"up\">+2.9pp</span>. Movimento sugere realocação intra-bancada, não saída de eleitores do campo conservador."
+      },
+      {
+        "titulo": "Reginaldo Veras emerge como segundo nome do PT-aliados",
+        "body": "Erika Kokay segue dominando o voto progressista (~13%, estável). Mas <strong>Reginaldo Veras (PV)</strong> avança discretamente de 5% para 7% (<span class=\"up\">+2.3pp</span>), criando uma <em>segunda opção</em> consistente para o eleitor de centro-esquerda — útil em cenário onde o quociente eleitoral exigir distribuição de votos."
+      }
+    ]
+  }
 }

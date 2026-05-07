@@ -1566,27 +1566,189 @@ document.addEventListener('keydown', function(e){
       <div class="sec-head">
         <div class="sec-kicker" style="color:#534AB7">Ferramentas</div>
         <div class="sec-titulo">Clipping de Pesquisas <span id="pq-meta-sub" style="font-size:13px;color:var(--muted);font-weight:400"></span></div>
-        <div class="sec-lead">Catálogo das <strong>pesquisas eleitorais registradas no TSE</strong> para o Distrito Federal. Cada item lista cargos pesquisados, instituto, contratante, plano amostral e — quando a extração IA já rodou — os cenários e candidatos testados em cada questionário.</div>
+        <div class="sec-lead">Análise consolidada das <strong>pesquisas eleitorais registradas no TSE</strong> para o Distrito Federal, cruzando institutos para identificar tendências reais (separadas de oscilação amostral e <em>house effect</em>). Os dados brutos das pesquisas individuais ficam disponíveis no botão "Ver pesquisas individuais".</div>
       </div>
 
       <style>
-        #s-pesquisas .pq-toolbar { display:flex; gap:12px; align-items:center; padding:10px 22px; border-bottom:0.5px solid var(--bd); background:var(--s1); flex-wrap:wrap; flex-shrink:0; }
-        #s-pesquisas .pq-toolbar label { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
-        #s-pesquisas .pq-toolbar select, #s-pesquisas .pq-toolbar input {
+        /* ── Botão "Ver pesquisas individuais" + modal ───────────────── */
+        #s-pesquisas .pq-modal-toggle {
+          display:flex; align-items:center; gap:8px; cursor:pointer;
+          padding:6px 12px; border:0.5px solid var(--bd2); border-radius:6px;
+          background:var(--s1); color:var(--txt); font-size:11px;
+          font-family:inherit; white-space:nowrap;
+        }
+        #s-pesquisas .pq-modal-toggle:hover { background:var(--s2); }
+        #s-pesquisas .pq-modal-toggle .pq-mt-count {
+          font-size:10px; color:#fff; background:#534AB7;
+          border-radius:10px; padding:1px 7px; font-weight:600;
+        }
+        #s-pesquisas .pq-modal-toggle-row {
+          display:flex; justify-content:space-between; align-items:center;
+          padding:10px 22px; border-bottom:0.5px solid var(--bd);
+          background:var(--s1); flex-shrink:0;
+        }
+        #s-pesquisas .pq-modal-toggle-info {
+          font-size:11px; color:var(--muted);
+        }
+
+        /* Modal overlay */
+        #s-pesquisas .pq-modal {
+          display:none; position:fixed; inset:0; z-index:9000;
+          background:rgba(0,0,0,0.45); backdrop-filter:blur(2px);
+          align-items:center; justify-content:center; padding:30px;
+        }
+        #s-pesquisas .pq-modal.on { display:flex; }
+        #s-pesquisas .pq-modal-box {
+          background:var(--bg); border:0.5px solid var(--bd2); border-radius:10px;
+          width:100%; max-width:920px; max-height:88vh;
+          display:flex; flex-direction:column; overflow:hidden;
+          box-shadow:0 8px 32px rgba(0,0,0,0.2);
+        }
+        #s-pesquisas .pq-modal-head {
+          display:flex; align-items:baseline; gap:12px;
+          padding:16px 22px; border-bottom:0.5px solid var(--bd);
+        }
+        #s-pesquisas .pq-modal-titulo { font-size:15px; font-weight:600; color:var(--txt); }
+        #s-pesquisas .pq-modal-sub { font-size:11px; color:var(--muted); margin-left:auto; margin-right:14px; }
+        #s-pesquisas .pq-modal-close {
+          background:transparent; border:none; cursor:pointer;
+          font-size:18px; color:var(--muted); padding:0 6px;
+        }
+        #s-pesquisas .pq-modal-close:hover { color:var(--txt); }
+        #s-pesquisas .pq-modal-toolbar {
+          display:flex; gap:12px; align-items:center; padding:10px 22px;
+          border-bottom:0.5px solid var(--bd); background:var(--s1); flex-wrap:wrap;
+        }
+        #s-pesquisas .pq-modal-toolbar label {
+          font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);
+        }
+        #s-pesquisas .pq-modal-toolbar select,
+        #s-pesquisas .pq-modal-toolbar input {
           padding:5px 10px; border:0.5px solid var(--bd2); border-radius:6px;
           font-size:12px; background:var(--s1); color:var(--txt); outline:none;
           font-family:inherit;
         }
-        #s-pesquisas .pq-toolbar input { min-width:180px; }
+        #s-pesquisas .pq-modal-toolbar input { min-width:160px; }
         #s-pesquisas .pq-stats { margin-left:auto; font-size:11px; color:var(--muted); }
-        #s-pesquisas .pq-list { padding:14px 22px; flex:1; overflow-y:auto; min-height:0; }
-        #s-pesquisas .pq-card {
-          background:var(--s1); border:0.5px solid var(--bd); border-radius:10px;
-          padding:14px 16px; margin-bottom:10px; transition:box-shadow .15s;
+        #s-pesquisas .pq-list {
+          padding:14px 22px; flex:1; overflow-y:auto; min-height:0;
         }
-        #s-pesquisas .pq-card:hover { box-shadow:0 1px 6px rgba(0,0,0,.04); }
+
+        /* ── Painel principal: análise consolidada ───────────────────── */
+        #s-pesquisas .pq-main {
+          flex:1; overflow-y:auto; min-height:0; padding:14px 22px 22px;
+        }
+
+        /* Findings cards */
+        #s-pesquisas .pq-findings {
+          display:flex; flex-direction:column; gap:10px;
+          margin-bottom:18px;
+        }
+        #s-pesquisas .pq-finding {
+          display:flex; gap:12px; padding:12px 14px;
+          background:var(--s1); border:0.5px solid var(--bd); border-radius:8px;
+          border-left:3px solid #534AB7;
+        }
+        #s-pesquisas .pq-finding .pq-num {
+          flex-shrink:0; width:24px; height:24px; border-radius:50%;
+          background:#534AB7; color:#fff;
+          display:flex; align-items:center; justify-content:center;
+          font-size:11px; font-weight:700;
+        }
+        #s-pesquisas .pq-finding .pq-fin-title {
+          font-weight:600; color:var(--txt); font-size:13px; margin-bottom:3px;
+        }
+        #s-pesquisas .pq-finding .pq-fin-body {
+          font-size:12px; color:var(--muted); line-height:1.5;
+        }
+        #s-pesquisas .pq-finding .pq-fin-body strong { color:var(--txt); font-weight:500; }
+        #s-pesquisas .pq-finding .up { color:#0F6E56; font-weight:600; }
+        #s-pesquisas .pq-finding .dn { color:#A32D2D; font-weight:600; }
+
+        /* Small multiples */
+        #s-pesquisas .pq-sm-section-head {
+          display:flex; align-items:baseline; gap:10px; margin-bottom:8px;
+        }
+        #s-pesquisas .pq-sm-titulo {
+          font-size:13px; font-weight:600; color:var(--txt);
+        }
+        #s-pesquisas .pq-sm-sub {
+          font-size:11px; color:var(--muted);
+        }
+        #s-pesquisas .pq-legend {
+          display:flex; gap:14px; padding:8px 12px; margin-bottom:10px;
+          background:var(--s1); border:0.5px solid var(--bd); border-radius:6px;
+          font-size:11px; flex-wrap:wrap; align-items:center;
+        }
+        #s-pesquisas .pq-legend-item { display:flex; align-items:center; gap:6px; color:var(--txt); }
+        #s-pesquisas .pq-legend-dot { width:10px; height:10px; border-radius:50%; }
+        #s-pesquisas .pq-legend-trend {
+          margin-left:auto; color:var(--muted); font-size:10.5px;
+          display:flex; align-items:center; gap:6px;
+        }
+        #s-pesquisas .pq-legend-trend-line {
+          display:inline-block; width:18px; border-top:1.5px dashed var(--muted); opacity:0.6;
+        }
+        #s-pesquisas .pq-small-multiples {
+          display:grid; grid-template-columns:1fr 1fr; gap:8px;
+          background:var(--s1); border:0.5px solid var(--bd); border-radius:8px;
+          padding:12px; margin-bottom:18px;
+        }
+        #s-pesquisas .pq-small-multiples svg {
+          display:block; background:var(--bg); border-radius:4px;
+        }
+
+        /* Tabela pivô */
+        #s-pesquisas .pq-pivot-titulo {
+          font-size:13px; font-weight:600; color:var(--txt); margin-bottom:6px;
+        }
+        #s-pesquisas .pq-pivot-tabela {
+          width:100%; border-collapse:collapse; font-size:11px;
+          font-variant-numeric:tabular-nums;
+          background:var(--s1); border:0.5px solid var(--bd); border-radius:8px;
+          overflow:hidden;
+        }
+        #s-pesquisas .pq-pivot-tabela th {
+          font-size:9px; padding:8px 6px; border-bottom:0.5px solid var(--bd);
+          text-align:right; vertical-align:bottom;
+          color:var(--muted); font-weight:500;
+        }
+        #s-pesquisas .pq-pivot-tabela th:first-child {
+          text-align:left; padding-left:14px;
+        }
+        #s-pesquisas .pq-pivot-tabela th .pq-col-data {
+          display:block; font-weight:600; color:var(--txt); font-size:10px;
+        }
+        #s-pesquisas .pq-pivot-tabela th .pq-col-inst {
+          display:block; font-size:8.5px; font-weight:500; margin-top:1px;
+        }
+        #s-pesquisas .pq-pivot-tabela th.pq-delta-col {
+          font-size:9px; letter-spacing:.5px; text-transform:uppercase;
+        }
+        #s-pesquisas .pq-pivot-tabela td {
+          padding:6px 6px; border-bottom:0.5px solid var(--bd);
+          text-align:right; color:var(--txt);
+        }
+        #s-pesquisas .pq-pivot-tabela td.pq-cand-cell {
+          text-align:left; padding-left:14px; display:flex; align-items:center; gap:6px;
+        }
+        #s-pesquisas .pq-pivot-tabela .pq-cor-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+        #s-pesquisas .pq-pivot-tabela .pq-partido {
+          color:var(--muted); font-size:9px; margin-left:4px; font-weight:400;
+        }
+        #s-pesquisas .pq-pivot-tabela tr:last-child td { border-bottom:none; }
+        #s-pesquisas .pq-pivot-tabela td.pq-delta { font-weight:600; }
+        #s-pesquisas .pq-pivot-tabela td.pq-delta.up { color:#0F6E56; }
+        #s-pesquisas .pq-pivot-tabela td.pq-delta.dn { color:#A32D2D; }
+        #s-pesquisas .pq-pivot-tabela td.pq-delta.eq { color:var(--muted); }
+
+        /* Cards individuais — quando dentro do modal */
+        #s-pesquisas .pq-card {
+          background:var(--s1); border:0.5px solid var(--bd); border-radius:8px;
+          padding:12px 14px; margin-bottom:8px;
+        }
         #s-pesquisas .pq-card-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
-        #s-pesquisas .pq-instituto { font-size:14px; font-weight:600; color:var(--txt); }
+        #s-pesquisas .pq-instituto { font-size:13px; font-weight:600; color:var(--txt); }
         #s-pesquisas .pq-data-div { font-size:11px; color:var(--muted); margin-left:auto; font-variant-numeric:tabular-nums; }
         #s-pesquisas .pq-protocolo { font-size:10px; color:var(--muted); font-family:var(--mono,monospace); }
         #s-pesquisas .pq-status {
@@ -1599,295 +1761,267 @@ document.addEventListener('keydown', function(e){
         #s-pesquisas .pq-status.sem_pdf  { background:var(--s2); color:var(--muted); }
         #s-pesquisas .pq-meta-row {
           display:flex; gap:18px; flex-wrap:wrap;
-          margin-top:6px; font-size:12px; color:var(--muted);
+          margin-top:5px; font-size:11px; color:var(--muted);
         }
         #s-pesquisas .pq-meta-row strong { color:var(--txt); font-weight:500; }
-        #s-pesquisas .pq-cargos { display:flex; gap:5px; flex-wrap:wrap; margin-top:8px; }
+        #s-pesquisas .pq-cargos { display:flex; gap:5px; flex-wrap:wrap; margin-top:6px; }
         #s-pesquisas .pq-cargo-badge {
           font-size:10px; padding:2px 8px; border-radius:10px;
           background:#EEEDFE; color:#3C3489; font-weight:500;
         }
-        #s-pesquisas .pq-cenarios {
-          margin-top:10px; padding-top:10px;
-          border-top:0.5px dashed var(--bd);
-        }
-        #s-pesquisas .pq-cenarios-toggle {
-          background:none; border:none; padding:0; cursor:pointer;
-          font-size:11px; color:#534AB7; font-family:inherit;
-          text-decoration:underline;
-        }
-        #s-pesquisas .pq-cenarios-body { display:none; margin-top:8px; }
-        #s-pesquisas .pq-cenarios-body.on { display:block; }
-        #s-pesquisas .pq-cen-card {
-          background:var(--s2); border-radius:6px; padding:8px 10px;
-          margin-bottom:6px; font-size:11px;
-        }
-        #s-pesquisas .pq-cen-head {
-          display:flex; gap:8px; align-items:baseline;
-          margin-bottom:4px;
-        }
-        #s-pesquisas .pq-cen-cargo { font-weight:600; color:var(--txt); }
-        #s-pesquisas .pq-cen-tipo {
-          font-size:9px; padding:1px 6px; border-radius:8px;
-          background:var(--s1); color:var(--muted); text-transform:uppercase;
-          letter-spacing:.5px;
-        }
-        #s-pesquisas .pq-cen-questao { font-size:10px; color:var(--muted); margin-left:auto; font-family:var(--mono,monospace); }
-        #s-pesquisas .pq-cen-cands { display:flex; flex-wrap:wrap; gap:5px; }
-        #s-pesquisas .pq-cen-cand {
-          font-size:10.5px; padding:1px 7px; border-radius:8px;
-          background:var(--s1); color:var(--txt);
-        }
-        #s-pesquisas .pq-cen-cand.ego { background:#FAC775; color:#5C2A00; font-weight:500; }
-        #s-pesquisas .pq-cen-cand .pq-part { color:var(--muted); margin-left:3px; font-size:9px; }
-
-        /* Tabela de % quando extração tem resultados */
-        #s-pesquisas .pq-cen-tabela { width:100%; border-collapse:collapse; margin-top:4px; font-size:11px; }
-        #s-pesquisas .pq-cen-tabela td { padding:3px 4px; border-bottom:0.5px solid var(--bd); }
-        #s-pesquisas .pq-cen-tabela .pq-row-cand.ego td { background:rgba(250,199,117,0.18); }
-        #s-pesquisas .pq-cen-tabela .pq-cell-nome { font-weight:500; color:var(--txt); }
-        #s-pesquisas .pq-cen-tabela .pq-cell-part { color:var(--muted); font-size:10px; padding-left:3px; }
-        #s-pesquisas .pq-cen-tabela .pq-cell-bar { width:55%; }
-        #s-pesquisas .pq-cen-bar { height:9px; border-radius:2px; }
-        #s-pesquisas .pq-cen-tabela .pq-cell-pct {
-          text-align:right; font-variant-numeric:tabular-nums; font-weight:500;
-          width:45px; color:var(--txt);
-        }
-        #s-pesquisas .pq-cen-tabela tr.pq-row-resto td { color:var(--muted); font-style:italic; padding:2px 4px; }
-        #s-pesquisas .pq-cen-meta-pct { font-size:10px; color:var(--muted); margin-top:3px; }
-        #s-pesquisas .pq-cen-meta-pct strong { color:var(--txt); }
-
-        /* Badge DEMO */
-        #s-pesquisas .pq-demo-badge {
-          font-size:9px; padding:2px 7px; border-radius:10px;
-          background:#534AB7; color:#fff; font-weight:600;
-          letter-spacing:.5px; text-transform:uppercase;
-        }
-        #s-pesquisas .pq-card.demo { border-left:3px solid #534AB7; }
-
-        /* Síntese editorial automática */
-        #s-pesquisas .pq-sintese {
-          margin-top:8px; padding:6px 10px;
-          background:rgba(83,74,183,0.06); border-left:2px solid #534AB7;
-          border-radius:0 4px 4px 0; font-size:11px; color:var(--txt);
-        }
-        #s-pesquisas .pq-sintese strong { color:#3C3489; }
-        #s-pesquisas .pq-sintese-up { color:#0F6E56; font-weight:600; }
-        #s-pesquisas .pq-sintese-dn { color:#A32D2D; font-weight:600; }
-
-        /* Painel "Evolução cross-rodada" */
-        #s-pesquisas .pq-tendencia {
-          margin:14px 22px; padding:14px 18px;
-          background:var(--s1); border:0.5px solid var(--bd); border-radius:10px;
-          flex-shrink:0;
-        }
-        #s-pesquisas .pq-tendencia-head {
-          display:flex; align-items:baseline; gap:10px; margin-bottom:8px;
-        }
-        #s-pesquisas .pq-tendencia-titulo { font-size:13px; font-weight:600; color:var(--txt); }
-        #s-pesquisas .pq-tendencia-sub { font-size:10px; color:var(--muted); }
-        #s-pesquisas .pq-tendencia-cargo-tabs { display:flex; gap:6px; margin-bottom:10px; }
-        #s-pesquisas .pq-tendencia-tab {
-          font-size:10px; padding:3px 10px; border-radius:14px;
-          border:0.5px solid var(--bd2); background:var(--s1);
-          cursor:pointer; color:var(--muted); font-family:inherit;
-        }
-        #s-pesquisas .pq-tendencia-tab.on { background:#534AB7; color:#fff; border-color:#534AB7; }
-        #s-pesquisas .pq-tend-row {
-          display:grid; grid-template-columns:140px 1fr 56px;
-          gap:8px; align-items:center; margin-bottom:5px;
-          font-size:11px;
-        }
-        #s-pesquisas .pq-tend-nome {
-          color:var(--txt); white-space:nowrap;
-          overflow:hidden; text-overflow:ellipsis;
-        }
-        #s-pesquisas .pq-tend-nome .pq-part { color:var(--muted); font-size:10px; margin-left:4px; }
-        #s-pesquisas .pq-tend-spark {
-          height:18px; position:relative;
-          background:var(--s2); border-radius:3px;
-        }
-        #s-pesquisas .pq-tend-pt {
-          position:absolute; width:10px; height:10px; border-radius:50%;
-          background:#534AB7; top:4px; transform:translateX(-50%);
-        }
-        #s-pesquisas .pq-tend-line {
-          position:absolute; top:8px; height:2px; background:#534AB7; opacity:.5;
-        }
-        #s-pesquisas .pq-tend-delta {
-          text-align:right; font-variant-numeric:tabular-nums;
-          font-size:11px; font-weight:500;
-        }
-        #s-pesquisas .pq-tend-delta.up { color:#0F6E56; }
-        #s-pesquisas .pq-tend-delta.dn { color:#A32D2D; }
-        #s-pesquisas .pq-tend-delta.eq { color:var(--muted); }
-        #s-pesquisas .pq-tend-rotulo-x {
-          display:grid; grid-template-columns:140px 1fr 56px; gap:8px;
-          margin-top:4px; font-size:9px; color:var(--muted);
-        }
-        #s-pesquisas .pq-tend-rotulo-x .pq-rotulos {
-          display:flex; justify-content:space-between;
-        }
-        #s-pesquisas .pq-actions { margin-top:10px; }
+        #s-pesquisas .pq-actions { margin-top:8px; }
         #s-pesquisas .pq-link {
           font-size:11px; color:#185FA5; text-decoration:none;
           padding:3px 8px; border-radius:5px; border:0.5px solid var(--bd2);
           background:var(--s1);
         }
         #s-pesquisas .pq-link:hover { background:var(--s2); }
-        #s-pesquisas .pq-empty { padding:40px 22px; color:var(--muted); font-size:12px; text-align:center; }
-        #s-pesquisas .pq-aviso {
-          margin:14px 22px; padding:10px 14px;
-          background:#FAEEDA; border-radius:6px;
-          font-size:11px; color:#633806; line-height:1.5;
-          flex-shrink:0;
+        #s-pesquisas .pq-empty { padding:30px 22px; color:var(--muted); font-size:12px; text-align:center; }
+        #s-pesquisas .pq-demo-badge {
+          font-size:9px; padding:2px 7px; border-radius:10px;
+          background:#534AB7; color:#fff; font-weight:600;
+          letter-spacing:.5px; text-transform:uppercase;
         }
-        #s-pesquisas .pq-aviso strong { color:#412402; }
+        #s-pesquisas .pq-card.demo { border-left:3px solid #534AB7; }
       </style>
 
-      <div class="pq-toolbar">
-        <label for="pq-f-cargo">Cargo</label>
-        <select id="pq-f-cargo" onchange="pqFiltrar()">
-          <option value="">Todos</option>
-          <option value="Governador">Governador</option>
-          <option value="Senador">Senador</option>
-          <option value="Deputado Federal">Dep. Federal</option>
-          <option value="Deputado Distrital">Dep. Distrital</option>
-        </select>
-        <label for="pq-f-instituto">Instituto</label>
-        <input id="pq-f-instituto" placeholder="filtrar..." oninput="pqFiltrar()">
-        <label for="pq-f-status">Extração</label>
-        <select id="pq-f-status" onchange="pqFiltrar()">
-          <option value="">Todas</option>
-          <option value="extraido">Já extraídas</option>
-          <option value="pendente">Pendentes</option>
-          <option value="falhou">Falharam</option>
-        </select>
-        <span class="pq-stats" id="pq-stats"></span>
+      <div class="pq-modal-toggle-row">
+        <span class="pq-modal-toggle-info" id="pq-mt-info">—</span>
+        <button class="pq-modal-toggle" onclick="pqAbrirModal()">
+          <span>Ver pesquisas individuais</span>
+          <span class="pq-mt-count" id="pq-mt-count">—</span>
+        </button>
       </div>
 
-      <div id="pq-aviso-extracao" class="pq-aviso" style="display:none">
-        <strong>Extração IA pendente.</strong> O catálogo está atualizado, mas os cenários estruturados (cargos, candidatos testados, tipo) ainda não foram extraídos por IA. Para ativar, defina <code>ANTHROPIC_API_KEY</code> e rode <code>python3 extrair_pesquisas.py</code>.
+      <div class="pq-main">
+        <div id="pq-findings-box"></div>
+
+        <div class="pq-sm-section-head">
+          <span class="pq-sm-titulo" id="pq-sm-titulo">Evolução por candidato</span>
+          <span class="pq-sm-sub" id="pq-sm-sub">—</span>
+        </div>
+        <div class="pq-legend" id="pq-legend"></div>
+        <div class="pq-small-multiples" id="pq-sm-grid"></div>
+
+        <div class="pq-pivot-titulo">Tabela pivô · candidatos × pesquisas</div>
+        <div id="pq-pivot-wrap"></div>
       </div>
 
-      <div id="pq-aviso-demo" class="pq-aviso" style="background:rgba(83,74,183,0.08);color:#3C3489;border-left:2px solid #534AB7;display:none">
-        <strong style="color:#3C3489">Cards marcados <span class="pq-demo-badge" style="font-size:8px">DEMO</span> são pesquisas de demonstração</strong> com candidatos reais (do questionário Veritá) e percentuais sintéticos plausíveis. Servem para ilustrar capability de análise de resultados — quando o cliente fornecer relatórios reais ou for ativado o pipeline de coleta, esses dados são substituídos.
+      <!-- MODAL: lista das pesquisas individuais -->
+      <div class="pq-modal" id="pq-modal" onclick="if(event.target.id==='pq-modal')pqFecharModal()">
+        <div class="pq-modal-box">
+          <div class="pq-modal-head">
+            <span class="pq-modal-titulo">Pesquisas individuais</span>
+            <span class="pq-modal-sub" id="pq-modal-sub">—</span>
+            <button class="pq-modal-close" onclick="pqFecharModal()" aria-label="Fechar">×</button>
+          </div>
+          <div class="pq-modal-toolbar">
+            <label for="pq-f-cargo">Cargo</label>
+            <select id="pq-f-cargo" onchange="pqFiltrar()">
+              <option value="">Todos</option>
+              <option value="Governador">Governador</option>
+              <option value="Senador">Senador</option>
+              <option value="Deputado Federal">Dep. Federal</option>
+              <option value="Deputado Distrital">Dep. Distrital</option>
+            </select>
+            <label for="pq-f-instituto">Instituto</label>
+            <input id="pq-f-instituto" placeholder="filtrar..." oninput="pqFiltrar()">
+            <label for="pq-f-status">Tipo</label>
+            <select id="pq-f-status" onchange="pqFiltrar()">
+              <option value="">Todas</option>
+              <option value="demo">DEMO</option>
+              <option value="extraido">Extraídas</option>
+              <option value="pendente">Pendentes</option>
+            </select>
+            <span class="pq-stats" id="pq-stats"></span>
+          </div>
+          <div class="pq-list" id="pq-list"></div>
+        </div>
       </div>
-
-      <div id="pq-tendencia" class="pq-tendencia" style="display:none"></div>
-
-      <div class="pq-list" id="pq-list"></div>
 
       <script>
       var PESQUISAS = JSON.parse(atob("__PESQUISAS_B64__"));
       var PQ = PESQUISAS || { pesquisas: [], n_pesquisas: 0, atualizado_em: null };
 
+      function pqFmt(n, casas){
+        casas = casas==null?1:casas;
+        return n.toFixed(casas).replace('.',',');
+      }
+      function pqFmtNum(n){ return n.toLocaleString('pt-BR'); }
       function pqFmtData(s){
         if(!s) return '—';
         var p = s.split('-');
         return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : s;
+      }
+      function pqFmtDataCurta(s){
+        if(!s) return '';
+        var p = s.split('-');
+        return p.length===3 ? p[2]+'/'+p[1] : s;
       }
 
       function pqStatusLabel(st){
         return { extraido:'Extraída', pendente:'Pendente', falhou:'Falhou', sem_pdf:'Sem PDF' }[st] || st;
       }
 
+      // ──────────────────────────────────────────────────────────────────
+      // PAINEL CONSOLIDADO (findings + small multiples + pivô)
+      // ──────────────────────────────────────────────────────────────────
+      function pqRenderFindings(c){
+        if (!c || !c.findings || !c.findings.length) {
+          document.getElementById('pq-findings-box').innerHTML = '';
+          return;
+        }
+        var html = '<div class="pq-findings">' + c.findings.map(function(f, i){
+          return '<div class="pq-finding">' +
+            '<div class="pq-num">'+(i+1)+'</div>' +
+            '<div>' +
+              '<div class="pq-fin-title">'+f.titulo+'</div>' +
+              '<div class="pq-fin-body">'+f.body+'</div>' +
+            '</div>' +
+          '</div>';
+        }).join('') + '</div>';
+        document.getElementById('pq-findings-box').innerHTML = html;
+      }
+
+      function pqRenderLegend(c){
+        var legenda = c.institutos.map(function(i){
+          return '<div class="pq-legend-item"><span class="pq-legend-dot" style="background:'+i.cor+'"></span>'+i.nome+'</div>';
+        }).join('');
+        legenda += '<span class="pq-legend-trend"><span class="pq-legend-trend-line"></span>linha = tendência consolidada (regressão linear)</span>';
+        document.getElementById('pq-legend').innerHTML = legenda;
+      }
+
+      function pqSmallMultipleSvg(cand, datasMaxDia){
+        var W = 340, H = 170;
+        var padTop=18, padBot=30, padL=36, padR=14;
+        var plotW = W - padL - padR;
+        var plotH = H - padTop - padBot;
+        var yMax = 25, yMin = 0;
+        var diaMax = datasMaxDia;
+
+        function xp(d){ return padL + (d / diaMax) * plotW; }
+        function yp(pct){ return padTop + plotH - ((pct - yMin) / (yMax - yMin)) * plotH; }
+
+        var instCor = {};
+        (PQ.consolidacao_demo.institutos || []).forEach(function(i){ instCor[i.nome] = i.cor; });
+
+        var parts = [];
+        parts.push('<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">');
+
+        // Y gridlines + labels
+        [0,5,10,15,20,25].forEach(function(v){
+          var y = yp(v);
+          parts.push('<line x1="'+padL+'" y1="'+y.toFixed(1)+'" x2="'+(padL+plotW)+'" y2="'+y.toFixed(1)+'" stroke="#E5E7EB" stroke-width="0.5"/>');
+          parts.push('<text x="'+(padL-4)+'" y="'+(y+3).toFixed(1)+'" font-size="9" fill="#9CA3AF" text-anchor="end" font-family="-apple-system,sans-serif">'+v+'%</text>');
+        });
+
+        // X labels (meses fixos)
+        var xLabels = [
+          {dia: 0,  lbl: 'fev'},
+          {dia: 28, lbl: 'mar'},
+          {dia: 59, lbl: 'abr'},
+          {dia: 89, lbl: 'mai'},
+        ];
+        xLabels.forEach(function(m){
+          var x = xp(m.dia);
+          parts.push('<text x="'+x.toFixed(1)+'" y="'+(H-padBot+14)+'" font-size="9" fill="#6B7280" text-anchor="middle" font-family="-apple-system,sans-serif">'+m.lbl+'</text>');
+        });
+
+        // Linha de regressão (tracejada)
+        var x1 = 0, x2 = diaMax;
+        var y1 = cand.intercept + cand.slope * x1;
+        var y2 = cand.intercept + cand.slope * x2;
+        parts.push('<line x1="'+xp(x1).toFixed(1)+'" y1="'+yp(y1).toFixed(1)+'" x2="'+xp(x2).toFixed(1)+'" y2="'+yp(y2).toFixed(1)+'" stroke="'+cand.cor+'" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.45"/>');
+
+        // Pontos por instituto
+        cand.serie.forEach(function(p){
+          var cor = instCor[p.instituto] || '#9CA3AF';
+          parts.push('<circle cx="'+xp(p.dia).toFixed(1)+'" cy="'+yp(p.pct).toFixed(1)+'" r="4" fill="'+cor+'" stroke="#fff" stroke-width="1.2"/>');
+        });
+
+        // Header: nome + delta
+        var sgn = cand.delta >= 0 ? '+' : '';
+        var corDelta = cand.delta >= 0.5 ? '#0F6E56' : (cand.delta <= -0.5 ? '#A32D2D' : '#9CA3AF');
+        parts.push('<text x="'+padL+'" y="13" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">'+cand.nome+'</text>');
+        parts.push('<text x="'+(padL+100)+'" y="13" font-size="9" fill="#6B7280" font-family="-apple-system,sans-serif">'+cand.partido+'</text>');
+        parts.push('<text x="'+(W-padR)+'" y="13" font-size="11" font-weight="600" fill="'+corDelta+'" text-anchor="end" font-family="-apple-system,sans-serif">'+sgn+pqFmt(cand.delta,1)+'pp</text>');
+
+        parts.push('</svg>');
+        return parts.join('');
+      }
+
+      function pqRenderSmallMultiples(c){
+        // Calcula maior dia das séries
+        var diaMax = 0;
+        c.candidatos.forEach(function(cand){
+          cand.serie.forEach(function(p){ if (p.dia > diaMax) diaMax = p.dia; });
+        });
+        var html = c.candidatos.map(function(cand){
+          return pqSmallMultipleSvg(cand, diaMax);
+        }).join('');
+        document.getElementById('pq-sm-grid').innerHTML = html;
+
+        document.getElementById('pq-sm-titulo').textContent =
+          'Evolução por candidato — ' + c.cargo;
+        document.getElementById('pq-sm-sub').textContent =
+          c.candidatos.length + ' candidatos · ' + c.n_pesquisas + ' pesquisas · escala fixa 0–25%';
+      }
+
+      function pqRenderPivot(c){
+        var headers = c.candidatos[0].serie.map(function(p){
+          var instCor = (PQ.consolidacao_demo.institutos || []).find(function(i){return i.nome===p.instituto;});
+          var cor = instCor ? instCor.cor : '#9CA3AF';
+          return '<th><span class="pq-col-data">'+pqFmtDataCurta(p.data)+'</span>'+
+                 '<span class="pq-col-inst" style="color:'+cor+'">'+p.instituto+'</span></th>';
+        }).join('');
+        var linhas = c.candidatos.map(function(cand){
+          var celulas = cand.serie.map(function(p){
+            return '<td>'+pqFmt(p.pct,0)+'%</td>';
+          }).join('');
+          var sgn = cand.delta >= 0 ? '+' : '';
+          var cls = cand.delta >= 0.5 ? 'up' : (cand.delta <= -0.5 ? 'dn' : 'eq');
+          return '<tr><td class="pq-cand-cell">'+
+            '<span class="pq-cor-dot" style="background:'+cand.cor+'"></span>'+
+            cand.nome+'<span class="pq-partido">'+cand.partido+'</span></td>'+
+            celulas+
+            '<td class="pq-delta '+cls+'">'+sgn+pqFmt(cand.delta,1)+'pp</td></tr>';
+        }).join('');
+        var html = '<table class="pq-pivot-tabela">'+
+          '<thead><tr><th>Candidato</th>'+headers+'<th class="pq-delta-col">Δ período</th></tr></thead>'+
+          '<tbody>'+linhas+'</tbody></table>';
+        document.getElementById('pq-pivot-wrap').innerHTML = html;
+      }
+
+      function pqRenderConsolidacao(){
+        var c = PQ.consolidacao_demo;
+        if (!c) {
+          document.getElementById('pq-findings-box').innerHTML =
+            '<div class="pq-empty">Análise consolidada não disponível.</div>';
+          return;
+        }
+        pqRenderFindings(c);
+        pqRenderLegend(c);
+        pqRenderSmallMultiples(c);
+        pqRenderPivot(c);
+      }
+
+      // ──────────────────────────────────────────────────────────────────
+      // MODAL: lista de pesquisas individuais
+      // ──────────────────────────────────────────────────────────────────
+      window.pqAbrirModal = function(){
+        document.getElementById('pq-modal').classList.add('on');
+        pqFiltrar();
+      };
+      window.pqFecharModal = function(){
+        document.getElementById('pq-modal').classList.remove('on');
+      };
+
       function pqEgoNome(){
         if (typeof CAND_ATIVO === 'undefined' || !CAND_ATIVO) return null;
         return (CAND_ATIVO.nome || '').toLowerCase();
       }
 
-      function pqFmtNum(n, casas){ casas = casas==null?1:casas; return n.toFixed(casas).replace('.',','); }
-
-      // Cores por campo político — usa NOME_CAMPO_MAJOR + número do partido
-      var PQ_PARTIDO_COR = {
-        'PT':'#534AB7','PSB':'#534AB7','PV':'#534AB7','PCdoB':'#534AB7','PSOL':'#534AB7','PDT':'#0F6E56',
-        'MDB':'#0F6E56','PSD':'#0F6E56','PSDB':'#0F6E56','União':'#0F6E56','UB':'#0F6E56','Cidadania':'#0F6E56',
-        'PL':'#854F0B','Republicanos':'#854F0B','Rep.':'#854F0B','PP':'#854F0B','Novo':'#854F0B','PSC':'#854F0B','PRTB':'#854F0B'
-      };
-      function pqCorPartido(part){ return PQ_PARTIDO_COR[part] || '#9CA3AF'; }
-
-      function pqCenarioTabelaHtml(c, ego){
-        var cands = (c.candidatos || []).slice();
-        var temPct = cands.some(function(cd){ return typeof cd.pct === 'number'; });
-
-        if (!temPct) {
-          // Sem percentuais (extração só estrutural): renderiza tags compactas
-          var tags = cands.map(function(cd){
-            var nm = cd.nome || '';
-            var isEgo = ego && nm.toLowerCase().includes(ego);
-            return '<span class="pq-cen-cand'+(isEgo?' ego':'')+'">'+nm+
-                   (cd.partido ? '<span class="pq-part">'+cd.partido+'</span>' : '')+'</span>';
-          }).join('');
-          return '<div class="pq-cen-cands">'+(tags||'<em style="color:var(--muted)">sem candidatos listados</em>')+'</div>';
-        }
-
-        // Com percentuais: tabela com barra horizontal proporcional
-        cands.sort(function(a,b){ return (b.pct||0) - (a.pct||0); });
-        var maxPct = Math.max.apply(null, cands.map(function(cd){return cd.pct||0;})) || 1;
-        var rows = cands.map(function(cd){
-          var nm = cd.nome || '';
-          var isEgo = ego && nm.toLowerCase().includes(ego);
-          var w = Math.round((cd.pct||0) / maxPct * 100);
-          var cor = pqCorPartido(cd.partido);
-          return '<tr class="pq-row-cand'+(isEgo?' ego':'')+'">' +
-            '<td class="pq-cell-nome">'+nm+
-              (cd.partido?'<span class="pq-cell-part">'+cd.partido+'</span>':'')+'</td>' +
-            '<td class="pq-cell-bar"><div class="pq-cen-bar" style="width:'+w+'%;background:'+cor+'"></div></td>' +
-            '<td class="pq-cell-pct">'+pqFmtNum(cd.pct||0,1)+'%</td>' +
-          '</tr>';
-        }).join('');
-        var resto = '';
-        if (typeof c.branco_nulo_pct === 'number' || typeof c.ns_nr_pct === 'number') {
-          var partes = [];
-          if (typeof c.branco_nulo_pct === 'number')
-            partes.push('Branco/Nulo: <strong>'+pqFmtNum(c.branco_nulo_pct,1)+'%</strong>');
-          if (typeof c.ns_nr_pct === 'number')
-            partes.push('NS/NR: <strong>'+pqFmtNum(c.ns_nr_pct,1)+'%</strong>');
-          if (typeof c.ic_pp === 'number')
-            partes.push('Margem: <strong>±'+pqFmtNum(c.ic_pp,1)+'pp</strong>');
-          resto = '<div class="pq-cen-meta-pct">'+partes.join(' · ')+'</div>';
-        }
-        return '<table class="pq-cen-tabela">'+rows+'</table>'+resto;
-      }
-
-      // Síntese editorial automática: maior subida e maior queda dentro do conjunto demo
-      function pqSinteseHtml(p, todasPesquisas){
-        if (!p.is_demo) return '';  // só pra demo (cross-rodada confiável)
-        var rodadasSorted = todasPesquisas.filter(function(x){ return x.is_demo; })
-          .sort(function(a,b){ return (a.data_divulgacao||'').localeCompare(b.data_divulgacao||''); });
-        if (rodadasSorted.length < 2) return '';
-        if (p.protocolo !== rodadasSorted[rodadasSorted.length-1].protocolo) return '';  // só na última
-
-        // Coleta delta por candidato (últma vs primeira)
-        var primeira = rodadasSorted[0];
-        var ultima   = rodadasSorted[rodadasSorted.length-1];
-
-        var deltas = [];
-        ['Governador','Senador'].forEach(function(cargo){
-          var c1 = (primeira.extracao.cenarios||[]).find(function(c){return c.cargo===cargo;});
-          var c2 = (ultima.extracao.cenarios||[]).find(function(c){return c.cargo===cargo;});
-          if (!c1 || !c2) return;
-          c2.candidatos.forEach(function(cd){
-            var p1 = (c1.candidatos||[]).find(function(x){return x.nome===cd.nome;});
-            if (!p1 || typeof p1.pct !== 'number' || typeof cd.pct !== 'number') return;
-            deltas.push({ nome:cd.nome, partido:cd.partido, cargo:cargo, delta:cd.pct-p1.pct, pct_atual:cd.pct });
-          });
-        });
-        if (!deltas.length) return '';
-        deltas.sort(function(a,b){ return b.delta - a.delta; });
-        var top = deltas[0];
-        var bot = deltas[deltas.length-1];
-        var html = '<div class="pq-sintese"><strong>Síntese cross-rodada:</strong> ';
-        var partes = [];
-        if (top.delta >= 1) partes.push('<span class="pq-sintese-up">'+top.nome+' ('+top.cargo+') +'+pqFmtNum(top.delta,1)+'pp</span>');
-        if (bot.delta <= -1) partes.push('<span class="pq-sintese-dn">'+bot.nome+' ('+bot.cargo+') '+pqFmtNum(bot.delta,1)+'pp</span>');
-        var n = rodadasSorted.length;
-        html += partes.join(' · ') + ' &middot; ' + n + ' rodadas no período.</div>';
-        return html;
-      }
-
-      function pqCardHtml(p, todas){
+      function pqCardHtml(p){
         var st = (p.extracao && p.extracao.status) || 'pendente';
         var isDemo = !!p.is_demo;
         var cargosBadges = (p.cargo || []).map(function(c){
@@ -1895,58 +2029,22 @@ document.addEventListener('keydown', function(e){
         }).join('');
 
         var meta = '';
-        if (p.data_campo_inicio || p.data_campo_fim) {
+        if (p.data_campo_inicio) {
           meta += '<span><strong>Campo:</strong> '+pqFmtData(p.data_campo_inicio)+
                   (p.data_campo_fim && p.data_campo_fim!==p.data_campo_inicio ? ' a '+pqFmtData(p.data_campo_fim) : '')+'</span>';
         }
         if (p.n_entrevistados) {
           meta += '<span><strong>'+p.n_entrevistados.toLocaleString('pt-BR')+'</strong> entrevistas</span>';
         }
-        if (p.pesquisa_propria && !isDemo) {
-          meta += '<span style="color:#0F6E56">Pesquisa própria</span>';
-        }
         if (p.estatistico && !isDemo) {
           meta += '<span><strong>Estatístico:</strong> '+p.estatistico+(p.conre?' (CONRE '+p.conre+')':'')+'</span>';
         }
 
-        var cenariosHtml = '';
-        if (st === 'extraido' && p.extracao.cenarios && p.extracao.cenarios.length) {
-          var ego = pqEgoNome();
-          var temPctEmAlgum = p.extracao.cenarios.some(function(c){
-            return (c.candidatos||[]).some(function(cd){return typeof cd.pct === 'number';});
-          });
-          var cenList = p.extracao.cenarios.map(function(c){
-            return '<div class="pq-cen-card">' +
-              '<div class="pq-cen-head">' +
-                '<span class="pq-cen-cargo">'+(c.cargo||'?')+'</span>' +
-                '<span class="pq-cen-tipo">'+(c.tipo||'?')+'</span>' +
-                (c.questao ? '<span class="pq-cen-questao">'+c.questao+'</span>' : '') +
-              '</div>' +
-              pqCenarioTabelaHtml(c, ego) +
-            '</div>';
-          }).join('');
-          var lblToggle = temPctEmAlgum
-            ? 'Ver '+p.extracao.cenarios.length+' cenário(s) com resultados →'
-            : 'Ver '+p.extracao.cenarios.length+' cenário(s) extraídos →';
-          // Quando demo: já abrir cenários
-          var aberto = isDemo ? ' on' : '';
-          cenariosHtml =
-            '<div class="pq-cenarios">' +
-              '<button class="pq-cenarios-toggle" onclick="this.parentNode.querySelector(\'.pq-cenarios-body\').classList.toggle(\'on\')">' +
-                lblToggle +
-              '</button>' +
-              '<div class="pq-cenarios-body'+aberto+'">'+cenList+'</div>' +
-            '</div>';
-        } else if (st === 'falhou' && p.extracao.erro) {
-          cenariosHtml = '<div class="pq-cenarios" style="font-size:11px;color:#791F1F">Falha: '+p.extracao.erro+'</div>';
-        }
-
-        var sintese = pqSinteseHtml(p, todas);
         var demoBadge = isDemo ? '<span class="pq-demo-badge">DEMO</span>' : '';
         var actions = '';
         if (p.url_tse_pesqele) {
           actions = '<div class="pq-actions">' +
-            '<a class="pq-link" href="'+p.url_tse_pesqele+'" target="_blank" rel="noopener">Abrir no PesqEle TSE ↗</a>' +
+            '<a class="pq-link" href="'+p.url_tse_pesqele+'" target="_blank" rel="noopener">Página TSE ↗</a>' +
           '</div>';
         }
 
@@ -1956,136 +2054,29 @@ document.addEventListener('keydown', function(e){
             demoBadge +
             (isDemo ? '' : '<span class="pq-status '+st+'">'+pqStatusLabel(st)+'</span>') +
             '<span class="pq-protocolo">'+p.protocolo+'</span>' +
-            '<span class="pq-data-div">Divulgada '+pqFmtData(p.data_divulgacao)+'</span>' +
+            '<span class="pq-data-div">'+pqFmtData(p.data_divulgacao)+'</span>' +
           '</div>' +
           '<div class="pq-cargos">'+cargosBadges+'</div>' +
           '<div class="pq-meta-row">'+meta+'</div>' +
-          cenariosHtml +
-          sintese +
           actions +
         '</div>';
       }
 
-      // Painel de evolução cross-rodada (só quando há ≥2 pesquisas demo)
-      var PQ_TEND_CARGO = 'Senador';
-      function pqRenderTendencia(){
-        var demos = (PQ.pesquisas||[]).filter(function(p){ return p.is_demo; })
-          .sort(function(a,b){ return (a.data_divulgacao||'').localeCompare(b.data_divulgacao||''); });
-        var box = document.getElementById('pq-tendencia');
-        if (!box) return;
-        if (demos.length < 2) { box.style.display = 'none'; return; }
-
-        // Datas (eixo X)
-        var datas = demos.map(function(d){ return d.data_divulgacao; });
-
-        // Coleta candidatos com ≥2 pontos no cargo escolhido
-        var pontosPorCand = {};  // nome → [pct,pct,...]
-        var partidoPorCand = {};
-        demos.forEach(function(d, idx){
-          var cen = (d.extracao.cenarios||[]).find(function(c){return c.cargo===PQ_TEND_CARGO;});
-          if (!cen) return;
-          (cen.candidatos||[]).forEach(function(cd){
-            if (typeof cd.pct !== 'number') return;
-            if (!pontosPorCand[cd.nome]) pontosPorCand[cd.nome] = new Array(demos.length).fill(null);
-            pontosPorCand[cd.nome][idx] = cd.pct;
-            partidoPorCand[cd.nome] = cd.partido;
-          });
-        });
-
-        // Filtra candidatos com ≥2 pontos válidos
-        var candidatos = Object.keys(pontosPorCand).filter(function(nm){
-          return pontosPorCand[nm].filter(function(v){return v!=null;}).length >= 2;
-        });
-
-        // Ordena por valor mais recente (último ponto) desc
-        candidatos.sort(function(a,b){
-          var av = pontosPorCand[a].slice().reverse().find(function(v){return v!=null;}) || 0;
-          var bv = pontosPorCand[b].slice().reverse().find(function(v){return v!=null;}) || 0;
-          return bv - av;
-        });
-
-        // SVG-style mini-spark com bolinhas + linha
-        var maxPct = Math.max.apply(null, candidatos.flatMap(function(nm){return pontosPorCand[nm].filter(function(v){return v!=null;});})) || 1;
-        var minPct = 0;
-        function pos(v){ return ((v - minPct) / (maxPct - minPct)) * 100; }
-
-        var rows = candidatos.map(function(nm){
-          var pts = pontosPorCand[nm];
-          var part = partidoPorCand[nm];
-          var cor = pqCorPartido(part);
-          // Cria bolinhas + linha entre pontos consecutivos
-          var spark = '';
-          var prev = null;
-          pts.forEach(function(v, idx){
-            if (v == null) return;
-            var x = (idx / (pts.length - 1)) * 100;
-            var yPct = pos(v);
-            // y invertido: maior pct = topo (top:4px), menor = base (top:14px)
-            var topPx = 14 - (yPct / 100) * 10;
-            spark += '<div class="pq-tend-pt" style="left:'+x+'%;top:'+topPx.toFixed(1)+'px;background:'+cor+'"></div>';
-            if (prev != null) {
-              var x1 = (prev.idx / (pts.length - 1)) * 100;
-              var y1Px = 14 - (pos(prev.v) / 100) * 10;
-              var x2 = x;
-              var y2Px = topPx;
-              // Linha como elemento posicionado
-              var dx = x2 - x1; var dy = y2Px - y1Px;
-              var len = Math.sqrt(dx*dx + dy*dy);
-              var ang = Math.atan2(dy * 1, dx * 1) * 180 / Math.PI;
-              spark += '<div class="pq-tend-line" style="left:'+x1+'%;top:'+(y1Px+4)+'px;width:calc('+(dx)+'% );transform:rotate('+ang+'deg);transform-origin:0 50%;background:'+cor+'"></div>';
-            }
-            prev = { idx: idx, v: v };
-          });
-          // Delta primeira × última
-          var validas = pts.filter(function(v){return v!=null;});
-          var delta = validas.length >= 2 ? (validas[validas.length-1] - validas[0]) : 0;
-          var cls = delta > 0.5 ? 'up' : (delta < -0.5 ? 'dn' : 'eq');
-          var sgn = delta >= 0 ? '+' : '';
-          return '<div class="pq-tend-row">' +
-            '<div class="pq-tend-nome">'+nm+(part?'<span class="pq-part">'+part+'</span>':'')+'</div>' +
-            '<div class="pq-tend-spark">'+spark+'</div>' +
-            '<div class="pq-tend-delta '+cls+'">'+sgn+pqFmtNum(delta,1)+'pp</div>' +
-          '</div>';
-        }).join('');
-
-        var rotulosX = datas.map(function(d){ return pqFmtData(d); }).join('<span></span>');
-
-        var cargoTabs = ['Governador','Senador'].map(function(c){
-          return '<button class="pq-tendencia-tab'+(c===PQ_TEND_CARGO?' on':'')+
-                 '" onclick="pqSetTendCargo(\''+c+'\')">'+c+'</button>';
-        }).join('');
-
-        box.innerHTML =
-          '<div class="pq-tendencia-head">' +
-            '<span class="pq-tendencia-titulo">Evolução cross-rodada</span>' +
-            '<span class="pq-tendencia-sub">★ DEMO · '+demos.length+' rodadas</span>' +
-          '</div>' +
-          '<div class="pq-tendencia-cargo-tabs">'+cargoTabs+'</div>' +
-          rows +
-          '<div class="pq-tend-rotulo-x">' +
-            '<span></span>' +
-            '<div class="pq-rotulos">'+datas.map(function(d){return '<span>'+pqFmtData(d)+'</span>';}).join('')+'</div>' +
-            '<span></span>' +
-          '</div>';
-        box.style.display = 'block';
-      }
-
-      window.pqSetTendCargo = function(c){
-        PQ_TEND_CARGO = c;
-        pqRenderTendencia();
-      };
-
-      function pqFiltrar(){
+      window.pqFiltrar = function(){
         var fcargo = document.getElementById('pq-f-cargo').value;
-        var finst  = (document.getElementById('pq-f-instituto').value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+        var finst  = (document.getElementById('pq-f-instituto').value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
         var fst    = document.getElementById('pq-f-status').value;
         var lista = (PQ.pesquisas || []).filter(function(p){
           if (fcargo && !(p.cargo || []).includes(fcargo)) return false;
           if (finst) {
-            var nm = (p.instituto||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+            var nm = (p.instituto||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
             if (!nm.includes(finst)) return false;
           }
-          if (fst && (p.extracao && p.extracao.status) !== fst) return false;
+          if (fst === 'demo') {
+            if (!p.is_demo) return false;
+          } else if (fst) {
+            if ((p.extracao && p.extracao.status) !== fst) return false;
+          }
           return true;
         });
 
@@ -2093,32 +2084,29 @@ document.addEventListener('keydown', function(e){
         if (!lista.length) {
           el.innerHTML = '<div class="pq-empty">Nenhuma pesquisa para esses filtros.</div>';
         } else {
-          var todas = PQ.pesquisas || [];
-          el.innerHTML = lista.map(function(p){ return pqCardHtml(p, todas); }).join('');
+          el.innerHTML = lista.map(pqCardHtml).join('');
         }
-        document.getElementById('pq-stats').textContent = lista.length + ' de ' + (PQ.pesquisas||[]).length + ' pesquisas';
-      }
+        document.getElementById('pq-stats').textContent =
+          lista.length + ' de ' + (PQ.pesquisas||[]).length + ' pesquisas';
+      };
 
+      // ──────────────────────────────────────────────────────────────────
+      // INIT
+      // ──────────────────────────────────────────────────────────────────
       function pqInit(){
         var sub = document.getElementById('pq-meta-sub');
         if (PQ.atualizado_em) {
           var dt = new Date(PQ.atualizado_em);
           sub.textContent = '· TSE Dados Abertos · atualizado em ' + dt.toLocaleDateString('pt-BR');
         }
-        var pendentes = (PQ.pesquisas||[]).filter(function(p){
-          return (p.extracao||{}).status === 'pendente';
-        }).length;
-        if (pendentes > 0) {
-          document.getElementById('pq-aviso-extracao').style.display = 'block';
-          var av = document.getElementById('pq-aviso-extracao');
-          av.querySelector('strong').textContent = pendentes + ' pesquisa(s) com extração IA pendente.';
-        }
-        var temDemo = (PQ.pesquisas||[]).some(function(p){ return p.is_demo; });
-        if (temDemo) {
-          document.getElementById('pq-aviso-demo').style.display = 'block';
-        }
-        pqRenderTendencia();
-        pqFiltrar();
+        var n = (PQ.pesquisas||[]).length;
+        var nDemo = (PQ.pesquisas||[]).filter(function(p){return p.is_demo;}).length;
+        document.getElementById('pq-mt-count').textContent = n;
+        document.getElementById('pq-mt-info').textContent =
+          'Análise consolidada em destaque. ' + (n - nDemo) + ' pesquisas TSE + ' + nDemo + ' DEMO disponíveis.';
+        document.getElementById('pq-modal-sub').textContent = n + ' pesquisas';
+
+        pqRenderConsolidacao();
       }
       pqInit();
       </script>

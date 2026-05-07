@@ -1,106 +1,89 @@
 """
-Injeta 3 rodadas DEMO no outputs_pesquisas/pesquisas_df.json para servir
-como case de demonstração do Clipping de Pesquisas (com percentuais e
-tendência cross-rodada).
+Injeta 8 pesquisas DEMO no outputs_pesquisas/pesquisas_df.json — 4 institutos
+(Veritá, Igape, Cepphor, Phoenix) × 2 rodadas, foco Deputado Federal DF 2026.
 
-Os candidatos usados são REAIS (extraídos do questionário Veritá DF003202026),
-mas os percentuais são SINTÉTICOS e claramente marcados (is_demo=true).
+Espelha o que está no relatorio_pesquisas_demo.html. Inclui um bloco extra
+`consolidacao_demo` no JSON com regressão linear pré-calculada e findings
+editoriais — consumido pelo painel "Análise Consolidada" do dashboard.
 
-Idempotente: se entries DEMO existirem, são substituídas. Reais são preservadas.
+Idempotente: substitui qualquer entrada is_demo existente por essas 8.
 """
 import json
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 JSON_PATH = ROOT / "outputs_pesquisas" / "pesquisas_df.json"
 
-CANDS_GOV = [
-    ("Celina Leão",          "PP"),
-    ("José Roberto Arruda",  "PSD"),
-    ("Leandro Grass",        "PT"),
-    ("Paula Belmonte",       "PSDB"),
-    ("Ricardo Cappelli",     "PSB"),
-    ("Kiko Caputo",          "Novo"),
+INSTITUTO_COR = {
+    "Veritá":   "#1f77b4",
+    "Igape":    "#ff7f0e",
+    "Cepphor":  "#2ca02c",
+    "Phoenix":  "#d62728",
+}
+
+CANDIDATOS = [
+    # (chave, nome, partido, cor própria do candidato)
+    ("kicis", "Bia Kicis",            "PL",          "#A32D2D"),
+    ("fred",  "Fred Linhares",        "Republicanos","#854F0B"),
+    ("erika", "Erika Kokay",          "PT",          "#534AB7"),
+    ("jcr",   "Julio Cesar Ribeiro",  "Republicanos","#D85A30"),
+    ("veras", "Reginaldo Veras",      "PV",          "#0F6E56"),
+    ("nemer", "Roney Nemer",          "PP",          "#6B7280"),
 ]
 
-CANDS_SEN = [
-    ("Ibaneis Rocha",        "MDB"),
-    ("José Reguffe",         "União"),
-    ("Bia Kicis",            "PL"),
-    ("Erika Kokay",          "PT"),
-    ("Michelle Bolsonaro",   "PL"),
-    ("Leila Barros",         "PDT"),
-    ("Sebastião Coelho",     "Novo"),
+# 8 pesquisas — campo Federal · candidatos REAIS · % SINTÉTICOS
+PESQUISAS = [
+    # data, instituto, n, kicis fred erika jcr veras nemer | bln ns_nr
+    ("2026-02-15", "Igape",   1000, 14, 13, 13, 11, 5, 5,  8, 31),
+    ("2026-02-20", "Veritá",  1220, 15, 14, 12, 11, 5, 4,  8, 31),
+    ("2026-03-10", "Cepphor", 1500, 16, 14, 12, 10, 5, 5,  8, 30),
+    ("2026-03-25", "Phoenix", 1203, 17, 15, 13, 10, 6, 5,  7, 27),
+    ("2026-04-15", "Veritá",  1220, 18, 15, 12,  9, 6, 5,  7, 28),
+    ("2026-04-22", "Igape",   3000, 17, 14, 13,  9, 7, 5,  7, 28),
+    ("2026-05-05", "Cepphor",  400, 19, 16, 13,  8, 7, 5,  7, 25),
+    ("2026-05-15", "Phoenix", 1500, 20, 17, 14,  8, 7, 5,  6, 23),
 ]
 
-# 3 rodadas (índices: pct_gov[i], pct_sen[i], com soma + brancos/NS/NR fechando 100)
-RODADAS = [
-    {
-        "protocolo":         "DEMO0012026",
-        "data_registro":     "2026-03-12",
-        "data_campo_inicio": "2026-03-10",
-        "data_campo_fim":    "2026-03-13",
-        "data_divulgacao":   "2026-03-15",
-        "n_entrevistados":   1500,
-        "ic_pp":             2.5,
-        "pct_gov":           [22, 18, 16, 12, 4, 4],   # Σ = 76 (BL/N 12, NS/NR 12)
-        "pct_sen":           [28, 19, 15, 14, 11, 5, 3],  # Σ = 95 (BL/N 3, NS/NR 2)
-        "bln_gov": 12, "ns_gov": 12,
-        "bln_sen":  3, "ns_sen":  2,
-    },
-    {
-        "protocolo":         "DEMO0022026",
-        "data_registro":     "2026-04-08",
-        "data_campo_inicio": "2026-04-05",
-        "data_campo_fim":    "2026-04-09",
-        "data_divulgacao":   "2026-04-10",
-        "n_entrevistados":   1500,
-        "ic_pp":             2.5,
-        "pct_gov":           [24, 17, 15, 13, 5, 3],   # Σ = 77 (BL/N 11, NS/NR 12)
-        "pct_sen":           [30, 17, 16, 15, 10, 5, 3],  # Σ = 96
-        "bln_gov": 11, "ns_gov": 12,
-        "bln_sen":  2, "ns_sen":  2,
-    },
-    {
-        "protocolo":         "DEMO0032026",
-        "data_registro":     "2026-05-03",
-        "data_campo_inicio": "2026-05-01",
-        "data_campo_fim":    "2026-05-04",
-        "data_divulgacao":   "2026-05-05",
-        "n_entrevistados":   1500,
-        "ic_pp":             2.5,
-        "pct_gov":           [26, 16, 17, 13, 5, 3],   # Σ = 80 (BL/N 10, NS/NR 10)
-        "pct_sen":           [31, 14, 18, 16, 9, 5, 3],   # Σ = 96
-        "bln_gov": 10, "ns_gov": 10,
-        "bln_sen":  2, "ns_sen":  2,
-    },
-]
+CARGO_FOCAL = "Deputado Federal"
+DATA_BASE = date(2026, 2, 15)
 
 
-def montar_entry(r: dict) -> dict:
-    cands_gov = [
-        {"nome": n, "partido": p, "pct": float(r["pct_gov"][i])}
-        for i, (n, p) in enumerate(CANDS_GOV)
+def dia(s: str) -> int:
+    return (date.fromisoformat(s) - DATA_BASE).days
+
+
+def regressao(xs, ys):
+    n = len(xs)
+    mx = sum(xs) / n
+    my = sum(ys) / n
+    cov = sum((xs[i] - mx) * (ys[i] - my) for i in range(n))
+    var = sum((x - mx) ** 2 for x in xs)
+    slope = cov / var if var else 0
+    return my - slope * mx, slope
+
+
+def montar_entry(idx: int, p: tuple) -> dict:
+    data_div, instituto, n, *pcts, bln, ns = p
+    cands = [
+        {"nome": nome, "partido": part, "pct": float(pcts[i])}
+        for i, (_, nome, part, _) in enumerate(CANDIDATOS)
     ]
-    cands_sen = [
-        {"nome": n, "partido": p, "pct": float(r["pct_sen"][i])}
-        for i, (n, p) in enumerate(CANDS_SEN)
-    ]
+    proto = f"DEMO{(idx+1):03d}2026"
     return {
-        "protocolo":             r["protocolo"],
-        "instituto":             "Estrategos · DEMO POLL",
-        "instituto_razao_social": "Pesquisa de demonstração — Estrategos",
+        "protocolo":             proto,
+        "instituto":             instituto + " · DEMO",
+        "instituto_razao_social": "Pesquisa de demonstração — " + instituto,
         "instituto_cnpj":        "—",
-        "pesquisa_propria":      True,
-        "cargo":                 ["Governador", "Senador"],
-        "data_registro":         r["data_registro"],
-        "data_campo_inicio":     r["data_campo_inicio"],
-        "data_campo_fim":        r["data_campo_fim"],
-        "data_divulgacao":       r["data_divulgacao"],
-        "n_entrevistados":       r["n_entrevistados"],
-        "metodologia":           "Pesquisa quantitativa demonstrativa, face a face em ponto de fluxo. Amostra representativa do eleitorado DF, estratificada por sexo, idade, escolaridade e renda.",
-        "plano_amostral":        f"Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±{r['ic_pp']}pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
+        "pesquisa_propria":      False,
+        "cargo":                 [CARGO_FOCAL],
+        "data_registro":         data_div,
+        "data_campo_inicio":     data_div,
+        "data_campo_fim":        data_div,
+        "data_divulgacao":       data_div,
+        "n_entrevistados":       n,
+        "metodologia":           "Pesquisa quantitativa demonstrativa, face-a-face em ponto de fluxo. Amostra representativa do eleitorado DF (16+).",
+        "plano_amostral":        f"Universo: 2,2M eleitores DF (TSE 2026). Margem de erro: ±2,5pp · IC 95%. Cotas: sexo, idade, escolaridade, renda.",
         "estatistico":           "Demonstração",
         "conre":                 "—",
         "valor":                 None,
@@ -113,33 +96,99 @@ def montar_entry(r: dict) -> dict:
             "extraido_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "modelo":      "demo (dados sintéticos)",
             "erro":        None,
-            "cargos":              ["Governador", "Senador"],
+            "cargos":              [CARGO_FOCAL],
             "filtros_demograficos": ["sexo", "idade", "escolaridade", "renda"],
             "cenarios": [
                 {
-                    "cargo":           "Governador",
+                    "cargo":           CARGO_FOCAL,
                     "tipo":            "estimulada",
-                    "questao":         "Q. 06",
-                    "candidatos":      cands_gov,
+                    "questao":         "—",
+                    "candidatos":      cands,
                     "tem_branco_nulo": True,
                     "tem_ns_nr":       True,
-                    "branco_nulo_pct": float(r["bln_gov"]),
-                    "ns_nr_pct":       float(r["ns_gov"]),
-                    "ic_pp":           float(r["ic_pp"]),
-                },
-                {
-                    "cargo":           "Senador",
-                    "tipo":            "estimulada",
-                    "questao":         "Q. 11",
-                    "candidatos":      cands_sen,
-                    "tem_branco_nulo": True,
-                    "tem_ns_nr":       True,
-                    "branco_nulo_pct": float(r["bln_sen"]),
-                    "ns_nr_pct":       float(r["ns_sen"]),
-                    "ic_pp":           float(r["ic_pp"]),
+                    "branco_nulo_pct": float(bln),
+                    "ns_nr_pct":       float(ns),
+                    "ic_pp":           2.5,
                 },
             ],
         },
+    }
+
+
+def montar_consolidacao() -> dict:
+    """Pré-calcula regressão linear por candidato + findings editoriais
+    para o painel consolidado do dashboard."""
+    serie_por_cand = {}
+    cand_idx = {k: 3+i for i, (k, *_ ) in enumerate(CANDIDATOS)}
+
+    for k, nome, partido, cor in CANDIDATOS:
+        serie = []
+        for p in PESQUISAS:
+            data, instituto, n = p[0], p[1], p[2]
+            pct = p[cand_idx[k]]
+            serie.append({
+                "data":      data,
+                "dia":       dia(data),
+                "instituto": instituto,
+                "n":         n,
+                "pct":       float(pct),
+            })
+        xs = [s["dia"] for s in serie]
+        ys = [s["pct"] for s in serie]
+        intercept, slope = regressao(xs, ys)
+        delta = slope * (max(xs) - min(xs))
+        serie_por_cand[k] = {
+            "key":        k,
+            "nome":       nome,
+            "partido":    partido,
+            "cor":        cor,
+            "serie":      serie,
+            "intercept":  round(intercept, 3),
+            "slope":      round(slope, 5),
+            "delta":      round(delta, 1),
+            "y_inicio":   ys[0],
+            "y_fim":      ys[-1],
+        }
+
+    # Findings editoriais (textos cravados — espelham o relatório)
+    findings = [
+        {
+            "titulo": "Bia Kicis consolida liderança do PL no DF",
+            "body": (
+                f'Líder isolada do campo liberal-conservador, <strong>Bia Kicis (PL)</strong> avança de '
+                f'<strong>14% para 20%</strong> em três meses (<span class="up">+{serie_por_cand["kicis"]["delta"]:.1f}pp</span>). '
+                f'Os <strong>4 institutos</strong> avaliados confirmam a tendência de alta — sinal de movimento estrutural, '
+                f'não de oscilação amostral. A magnitude (~6pp) supera a margem de erro consolidada (±2,5pp).'
+            ),
+        },
+        {
+            "titulo": "Bancada evangélica fragmenta-se",
+            "body": (
+                f'<strong>Julio Cesar Ribeiro (Republicanos)</strong>, pastor evangélico eleito em 2022, '
+                f'recua de <strong>11% para 8%</strong> (<span class="dn">{serie_por_cand["jcr"]["delta"]:.1f}pp</span>) — '
+                f'queda confirmada por todos os 4 institutos. Já <strong>Fred Linhares</strong>, do mesmo partido '
+                f'mas com perfil mais técnico, sobe <span class="up">+{serie_por_cand["fred"]["delta"]:.1f}pp</span>. '
+                f'Movimento sugere realocação intra-bancada, não saída de eleitores do campo conservador.'
+            ),
+        },
+        {
+            "titulo": "Reginaldo Veras emerge como segundo nome do PT-aliados",
+            "body": (
+                f'Erika Kokay segue dominando o voto progressista (~13%, estável). Mas <strong>Reginaldo Veras (PV)</strong> '
+                f'avança discretamente de 5% para 7% (<span class="up">+{serie_por_cand["veras"]["delta"]:.1f}pp</span>), '
+                f'criando uma <em>segunda opção</em> consistente para o eleitor de centro-esquerda — útil em '
+                f'cenário onde o quociente eleitoral exigir distribuição de votos.'
+            ),
+        },
+    ]
+
+    return {
+        "cargo":      CARGO_FOCAL,
+        "periodo":    {"inicio": "2026-02-15", "fim": "2026-05-15"},
+        "n_pesquisas": len(PESQUISAS),
+        "institutos": [{"nome": k, "cor": v} for k, v in INSTITUTO_COR.items()],
+        "candidatos": list(serie_por_cand.values()),
+        "findings":   findings,
     }
 
 
@@ -152,19 +201,22 @@ def main():
     # Remove entries DEMO existentes (idempotência)
     pesquisas = [p for p in data["pesquisas"] if not p.get("is_demo")]
 
-    # Adiciona as 3 demo
-    for r in RODADAS:
-        pesquisas.append(montar_entry(r))
+    # Adiciona as 8 novas
+    for i, p in enumerate(PESQUISAS):
+        pesquisas.append(montar_entry(i, p))
 
     # Re-ordena por data_divulgacao desc
     pesquisas.sort(key=lambda p: p.get("data_divulgacao") or "", reverse=True)
 
     data["pesquisas"]   = pesquisas
     data["n_pesquisas"] = len(pesquisas)
+    data["consolidacao_demo"] = montar_consolidacao()
     data["atualizado_em"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
     JSON_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"OK: {len(pesquisas)} pesquisas no JSON ({sum(1 for p in pesquisas if p.get('is_demo'))} demo)")
+    n_demo = sum(1 for p in pesquisas if p.get("is_demo"))
+    print(f"OK: {len(pesquisas)} pesquisas no JSON ({n_demo} demo · {len(pesquisas)-n_demo} reais)")
+    print(f"    consolidacao_demo: {len(data['consolidacao_demo']['candidatos'])} candidatos · {data['consolidacao_demo']['n_pesquisas']} pesquisas")
 
 
 if __name__ == "__main__":
