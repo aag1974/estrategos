@@ -949,6 +949,14 @@ document.addEventListener('keydown', function(e){
       <div class="nav-item" id="ni-geo-candidato" onclick="irGeoCandidato()">
         <div class="nav-dot" style="background:#9FE1CB"></div><span class="nav-lbl">Candidato</span>
       </div>
+      <div class="nav-sep"></div>
+      <div class="nav-sec-lbl" style="color:#534AB7">Ferramentas</div>
+      <div class="nav-item" id="ni-quociente" onclick="irSec('quociente')">
+        <div class="nav-dot" style="background:#C4B5FD"></div><span class="nav-lbl">Cálculo Quociente</span>
+      </div>
+      <div class="nav-item" id="ni-pesquisas" onclick="irSec('pesquisas')">
+        <div class="nav-dot" style="background:#C4B5FD"></div><span class="nav-lbl">Clipping de Pesquisas</span>
+      </div>
       <!-- Menu Relatório oculto temporariamente — Projeções e Diagnóstico em stand-by.
       <div class="nav-sep"></div>
       <div class="nav-sec-lbl" style="color:#B45309">Relatório</div>
@@ -1159,6 +1167,648 @@ document.addEventListener('keydown', function(e){
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- FERRAMENTAS · CÁLCULO QUOCIENTE -->
+    <div class="sec" id="s-quociente">
+      <div class="sec-head">
+        <div class="sec-kicker" style="color:#534AB7">Ferramentas</div>
+        <div class="sec-titulo">Cálculo Quociente</div>
+        <div class="sec-lead">Calculadora interativa do <strong>quociente eleitoral</strong> para os cargos proporcionais (Deputado Distrital e Federal). Insira o cenário de comparecimento e votos válidos para descobrir o piso de votos por cadeira e o impacto no resultado de cada coligação.</div>
+      </div>
+
+      <style>
+        #s-quociente { --qe-red:#A32D2D; --qe-red-bg:#FCEBEB; --qe-red-txt:#791F1F;
+                       --qe-green:#0F6E56; --qe-green-bg:#E1F5EE; --qe-green-txt:#085041;
+                       --qe-blue:#185FA5; --qe-blue-bg:#E6F1FB; --qe-blue-txt:#0C447C;
+                       --qe-s3:#E8E4DC; }
+        #s-quociente .qe-layout { display:grid; grid-template-columns:360px 1fr; min-height:calc(100vh - 220px); border-top:0.5px solid var(--bd); }
+        #s-quociente .qe-panel { background:var(--s1); border-right:0.5px solid var(--bd); padding:20px; overflow-y:auto; }
+        #s-quociente .qe-results { padding:20px; overflow-y:auto; }
+        #s-quociente .qe-section { margin-bottom:20px; }
+        #s-quociente .qe-section-title { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; font-weight:500; }
+        #s-quociente .qe-field { margin-bottom:10px; }
+        #s-quociente .qe-field label { display:block; font-size:11px; color:var(--muted); margin-bottom:4px; }
+        #s-quociente .qe-field input, #s-quociente .qe-field select { width:100%; padding:7px 10px; border:0.5px solid var(--bd2); border-radius:6px; font-size:13px; background:var(--s1); color:var(--txt); outline:none; transition:border-color .15s; font-family:inherit; }
+        #s-quociente .qe-field input:focus, #s-quociente .qe-field select:focus { border-color:var(--qe-blue); }
+        #s-quociente .qe-box { background:var(--qe-red-bg); border:0.5px solid rgba(163,45,45,.2); border-radius:8px; padding:12px 14px; margin-bottom:16px; }
+        #s-quociente .qe-label { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--qe-red); margin-bottom:3px; }
+        #s-quociente .qe-value { font-size:26px; font-weight:500; color:var(--qe-red); }
+        #s-quociente .qe-sub { font-size:11px; color:var(--qe-red-txt); margin-top:2px; }
+        #s-quociente .qe-partido-card { border:0.5px solid var(--bd); border-radius:8px; margin-bottom:10px; overflow:hidden; }
+        #s-quociente .qe-partido-header { display:flex; align-items:center; gap:8px; padding:8px 12px; background:var(--s2); cursor:pointer; }
+        #s-quociente .qe-partido-cor { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+        #s-quociente .qe-partido-nome { font-weight:500; flex:1; font-size:12px; }
+        #s-quociente .qe-partido-cadeiras-tag { font-size:10px; padding:1px 7px; border-radius:10px; }
+        #s-quociente .qe-partido-body { padding:10px 12px; border-top:0.5px solid var(--bd); }
+        #s-quociente .qe-cand-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+        #s-quociente .qe-cand-row input { flex:1; padding:5px 8px; border:0.5px solid var(--bd2); border-radius:5px; font-size:12px; background:var(--s1); color:var(--txt); font-family:inherit; }
+        #s-quociente .qe-cand-row input:focus { outline:none; border-color:var(--qe-blue); }
+        #s-quociente .qe-btn-ghost { background:transparent; color:var(--muted); font-size:16px; padding:0 6px; border:none; cursor:pointer; font-family:inherit; }
+        #s-quociente .qe-btn-add { width:100%; padding:6px; border:0.5px dashed var(--bd2); border-radius:6px; background:transparent; color:var(--muted); cursor:pointer; font-size:12px; margin-top:6px; font-family:inherit; }
+        #s-quociente .qe-btn-add:hover { background:var(--s2); }
+        #s-quociente .qe-result-card { background:var(--s1); border:0.5px solid var(--bd); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+        #s-quociente .qe-result-header { padding:10px 14px; display:flex; align-items:center; gap:8px; border-bottom:0.5px solid var(--bd); }
+        #s-quociente .qe-result-nome { font-weight:500; flex:1; }
+        #s-quociente .qe-cand-result { display:flex; align-items:center; gap:8px; padding:7px 14px; border-bottom:0.5px solid var(--bd); font-size:12px; }
+        #s-quociente .qe-cand-result:last-child { border-bottom:none; }
+        #s-quociente .qe-cand-pos { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:500; flex-shrink:0; }
+        #s-quociente .qe-cand-name { flex:1; }
+        #s-quociente .qe-cand-votos-num { font-variant-numeric:tabular-nums; color:var(--qe-blue); font-weight:500; min-width:60px; text-align:right; }
+        #s-quociente .qe-badge-eleito { font-size:9px; padding:2px 7px; border-radius:10px; background:var(--qe-green-bg); color:var(--qe-green-txt); }
+        #s-quociente .qe-badge-fora { font-size:9px; padding:2px 7px; border-radius:10px; background:var(--qe-s3); color:var(--muted); }
+        #s-quociente .qe-alerta { background:#FAEEDA; border-radius:8px; padding:10px 14px; font-size:11px; color:#633806; line-height:1.6; margin-bottom:12px; }
+        #s-quociente .qe-alerta strong { color:#412402; }
+        #s-quociente .qe-resumo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+        #s-quociente .qe-resumo-card { background:var(--s2); border-radius:8px; padding:10px 12px; }
+        #s-quociente .qe-resumo-label { font-size:9px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin-bottom:3px; }
+        #s-quociente .qe-resumo-val { font-size:20px; font-weight:500; }
+        #s-quociente .qe-resumo-sub { font-size:10px; color:var(--muted); margin-top:1px; }
+        #s-quociente .qe-bar-wrap { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+        #s-quociente .qe-bar-nome { font-size:11px; width:80px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        #s-quociente .qe-bar-track { flex:1; height:18px; background:var(--qe-s3); border-radius:3px; position:relative; overflow:hidden; }
+        #s-quociente .qe-bar-fill { height:100%; border-radius:3px; }
+        #s-quociente .qe-bar-num { font-size:11px; font-weight:500; width:64px; text-align:right; flex-shrink:0; font-variant-numeric:tabular-nums; }
+        #s-quociente .qe-bar-cadeiras { font-size:11px; width:48px; text-align:center; flex-shrink:0; }
+        #s-quociente .qe-line { position:absolute; top:0; bottom:0; width:1.5px; background:var(--qe-red); z-index:2; }
+        #s-quociente .qe-empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:12px; }
+        #s-quociente .qe-maiores-medias-tag { font-size:9px; padding:1px 6px; border-radius:10px; background:var(--qe-blue-bg); color:var(--qe-blue-txt); margin-left:4px; }
+      </style>
+
+      <div class="qe-layout">
+        <div class="qe-panel">
+          <div class="qe-section">
+            <div class="qe-section-title">Cargo</div>
+            <div class="qe-field">
+              <label>Cargo em disputa</label>
+              <select id="qe-sel-cargo" onchange="qeOnCargoChange()">
+                <option value="df">Deputado Federal (8 vagas)</option>
+                <option value="dd">Deputado Distrital (24 vagas)</option>
+                <option value="custom">Personalizado</option>
+              </select>
+            </div>
+            <div class="qe-field" id="qe-field-vagas" style="display:none">
+              <label>Número de vagas</label>
+              <input type="number" id="qe-inp-vagas" value="8" min="1" oninput="qeCalc()">
+            </div>
+            <div class="qe-field">
+              <label>Total de votos válidos projetados</label>
+              <input type="number" id="qe-inp-total" value="1470000" oninput="qeCalc()" placeholder="Ex: 1470000">
+            </div>
+          </div>
+
+          <div id="qe-display" class="qe-box">
+            <div class="qe-label">Quociente Eleitoral</div>
+            <div class="qe-value" id="qe-val">—</div>
+            <div class="qe-sub" id="qe-sub-text">votos necessários para garantir uma cadeira</div>
+          </div>
+
+          <div class="qe-section">
+            <div class="qe-section-title">Partidos e candidatos</div>
+            <div id="qe-partidos-container"></div>
+            <button class="qe-btn-add" onclick="qeAddPartido()">+ Adicionar partido</button>
+          </div>
+        </div>
+
+        <div class="qe-results">
+          <div id="qe-resultado-vazio" class="qe-empty">Adicione partidos e candidatos para ver a simulação</div>
+          <div id="qe-resultado-conteudo" style="display:none">
+            <div class="qe-resumo-grid">
+              <div class="qe-resumo-card">
+                <div class="qe-resumo-label">Vagas totais</div>
+                <div class="qe-resumo-val" id="qe-res-vagas">—</div>
+                <div class="qe-resumo-sub">em disputa</div>
+              </div>
+              <div class="qe-resumo-card">
+                <div class="qe-resumo-label">Quociente</div>
+                <div class="qe-resumo-val" style="color:var(--qe-red)" id="qe-res-qe">—</div>
+                <div class="qe-resumo-sub">votos por cadeira</div>
+              </div>
+              <div class="qe-resumo-card">
+                <div class="qe-resumo-label">Partidos que elegem</div>
+                <div class="qe-resumo-val" style="color:var(--qe-green)" id="qe-res-elegem">—</div>
+                <div class="qe-resumo-sub" id="qe-res-elegem-sub">de — simulados</div>
+              </div>
+            </div>
+
+            <div id="qe-alerta-medias" class="qe-alerta" style="display:none">
+              <strong>Maiores médias:</strong> após a distribuição pelo quociente, sobram vagas não preenchidas. Elas são distribuídas pelo método das maiores médias: a vaga vai ao partido com maior razão <em>votos ÷ (cadeiras já obtidas + 1)</em>. Cadeiras marcadas com <span class="qe-maiores-medias-tag">média</span> foram obtidas assim.
+            </div>
+
+            <div class="qe-result-card" style="margin-bottom:12px">
+              <div class="qe-result-header">
+                <span class="qe-result-nome">Distribuição de cadeiras por partido</span>
+              </div>
+              <div style="padding:12px 14px" id="qe-barras-partidos"></div>
+            </div>
+
+            <div id="qe-cards-partidos"></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        const QE_CORES = ['#185FA5','#A32D2D','#0F6E56','#854F0B','#534AB7','#993556','#1D9E75','#D85A30'];
+        let qePartidos = [];
+        let qePid = 0;
+
+        function qeFmt(n){ return n.toLocaleString('pt-BR'); }
+        function qeGetVagas(){ return parseInt(document.getElementById('qe-inp-vagas').value) || 8; }
+        function qeGetTotal(){ return parseInt(document.getElementById('qe-inp-total').value) || 0; }
+
+        window.qeOnCargoChange = function(){
+          const v = document.getElementById('qe-sel-cargo').value;
+          const fv = document.getElementById('qe-field-vagas');
+          if(v === 'custom'){ fv.style.display = 'block'; }
+          else {
+            fv.style.display = 'none';
+            document.getElementById('qe-inp-vagas').value = v === 'df' ? 8 : 24;
+          }
+          qeCalc();
+        };
+
+        window.qeAddPartido = function(){
+          const id = qePid++;
+          const cor = QE_CORES[qePartidos.length % QE_CORES.length];
+          qePartidos.push({ id, nome:'', votos:0, cor, candidatos:[], aberto:true });
+          qeRenderPainel(); qeCalc();
+        };
+        window.qeRemovePartido = function(id){
+          qePartidos = qePartidos.filter(p => p.id !== id);
+          qeRenderPainel(); qeCalc();
+        };
+        window.qeAddCandidato = function(pid){
+          const p = qePartidos.find(p => p.id === pid);
+          if(p){ p.candidatos.push({ nome:'', votos:0 }); qeRenderPainel(); qeCalc(); }
+        };
+        window.qeRemoveCandidato = function(pid, idx){
+          const p = qePartidos.find(p => p.id === pid);
+          if(p){ p.candidatos.splice(idx, 1); qeRenderPainel(); qeCalc(); }
+        };
+        window.qeTogglePartido = function(id){
+          const p = qePartidos.find(p => p.id === id);
+          if(p){ p.aberto = !p.aberto; qeRenderPainel(); }
+        };
+        window.qeUpdatePartido = function(id, field, val){
+          const p = qePartidos.find(p => p.id === id);
+          if(p){
+            p[field] = field === 'votos' ? (parseInt(val) || 0) : val;
+            qeCalc();
+            if(field === 'votos') qeAtualizarTagsCadeiras();
+          }
+        };
+        window.qeUpdateCandidato = function(pid, idx, field, val){
+          const p = qePartidos.find(p => p.id === pid);
+          if(p && p.candidatos[idx] !== undefined){
+            p.candidatos[idx][field] = field === 'votos' ? (parseInt(val) || 0) : val;
+            qeCalc();
+          }
+        };
+
+        function qeCalc(){
+          const total = qeGetTotal();
+          const vagas = qeGetVagas();
+          const qe = total > 0 && vagas > 0 ? Math.floor(total / vagas) : 0;
+
+          document.getElementById('qe-val').textContent = qe > 0 ? qeFmt(qe) : '—';
+          document.getElementById('qe-res-vagas').textContent = vagas;
+          document.getElementById('qe-res-qe').textContent = qe > 0 ? qeFmt(qe) : '—';
+
+          if(qePartidos.length === 0 || qe === 0){
+            document.getElementById('qe-resultado-vazio').style.display = 'block';
+            document.getElementById('qe-resultado-conteudo').style.display = 'none';
+            return;
+          }
+          document.getElementById('qe-resultado-vazio').style.display = 'none';
+          document.getElementById('qe-resultado-conteudo').style.display = 'block';
+
+          qePartidos.forEach(p => {
+            p.cadeirasQP = qe > 0 ? Math.floor(p.votos / qe) : 0;
+            p.cadeiras = p.cadeirasQP;
+            p.porMedia = 0;
+          });
+
+          let totalDistribuidas = qePartidos.reduce((s, p) => s + p.cadeiras, 0);
+          let sobras = vagas - totalDistribuidas;
+          const usouMedia = sobras > 0;
+          while(sobras > 0){
+            const elegiveis = qePartidos.filter(p => p.votos > 0);
+            if(elegiveis.length === 0) break;
+            let melhor = null, melhorMedia = -1;
+            elegiveis.forEach(p => {
+              const media = p.votos / (p.cadeiras + 1);
+              if(media > melhorMedia){ melhorMedia = media; melhor = p; }
+            });
+            if(!melhor) break;
+            melhor.cadeiras++;
+            melhor.porMedia++;
+            sobras--;
+          }
+
+          const elegem = qePartidos.filter(p => p.cadeiras > 0).length;
+          document.getElementById('qe-res-elegem').textContent = elegem;
+          document.getElementById('qe-res-elegem-sub').textContent = `de ${qePartidos.length} simulado${qePartidos.length !== 1 ? 's' : ''}`;
+          document.getElementById('qe-alerta-medias').style.display = usouMedia ? 'block' : 'none';
+
+          const maxVotos = Math.max(...qePartidos.map(p => p.votos), qe * 1.1);
+          const qePct = qe / maxVotos * 100;
+          let barHTML = '';
+          const sorted = [...qePartidos].sort((a, b) => b.votos - a.votos);
+          sorted.forEach(p => {
+            const pct = maxVotos > 0 ? p.votos / maxVotos * 100 : 0;
+            const elegeu = p.cadeiras > 0;
+            barHTML += `<div class="qe-bar-wrap">
+              <div class="qe-bar-nome" title="${p.nome || 'Partido'}">${p.nome || '?'}</div>
+              <div class="qe-bar-track">
+                <div class="qe-bar-fill" style="width:${pct}%;background:${p.cor};opacity:${elegeu?'0.85':'0.35'}"></div>
+                <div class="qe-line" style="left:${qePct}%"></div>
+              </div>
+              <div class="qe-bar-num" style="color:${elegeu?p.cor:'var(--muted)'}">${qeFmt(p.votos)}</div>
+              <div class="qe-bar-cadeiras">${elegeu ? `<span style="font-weight:500;color:${p.cor}">${p.cadeiras} 💺</span>` : '<span style="color:var(--muted)">—</span>'}</div>
+            </div>`;
+          });
+          document.getElementById('qe-barras-partidos').innerHTML = barHTML +
+            `<div style="font-size:10px;color:var(--qe-red);margin-top:6px">— linha vermelha = quociente (${qeFmt(qe)} votos)</div>`;
+
+          let cardsHTML = '';
+          sorted.forEach(p => {
+            const elegeu = p.cadeiras > 0;
+            const candsOrdenados = [...p.candidatos]
+              .map((c, i) => ({ ...c, orig: i }))
+              .sort((a, b) => b.votos - a.votos);
+            const sumCands = candsOrdenados.reduce((s, c) => s + c.votos, 0);
+            const diff = p.votos - sumCands;
+            const headerBg = elegeu ? `background:linear-gradient(90deg,${p.cor}12 0%,transparent 100%)` : '';
+            cardsHTML += `<div class="qe-result-card">
+              <div class="qe-result-header" style="${headerBg}">
+                <div style="width:10px;height:10px;border-radius:50%;background:${p.cor};flex-shrink:0"></div>
+                <div class="qe-result-nome">${p.nome || 'Partido sem nome'}</div>
+                <div style="font-size:11px;color:var(--muted)">${qeFmt(p.votos)} votos</div>
+                ${elegeu
+                  ? `<span style="font-size:10px;padding:2px 9px;border-radius:10px;background:${p.cor}18;color:${p.cor};font-weight:500">${p.cadeirasQP} qe${p.porMedia > 0 ? ` + ${p.porMedia} média` : ''}</span>`
+                  : `<span style="font-size:10px;padding:2px 9px;border-radius:10px;background:var(--qe-red-bg);color:var(--qe-red-txt)">não elegeu</span>`
+                }
+              </div>`;
+
+            if(!elegeu && p.votos > 0){
+              const faltam = qe - p.votos;
+              cardsHTML += `<div style="padding:10px 14px;font-size:11px;color:var(--qe-red-txt);background:var(--qe-red-bg)">
+                Faltaram <strong>${qeFmt(faltam)}</strong> votos para atingir o quociente eleitoral.
+              </div>`;
+            }
+            if(elegeu && diff > 1){
+              cardsHTML += `<div style="padding:6px 14px;font-size:10px;color:var(--muted);background:var(--s2)">
+                Votos de candidatos cadastrados: ${qeFmt(sumCands)} de ${qeFmt(p.votos)} (${qeFmt(diff)} não alocados em candidatos)
+              </div>`;
+            }
+
+            if(candsOrdenados.length === 0){
+              cardsHTML += `<div class="qe-cand-result" style="color:var(--muted);font-style:italic">
+                Adicione candidatos para ver quem se elege dentro do partido.
+              </div>`;
+            } else {
+              candsOrdenados.forEach((c, rank) => {
+                const eleito = rank < p.cadeiras;
+                const porMedia = eleito && (rank >= p.cadeirasQP);
+                const posBg = eleito ? `background:${p.cor};color:#fff` : 'background:var(--qe-s3);color:var(--muted)';
+                cardsHTML += `<div class="qe-cand-result">
+                  <div class="qe-cand-pos" style="${posBg}">${rank + 1}</div>
+                  <div class="qe-cand-name">${c.nome || 'Candidato sem nome'}</div>
+                  <div class="qe-cand-votos-num">${qeFmt(c.votos)}</div>
+                  ${eleito
+                    ? `<span class="qe-badge-eleito">eleito${porMedia ? ' (média)' : ''}</span>`
+                    : `<span class="qe-badge-fora">fora</span>`
+                  }
+                </div>`;
+              });
+            }
+            cardsHTML += `</div>`;
+          });
+          document.getElementById('qe-cards-partidos').innerHTML = cardsHTML;
+          qeAtualizarTagsCadeiras();
+        }
+
+        function qeAtualizarTagsCadeiras(){
+          qePartidos.forEach(p => {
+            const el = document.getElementById(`qe-tag-${p.id}`);
+            if(!el) return;
+            if(p.cadeiras > 0){
+              el.textContent = `${p.cadeiras} cadeira${p.cadeiras > 1 ? 's' : ''}`;
+              el.style.cssText = `font-size:10px;padding:1px 7px;border-radius:10px;background:${p.cor}20;color:${p.cor};font-weight:500`;
+            } else {
+              el.textContent = '';
+            }
+          });
+        }
+
+        function qeRenderPainel(){
+          const container = document.getElementById('qe-partidos-container');
+          if(!container) return;
+          container.innerHTML = qePartidos.map(p => `
+            <div class="qe-partido-card" id="qe-pcard-${p.id}">
+              <div class="qe-partido-header" onclick="qeTogglePartido(${p.id})">
+                <div class="qe-partido-cor" style="background:${p.cor}"></div>
+                <div class="qe-partido-nome">${p.nome || 'Novo partido'}</div>
+                <span id="qe-tag-${p.id}" class="qe-partido-cadeiras-tag"></span>
+                <button class="qe-btn-ghost" onclick="event.stopPropagation();qeRemovePartido(${p.id})">×</button>
+              </div>
+              ${p.aberto ? `
+              <div class="qe-partido-body">
+                <div class="qe-field">
+                  <label>Nome do partido</label>
+                  <input value="${p.nome}" placeholder="Ex: PL, PT, MDB..." oninput="qeUpdatePartido(${p.id},'nome',this.value)">
+                </div>
+                <div class="qe-field">
+                  <label>Total de votos do partido (todos os candidatos)</label>
+                  <input type="number" value="${p.votos || ''}" placeholder="Ex: 394200" oninput="qeUpdatePartido(${p.id},'votos',this.value)">
+                </div>
+                <div style="margin-top:6px">
+                  <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Candidatos (opcional)</div>
+                  ${p.candidatos.map((c, i) => `
+                    <div class="qe-cand-row">
+                      <input value="${c.nome}" placeholder="Nome do candidato" oninput="qeUpdateCandidato(${p.id},${i},'nome',this.value)">
+                      <input type="number" value="${c.votos || ''}" placeholder="Votos" style="width:90px" oninput="qeUpdateCandidato(${p.id},${i},'votos',this.value)">
+                      <button class="qe-btn-ghost" style="font-size:14px" onclick="qeRemoveCandidato(${p.id},${i})">×</button>
+                    </div>
+                  `).join('')}
+                  <button class="qe-btn-add" style="margin-top:4px" onclick="qeAddCandidato(${p.id})">+ Candidato</button>
+                </div>
+              </div>` : ''}
+            </div>
+          `).join('');
+          qeAtualizarTagsCadeiras();
+        }
+
+        // Inicializar com cenário-exemplo (DF Federal 2022, números aproximados)
+        const exemplo = [
+          { nome:'PL', votos:394200, cands:[{nome:'Bia Kicis',votos:214189},{nome:'Julio Ribeiro',votos:61047},{nome:'Carlos Magno',votos:45800}] },
+          { nome:'PT', votos:250800, cands:[{nome:'Erika Kokay',votos:89340},{nome:'Paulo Teixeira',votos:72100}] },
+          { nome:'MDB', votos:210400, cands:[{nome:'Rafael Prudente',votos:74200},{nome:'Reginaldo Veras',votos:58100}] },
+          { nome:'Republicanos', votos:182100, cands:[{nome:'Gilvan da Federal',votos:98400}] },
+        ];
+        exemplo.forEach((e, i) => {
+          const id = qePid++;
+          qePartidos.push({
+            id, nome:e.nome, votos:e.votos, cor:QE_CORES[i],
+            candidatos:e.cands.map(c => ({ nome:c.nome, votos:c.votos })),
+            aberto:false, cadeiras:0, cadeirasQP:0, porMedia:0
+          });
+        });
+        qeRenderPainel();
+        qeCalc();
+      })();
+      </script>
+    </div>
+
+    <!-- FERRAMENTAS · CLIPPING DE PESQUISAS -->
+    <div class="sec" id="s-pesquisas">
+      <div class="sec-head">
+        <div class="sec-kicker" style="color:#534AB7">Ferramentas</div>
+        <div class="sec-titulo">Clipping de Pesquisas <span id="pq-meta-sub" style="font-size:13px;color:var(--muted);font-weight:400"></span></div>
+        <div class="sec-lead">Catálogo das <strong>pesquisas eleitorais registradas no TSE</strong> para o Distrito Federal. Cada item lista cargos pesquisados, instituto, contratante, plano amostral e — quando a extração IA já rodou — os cenários e candidatos testados em cada questionário.</div>
+      </div>
+
+      <style>
+        #s-pesquisas .pq-toolbar { display:flex; gap:12px; align-items:center; padding:10px 22px; border-bottom:0.5px solid var(--bd); background:var(--s1); flex-wrap:wrap; }
+        #s-pesquisas .pq-toolbar label { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
+        #s-pesquisas .pq-toolbar select, #s-pesquisas .pq-toolbar input {
+          padding:5px 10px; border:0.5px solid var(--bd2); border-radius:6px;
+          font-size:12px; background:var(--s1); color:var(--txt); outline:none;
+          font-family:inherit;
+        }
+        #s-pesquisas .pq-toolbar input { min-width:180px; }
+        #s-pesquisas .pq-stats { margin-left:auto; font-size:11px; color:var(--muted); }
+        #s-pesquisas .pq-list { padding:14px 22px; }
+        #s-pesquisas .pq-card {
+          background:var(--s1); border:0.5px solid var(--bd); border-radius:10px;
+          padding:14px 16px; margin-bottom:10px; transition:box-shadow .15s;
+        }
+        #s-pesquisas .pq-card:hover { box-shadow:0 1px 6px rgba(0,0,0,.04); }
+        #s-pesquisas .pq-card-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+        #s-pesquisas .pq-instituto { font-size:14px; font-weight:600; color:var(--txt); }
+        #s-pesquisas .pq-data-div { font-size:11px; color:var(--muted); margin-left:auto; font-variant-numeric:tabular-nums; }
+        #s-pesquisas .pq-protocolo { font-size:10px; color:var(--muted); font-family:var(--mono,monospace); }
+        #s-pesquisas .pq-status {
+          font-size:9px; padding:2px 8px; border-radius:10px;
+          letter-spacing:.5px; text-transform:uppercase;
+        }
+        #s-pesquisas .pq-status.extraido { background:#E1F5EE; color:#085041; }
+        #s-pesquisas .pq-status.pendente { background:#FAEEDA; color:#633806; }
+        #s-pesquisas .pq-status.falhou   { background:#FCEBEB; color:#791F1F; }
+        #s-pesquisas .pq-status.sem_pdf  { background:var(--s2); color:var(--muted); }
+        #s-pesquisas .pq-meta-row {
+          display:flex; gap:18px; flex-wrap:wrap;
+          margin-top:6px; font-size:12px; color:var(--muted);
+        }
+        #s-pesquisas .pq-meta-row strong { color:var(--txt); font-weight:500; }
+        #s-pesquisas .pq-cargos { display:flex; gap:5px; flex-wrap:wrap; margin-top:8px; }
+        #s-pesquisas .pq-cargo-badge {
+          font-size:10px; padding:2px 8px; border-radius:10px;
+          background:#EEEDFE; color:#3C3489; font-weight:500;
+        }
+        #s-pesquisas .pq-cenarios {
+          margin-top:10px; padding-top:10px;
+          border-top:0.5px dashed var(--bd);
+        }
+        #s-pesquisas .pq-cenarios-toggle {
+          background:none; border:none; padding:0; cursor:pointer;
+          font-size:11px; color:#534AB7; font-family:inherit;
+          text-decoration:underline;
+        }
+        #s-pesquisas .pq-cenarios-body { display:none; margin-top:8px; }
+        #s-pesquisas .pq-cenarios-body.on { display:block; }
+        #s-pesquisas .pq-cen-card {
+          background:var(--s2); border-radius:6px; padding:8px 10px;
+          margin-bottom:6px; font-size:11px;
+        }
+        #s-pesquisas .pq-cen-head {
+          display:flex; gap:8px; align-items:baseline;
+          margin-bottom:4px;
+        }
+        #s-pesquisas .pq-cen-cargo { font-weight:600; color:var(--txt); }
+        #s-pesquisas .pq-cen-tipo {
+          font-size:9px; padding:1px 6px; border-radius:8px;
+          background:var(--s1); color:var(--muted); text-transform:uppercase;
+          letter-spacing:.5px;
+        }
+        #s-pesquisas .pq-cen-questao { font-size:10px; color:var(--muted); margin-left:auto; font-family:var(--mono,monospace); }
+        #s-pesquisas .pq-cen-cands { display:flex; flex-wrap:wrap; gap:5px; }
+        #s-pesquisas .pq-cen-cand {
+          font-size:10.5px; padding:1px 7px; border-radius:8px;
+          background:var(--s1); color:var(--txt);
+        }
+        #s-pesquisas .pq-cen-cand.ego { background:#FAC775; color:#5C2A00; font-weight:500; }
+        #s-pesquisas .pq-cen-cand .pq-part { color:var(--muted); margin-left:3px; font-size:9px; }
+        #s-pesquisas .pq-actions { margin-top:10px; }
+        #s-pesquisas .pq-link {
+          font-size:11px; color:#185FA5; text-decoration:none;
+          padding:3px 8px; border-radius:5px; border:0.5px solid var(--bd2);
+          background:var(--s1);
+        }
+        #s-pesquisas .pq-link:hover { background:var(--s2); }
+        #s-pesquisas .pq-empty { padding:40px 22px; color:var(--muted); font-size:12px; text-align:center; }
+        #s-pesquisas .pq-aviso {
+          margin:14px 22px; padding:10px 14px;
+          background:#FAEEDA; border-radius:6px;
+          font-size:11px; color:#633806; line-height:1.5;
+        }
+        #s-pesquisas .pq-aviso strong { color:#412402; }
+      </style>
+
+      <div class="pq-toolbar">
+        <label for="pq-f-cargo">Cargo</label>
+        <select id="pq-f-cargo" onchange="pqFiltrar()">
+          <option value="">Todos</option>
+          <option value="Governador">Governador</option>
+          <option value="Senador">Senador</option>
+          <option value="Deputado Federal">Dep. Federal</option>
+          <option value="Deputado Distrital">Dep. Distrital</option>
+        </select>
+        <label for="pq-f-instituto">Instituto</label>
+        <input id="pq-f-instituto" placeholder="filtrar..." oninput="pqFiltrar()">
+        <label for="pq-f-status">Extração</label>
+        <select id="pq-f-status" onchange="pqFiltrar()">
+          <option value="">Todas</option>
+          <option value="extraido">Já extraídas</option>
+          <option value="pendente">Pendentes</option>
+          <option value="falhou">Falharam</option>
+        </select>
+        <span class="pq-stats" id="pq-stats"></span>
+      </div>
+
+      <div id="pq-aviso-extracao" class="pq-aviso" style="display:none">
+        <strong>Extração IA pendente.</strong> O catálogo está atualizado, mas os cenários estruturados (cargos, candidatos testados, tipo) ainda não foram extraídos por IA. Para ativar, defina <code>ANTHROPIC_API_KEY</code> e rode <code>python3 extrair_pesquisas.py</code>.
+      </div>
+
+      <div class="pq-list" id="pq-list"></div>
+
+      <script>
+      var PQ = (typeof PESQUISAS !== 'undefined') ? PESQUISAS : { pesquisas: [], n_pesquisas: 0, atualizado_em: null };
+
+      function pqFmtData(s){
+        if(!s) return '—';
+        var p = s.split('-');
+        return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : s;
+      }
+
+      function pqStatusLabel(st){
+        return { extraido:'Extraída', pendente:'Pendente', falhou:'Falhou', sem_pdf:'Sem PDF' }[st] || st;
+      }
+
+      function pqEgoNome(){
+        if (typeof CAND_ATIVO === 'undefined' || !CAND_ATIVO) return null;
+        return (CAND_ATIVO.nome || '').toLowerCase();
+      }
+
+      function pqCardHtml(p){
+        var st = (p.extracao && p.extracao.status) || 'pendente';
+        var cargosBadges = (p.cargo || []).map(function(c){
+          return '<span class="pq-cargo-badge">'+c+'</span>';
+        }).join('');
+
+        var meta = '';
+        if (p.data_campo_inicio || p.data_campo_fim) {
+          meta += '<span><strong>Campo:</strong> '+pqFmtData(p.data_campo_inicio)+
+                  (p.data_campo_fim && p.data_campo_fim!==p.data_campo_inicio ? ' a '+pqFmtData(p.data_campo_fim) : '')+'</span>';
+        }
+        if (p.n_entrevistados) {
+          meta += '<span><strong>'+p.n_entrevistados.toLocaleString('pt-BR')+'</strong> entrevistas</span>';
+        }
+        if (p.pesquisa_propria) {
+          meta += '<span style="color:#0F6E56">Pesquisa própria</span>';
+        }
+        if (p.estatistico) {
+          meta += '<span><strong>Estatístico:</strong> '+p.estatistico+(p.conre?' (CONRE '+p.conre+')':'')+'</span>';
+        }
+
+        var cenariosHtml = '';
+        if (st === 'extraido' && p.extracao.cenarios && p.extracao.cenarios.length) {
+          var ego = pqEgoNome();
+          var cenList = p.extracao.cenarios.map(function(c){
+            var cands = (c.candidatos || []).map(function(cd){
+              var nm = cd.nome || '';
+              var isEgo = ego && nm.toLowerCase().includes(ego);
+              return '<span class="pq-cen-cand'+(isEgo?' ego':'')+'">'+nm+
+                     (cd.partido ? '<span class="pq-part">'+cd.partido+'</span>' : '')+'</span>';
+            }).join('');
+            return '<div class="pq-cen-card">' +
+              '<div class="pq-cen-head">' +
+                '<span class="pq-cen-cargo">'+(c.cargo||'?')+'</span>' +
+                '<span class="pq-cen-tipo">'+(c.tipo||'?')+'</span>' +
+                (c.questao ? '<span class="pq-cen-questao">'+c.questao+'</span>' : '') +
+              '</div>' +
+              '<div class="pq-cen-cands">'+(cands||'<em style="color:var(--muted)">sem candidatos listados</em>')+'</div>' +
+            '</div>';
+          }).join('');
+          cenariosHtml =
+            '<div class="pq-cenarios">' +
+              '<button class="pq-cenarios-toggle" onclick="this.parentNode.querySelector(\'.pq-cenarios-body\').classList.toggle(\'on\')">' +
+                'Ver '+p.extracao.cenarios.length+' cenário(s) extraídos →' +
+              '</button>' +
+              '<div class="pq-cenarios-body">'+cenList+'</div>' +
+            '</div>';
+        } else if (st === 'falhou' && p.extracao.erro) {
+          cenariosHtml = '<div class="pq-cenarios" style="font-size:11px;color:#791F1F">Falha: '+p.extracao.erro+'</div>';
+        }
+
+        return '<div class="pq-card">' +
+          '<div class="pq-card-head">' +
+            '<span class="pq-instituto">'+(p.instituto || '—')+'</span>' +
+            '<span class="pq-status '+st+'">'+pqStatusLabel(st)+'</span>' +
+            '<span class="pq-protocolo">'+p.protocolo+'</span>' +
+            '<span class="pq-data-div">Divulgada '+pqFmtData(p.data_divulgacao)+'</span>' +
+          '</div>' +
+          '<div class="pq-cargos">'+cargosBadges+'</div>' +
+          '<div class="pq-meta-row">'+meta+'</div>' +
+          cenariosHtml +
+          '<div class="pq-actions">' +
+            '<a class="pq-link" href="'+(p.url_tse_pesqele||'#')+'" target="_blank" rel="noopener">Abrir no PesqEle TSE ↗</a>' +
+          '</div>' +
+        '</div>';
+      }
+
+      function pqFiltrar(){
+        var fcargo = document.getElementById('pq-f-cargo').value;
+        var finst  = (document.getElementById('pq-f-instituto').value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+        var fst    = document.getElementById('pq-f-status').value;
+        var lista = (PQ.pesquisas || []).filter(function(p){
+          if (fcargo && !(p.cargo || []).includes(fcargo)) return false;
+          if (finst) {
+            var nm = (p.instituto||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+            if (!nm.includes(finst)) return false;
+          }
+          if (fst && (p.extracao && p.extracao.status) !== fst) return false;
+          return true;
+        });
+
+        var el = document.getElementById('pq-list');
+        if (!lista.length) {
+          el.innerHTML = '<div class="pq-empty">Nenhuma pesquisa para esses filtros.</div>';
+        } else {
+          el.innerHTML = lista.map(pqCardHtml).join('');
+        }
+        document.getElementById('pq-stats').textContent = lista.length + ' de ' + (PQ.pesquisas||[]).length + ' pesquisas';
+      }
+
+      function pqInit(){
+        var sub = document.getElementById('pq-meta-sub');
+        if (PQ.atualizado_em) {
+          var dt = new Date(PQ.atualizado_em);
+          sub.textContent = '· TSE Dados Abertos · atualizado em ' + dt.toLocaleDateString('pt-BR');
+        }
+        var pendentes = (PQ.pesquisas||[]).filter(function(p){
+          return (p.extracao||{}).status === 'pendente';
+        }).length;
+        if (pendentes > 0) {
+          document.getElementById('pq-aviso-extracao').style.display = 'block';
+          var av = document.getElementById('pq-aviso-extracao');
+          av.querySelector('strong').textContent = pendentes + ' pesquisa(s) com extração IA pendente.';
+        }
+        pqFiltrar();
+      }
+      pqInit();
+      </script>
     </div>
 
     <!-- PROJEÇÕES -->
@@ -2023,7 +2673,7 @@ var cargoCandAtivo="all", candSelecionado=null;
 var estCargoAtivo="DEPUTADO_FEDERAL";
 
 // ── NAVEGAÇÃO ─────────────────────────────────────────────────────────────────
-var SECS=["populacao","eleitor","campo","candidato","estrategia","projecoes","diagnostico"];
+var SECS=["populacao","eleitor","campo","candidato","estrategia","quociente","pesquisas","projecoes","diagnostico"];
 
 function irSec(id) {
   SECS.forEach(function(s) {
@@ -5291,6 +5941,7 @@ function geoSetCargo(c,btn){
 // GEOPOLITICA > CANDIDATO ================================================
 
 const GC_DATA = JSON.parse(atob("__CAND_B64__"));
+var PESQUISAS = JSON.parse(atob("__PESQUISAS_B64__"));
 
 // Marcar eleitos com base na LISTA OFICIAL TSE/CLDF 2022
 // Fonte: Câmara dos Deputados + CLDF. Sistema proporcional brasileiro

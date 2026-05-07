@@ -1,0 +1,363 @@
+{
+  "atualizado_em": "2026-05-07T17:41:10+00:00",
+  "fonte": "TSE Dados Abertos · https://cdn.tse.jus.br/estatistica/sead/odsele/pesquisa_eleitoral/pesquisa_eleitoral_2026.zip",
+  "uf": "DF",
+  "n_pesquisas": 11,
+  "pesquisas": [
+    {
+      "protocolo": "DF083032026",
+      "instituto": "VERITA",
+      "instituto_razao_social": "INSTITUTO VERITA LTDA",
+      "instituto_cnpj": "00.654.576/0001-72",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Governador",
+        "Senador"
+      ],
+      "data_registro": "2026-05-05",
+      "data_campo_inicio": "2026-05-06",
+      "data_campo_fim": "2026-05-10",
+      "data_divulgacao": "2026-05-11",
+      "n_entrevistados": 1220,
+      "metodologia": "Pesquisa quantitativa, que consiste na realização de entrevistas, com a aplicação de questionário estruturado junto a uma amostra representativa do eleitorado desta Unidade da Federação.",
+      "plano_amostral": "ESTUDO REPRESENTATIVO DO ELEITORADO DO ESTADO DO DISTRITO FEDERAL - MÉTODO PPT (Probabilidade Proporcional ao Tamanho) - PLANO AMOSTRAL E PONDERAÇÃO QUANTO A SEXO, IDADE, GRAU DE INSTRUÇÃO E NÍVEL ECONÔMICO DO ENTREVISTADO; INTERVALO DE CONFIANÇA E MARGEM DE ERRO: Representativo do eleitorado da área em estudo, elaborada, em vários estágios, da seguinte forma: - 1. Divisão da UF em estratos proporcionais de municípios. 2. Ordenação dos municípios de cada estrato segundo o porte. 3. Sorteio dos municípios de cada estrato. 4. Os respondentes são selecionados através de quotas amostrais proporcio…",
+      "estatistico": "Guilherme Alvarenga Laia",
+      "conre": "10699",
+      "valor": 85000.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF083032026_453021_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF035842026",
+      "instituto": "INSTITUTO PHOENIX & ASSOCIADOS",
+      "instituto_razao_social": "J J COELHO",
+      "instituto_cnpj": "04.942.645/0001-02",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Governador",
+        "Senador",
+        "Deputado Federal",
+        "Deputado Distrital"
+      ],
+      "data_registro": "2026-05-01",
+      "data_campo_inicio": "2026-05-03",
+      "data_campo_fim": "2026-05-06",
+      "data_divulgacao": "2026-05-07",
+      "n_entrevistados": 1203,
+      "metodologia": "Pesquisa quantitativa, que consiste na realização de entrevistas pessoais, com a aplicação de questionário estruturado junto a \r\numa amostra representativa do eleitorado do Distrito Federal.",
+      "plano_amostral": "A amostra será representativa do eleitorado da área pesquisada e será selecionada em três etapas. Na primeira etapa realiza-se um sorteio probabilístico dos municípios onde as entrevistas serão realizadas através do método PPT (Probabilidade Proporcional ao Tamanho), considerando a população eleitora com 16 anos ou mais residente nos municípios como base para essa seleção. Na segunda etapa, faz-se um sorteio probabilístico das localidades, onde as entrevistas serão realizadas, através do método PPT (Probabilidade Proporcional ao Tamanho), tomando a população eleitora de 16 anos ou mais residen…",
+      "estatistico": "Augusto Da Silva Rocha",
+      "conre": "7655",
+      "valor": 12900.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF035842026_452975_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF003202026",
+      "instituto": "VERITA",
+      "instituto_razao_social": "INSTITUTO VERITA LTDA",
+      "instituto_cnpj": "00.654.576/0001-72",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador"
+      ],
+      "data_registro": "2026-04-25",
+      "data_campo_inicio": "2026-04-26",
+      "data_campo_fim": "2026-04-30",
+      "data_divulgacao": "2026-05-01",
+      "n_entrevistados": 1220,
+      "metodologia": "Pesquisa quantitativa, que consiste na realização de entrevistas, com a aplicação de questionário estruturado junto a uma amostra representativa do eleitorado desta Unidade da Federação.",
+      "plano_amostral": "ESTUDO REPRESENTATIVO DO ELEITORADO DO ESTADO DO DISTRITO FEDERAL - MÉTODO PPT (Probabilidade Proporcional ao Tamanho) - PLANO AMOSTRAL E PONDERAÇÃO QUANTO A SEXO, IDADE, GRAU DE INSTRUÇÃO E NÍVEL ECONÔMICO DO ENTREVISTADO; INTERVALO DE CONFIANÇA E MARGEM DE ERRO: Representativo do eleitorado da área em estudo, elaborada, em vários estágios, da seguinte forma: - 1. Divisão da UF em estratos proporcionais de municípios. 2. Ordenação dos municípios de cada estrato segundo o porte. 3. Sorteio dos municípios de cada estrato. 4. Os respondentes são selecionados através de quotas amostrais proporcio…",
+      "estatistico": "Guilherme Alvarenga Laia",
+      "conre": "10699",
+      "valor": 93940.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF003202026_452880_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF028172026",
+      "instituto": "EXATA OP OPINIAO PUBLICA LTDA",
+      "instituto_razao_social": "EXATA OP OPINIAO PUBLICA LTDA",
+      "instituto_cnpj": "03.303.870/0001-28",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador",
+        "Deputado Federal",
+        "Deputado Distrital"
+      ],
+      "data_registro": "2026-04-20",
+      "data_campo_inicio": "2026-04-22",
+      "data_campo_fim": "2026-04-26",
+      "data_divulgacao": "2026-04-26",
+      "n_entrevistados": 3000,
+      "metodologia": "Metodologia Survey com amostra presencial face a face,  auto ponderada, com distribuição baseada no censo populacional DF 2022 do IBGE",
+      "plano_amostral": "Margem de erro...\r\nMARGEM DE ERRO 2%   INTERVALO DE CONFIANÇA DE 95%\r\n\r\nSEXO PORC%\r\nMASCULINO 47%\r\nFEMININO 53%\r\nPAIXA ETÁRIA\tPORC%\r\nDE 16 A 26 ANOS\t17%\r\nDE 27 A 37 ANOS\t19%\r\nDE 38 A 48 ANOS\t21%\r\nDE 49 A 59 ANOS\t22%\r\nMAIS DE 60 ANOS\t21%\r\nCLASSE SOCIAL\tPORC%\r\nA\t6%\r\nB\t16%\r\nC\t19%\r\nD\t34%\r\nE\t27%\r\nESCOLARIDADE\tPORC%\r\nALFABETIZADO\t1%\r\nANALFABETO\t5%\r\nENSINO FUNDAMENTAL\t17%\r\nENSINO MÉDIO\t41%\r\nSUPERIOR\t36%",
+      "estatistico": "Caio Felipe De Brito Andrade",
+      "conre": "10374",
+      "valor": 20300.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF028172026_452768_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF028412026",
+      "instituto": "NARREAL CONSULTORIA",
+      "instituto_razao_social": "NARREAL CONSULTORIA EM GESTAO EMPRESARIAL LTDA",
+      "instituto_cnpj": "36.984.054/0001-86",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador"
+      ],
+      "data_registro": "2026-04-10",
+      "data_campo_inicio": "2026-02-27",
+      "data_campo_fim": "2026-03-13",
+      "data_divulgacao": "2026-04-16",
+      "n_entrevistados": 400,
+      "metodologia": "Pesquisa quantitativa de opinião realizada por meio de questionário estruturado aplicado via internet, com coleta de dados por amostragem aleatória. Após a coleta, a amostra é pós-estratificada de acordo com as características sociodemográficas do eleitorado brasiliense, garantindo representatividade segundo sexo, faixa etária dos entrevistados.",
+      "plano_amostral": "Amostra aleatória pós-estratificada, representando as características do eleitorado do Distrito Federal. As cotas de ponderação são as seguintes:\r\nDevido ao arredondamento, a soma dos percentuais pode variar entre 99% e 101%. Na agregação final, para cada variável de ponderação, serão admissíveis desvios de até 1,0 ponto percentual em relação às cotas estipuladas.\r\nIntervalo de confiança: 90%. Margem de erro: ±3,0 ponto percentual.\r\nFonte dos dados: TSE ¿ Eleitorado 2026 (sexo e faixa etária).",
+      "estatistico": "Frederico Lara De Souza",
+      "conre": "8984",
+      "valor": 450.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF028412026_452657_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF080242026",
+      "instituto": "CEPPHOR",
+      "instituto_razao_social": "CENTRO DE ESTUDOS E PESQUISAS POLITICAS HISTORICAS E DE ORGANIZACOES (CEPPHOR)",
+      "instituto_cnpj": "07.465.676/0001-08",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador"
+      ],
+      "data_registro": "2026-04-02",
+      "data_campo_inicio": "2026-04-04",
+      "data_campo_fim": "2026-04-05",
+      "data_divulgacao": "2026-04-08",
+      "n_entrevistados": 400,
+      "metodologia": "Pesquisa do tipo quantitativa (survey), por amostragem por cotas (distribuição proporcional às variáveis de localidade, sexo, faixa etária, grau de instrução e nível econômico), com aplicação de questionário face-a-face estruturado por entrevistadores treinados. O conjunto do eleitorado do Distrito Federal-GO com 16 anos ou mais foi tomado como universo da pesquisa.",
+      "plano_amostral": "Quantitativo eleitoral: 2.204.379 eleitores (Fonte: Tribunal Superior Eleitoral, em fevereiro/2026). Margem de erro: A margem de erro considerada para essa pesquisa é de 4,9 pontos percentuais. O intervalo de confiança é de 95%. Coleta de dados: Entrevistas pessoais através de questionário estruturado, contendo perguntas filtro a fim de entrevistar somente o público-alvo desejado. Os entrevistadores serão contratados e treinados pela empresa. O processo de coleta de dados será monitorado pelos supervisores. Análise dos dados: A análise estatística dos dados será feita em duas etapas. Em primei…",
+      "estatistico": "Alexandre Vasconcelos Lima",
+      "conre": "8631",
+      "valor": 20000.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF080242026_452586_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF068352026",
+      "instituto": "IGAPE- INSTITUTO GAZETA DE PEQUISAS",
+      "instituto_razao_social": "PORTAL GOIAS MAIOR LTDA",
+      "instituto_cnpj": "04.851.508/0001-54",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Governador",
+        "Senador",
+        "Deputado Federal",
+        "Deputado Distrital"
+      ],
+      "data_registro": "2026-03-25",
+      "data_campo_inicio": "2026-03-20",
+      "data_campo_fim": "2026-03-27",
+      "data_divulgacao": "2026-03-31",
+      "n_entrevistados": 3000,
+      "metodologia": "A metodologia utilizada é Survey quantitativo, com realização das entrevistas de maneira pessoal em domicílio, com aplicação de questionário estruturado e padronizado em plataforma digital (tablet ou computador) junto a uma amostra representativa dos eleitores Do Distrito Federal.",
+      "plano_amostral": "O universo da pesquisa é composto por eleitores do Distrito Federal, com idade a partir de 16 anos. A amostra prevista será de 3.000 entrevistas. A Seleção da amostra será realizada utilizando-se quotas amostrais proporcionais, em função das seguintes variáveis. SEXO: Masculino: (46%); Feminino: (54%) - IDADE: 16 a 29 anos (21%); 30 a 44 anos: (31%); 45 a 59 anos: (28%); 60 anos ou mais: (20%) - ESCOLARIDADE: Analfabeto/Lê e escreve: (4%); Fundamental completo ou incompleto: (17%); Médio completo ou incompleto: (45%); Superior completo ou incompleto: (34%); RENDA INDIVIDUAL: Até 1 SM: (25%); D…",
+      "estatistico": "Filipe Moreira Martine",
+      "conre": "10394",
+      "valor": 8000.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF068352026_452485_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF040632026",
+      "instituto": "EXATA OP OPINIAO PUBLICA LTDA",
+      "instituto_razao_social": "EXATA OP OPINIAO PUBLICA LTDA",
+      "instituto_cnpj": "03.303.870/0001-28",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador",
+        "Deputado Federal",
+        "Deputado Distrital"
+      ],
+      "data_registro": "2026-03-18",
+      "data_campo_inicio": "2026-03-20",
+      "data_campo_fim": "2026-03-23",
+      "data_divulgacao": "2026-03-24",
+      "n_entrevistados": 3000,
+      "metodologia": "Metodologia Survey com amostra presencial face a face, com amostra auto ponderada, com distribuição baseada no censo populacional DF 2022 do IBGE",
+      "plano_amostral": "MARGEM DE ERRO 2%   INTERVALO DE CONFIANÇA DE 95%\r\n\r\nSEXO PORC%\r\nMASCULINO 47%\r\nFEMININO 53%\r\nPAIXA ETÁRIA\tPORC%\r\nDE 16 A 26 ANOS\t17%\r\nDE 27 A 37 ANOS\t19%\r\nDE 38 A 48 ANOS\t21%\r\nDE 49 A 59 ANOS\t22%\r\nMAIS DE 60 ANOS\t21%\r\nCLASSE SOCIAL\tPORC%\r\nA\t6%\r\nB\t16%\r\nC\t19%\r\nD\t34%\r\nE\t27%\r\nESCOLARIDADE\tPORC%\r\nALFABETIZADO\t1%\r\nANALFABETO\t5%\r\nENSINO FUNDAMENTAL\t17%\r\nENSINO MÉDIO\t41%\r\nSUPERIOR\t36%",
+      "estatistico": "Caio Felipe De Brito Andrade",
+      "conre": "10374",
+      "valor": 22300.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF040632026_452352_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF005592026",
+      "instituto": "VERITA",
+      "instituto_razao_social": "INSTITUTO VERITA LTDA",
+      "instituto_cnpj": "00.654.576/0001-72",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador",
+        "Deputado Federal",
+        "Deputado Distrital"
+      ],
+      "data_registro": "2026-03-12",
+      "data_campo_inicio": "2026-03-13",
+      "data_campo_fim": "2026-03-19",
+      "data_divulgacao": "2026-03-18",
+      "n_entrevistados": 1220,
+      "metodologia": "Pesquisa quantitativa, que consiste na realização de entrevistas, com a aplicação de questionário estruturado junto a uma amostra representativa do eleitorado desta Unidade da Federação.",
+      "plano_amostral": "ESTUDO REPRESENTATIVO DO ELEITORADO DO ESTADO DO DISTRITO FEDERAL - MÉTODO PPT (Probabilidade Proporcional ao Tamanho) - PLANO AMOSTRAL E PONDERAÇÃO QUANTO A SEXO, IDADE, GRAU DE INSTRUÇÃO E NÍVEL ECONÔMICO DO ENTREVISTADO; INTERVALO DE CONFIANÇA E MARGEM DE ERRO: Representativo do eleitorado da área em estudo, elaborada, em vários estágios, da seguinte forma: - 1. Divisão da UF em estratos proporcionais de municípios. 2. Ordenação dos municípios de cada estrato segundo o porte. 3. Sorteio dos municípios de cada estrato. 4. Os respondentes são selecionados através de quotas amostrais proporcio…",
+      "estatistico": "Guilherme Alvarenga Laia",
+      "conre": "10699",
+      "valor": 93940.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF005592026_452314_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF036412026",
+      "instituto": "EXATA OP OPINIAO PUBLICA LTDA",
+      "instituto_razao_social": "EXATA OP OPINIAO PUBLICA LTDA",
+      "instituto_cnpj": "03.303.870/0001-28",
+      "pesquisa_propria": true,
+      "cargo": [
+        "Governador",
+        "Senador",
+        "Deputado Federal",
+        "Deputado Distrital"
+      ],
+      "data_registro": "2026-02-18",
+      "data_campo_inicio": "2026-02-22",
+      "data_campo_fim": "2026-02-26",
+      "data_divulgacao": "2026-02-24",
+      "n_entrevistados": 3000,
+      "metodologia": "Metodologia Survey com amostra presencial face a face, com amostra auto ponderada, com distribuição baseada no censo populacional DF 2022 do IBGE",
+      "plano_amostral": "MARGEM DE ERRO 2%   INTERVALO DE CONFIANÇA DE 95%\r\n\r\nSEXO PORC%\r\nMASCULINO ¿ 47%\r\nFEMININO ¿ 53%\r\nPAIXA ETÁRIA\tPORC%\r\nDE 16 A 26 ANOS\t17%\r\nDE 27 A 37 ANOS\t19%\r\nDE 38 A 48 ANOS\t21%\r\nDE 49 A 59 ANOS\t22%\r\nMAIS DE 60 ANOS\t21%\r\nCLASSE SOCIAL\tPORC%\r\nA\t6%\r\nB\t16%\r\nC\t19%\r\nD\t34%\r\nE\t27%\r\nESCOLARIDADE\tPORC%\r\nALFABETIZADO\t1%\r\nANALFABETO\t5%\r\nENSINO FUNDAMENTAL\t17%\r\nENSINO MÉDIO\t41%\r\nSUPERIOR\t36%",
+      "estatistico": "Caio Felipe De Brito Andrade",
+      "conre": "10374",
+      "valor": 18300.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF036412026_452086_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    },
+    {
+      "protocolo": "DF031992026",
+      "instituto": "IGAPE- INSTITUTO GAZETA DE PEQUISAS",
+      "instituto_razao_social": "PORTAL GOIAS MAIOR LTDA",
+      "instituto_cnpj": "04.851.508/0001-54",
+      "pesquisa_propria": false,
+      "cargo": [
+        "Governador",
+        "Senador",
+        "Deputado Federal",
+        "Deputado Estadual",
+        "Deputado Distrital"
+      ],
+      "data_registro": "2026-02-22",
+      "data_campo_inicio": "2026-02-13",
+      "data_campo_fim": "2026-02-15",
+      "data_divulgacao": "2026-02-23",
+      "n_entrevistados": 1000,
+      "metodologia": "A metodologia utilizada é Survey quantitativo, com realização das entrevistas através de pesquisa telefônica, com aplicação de questionário estruturado e padronizado em plataforma digital (tablet ou computador) junto a uma amostra representativa dos eleitores do Distrito Federal.",
+      "plano_amostral": "O universo da pesquisa é composto por eleitores do Distrito Federal, com idade a partir de 16 anos. A amostra prevista será de 1.0000 entrevistas. A Seleção da amostra será realizada utilizando-se quotas amostrais proporcionais, em função das seguintes variáveis. SEXO: Masculino: (46%); Feminino: (54%) - IDADE: 16 a 29 anos (21%); 30 a 44 anos: (31%); 45 a 59 anos: (28%); 60 anos ou mais: (20%) - ESCOLARIDADE: Analfabeto/Lê e escreve: (4%); Fundamental completo ou incompleto: (17%); Médio completo ou incompleto: (45%); Superior completo ou incompleto: (34%); RENDA INDIVIDUAL: Até 1 SM: (25%);…",
+      "estatistico": "Felipe Moreira Martine",
+      "conre": "10394",
+      "valor": 5000.0,
+      "uf": "DF",
+      "url_tse_pesqele": "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html#/divulgacao/2026/UF/DF",
+      "pdf_arquivo": "DF031992026_452037_questionario_pesquisa.pdf",
+      "extracao": {
+        "status": "pendente",
+        "extraido_em": null,
+        "modelo": null,
+        "erro": null,
+        "cenarios": []
+      }
+    }
+  ]
+}

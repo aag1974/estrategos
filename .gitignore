@@ -22,8 +22,12 @@ playbook_*.pdf
 TSE/
 PDAD2021/
 dados_tse_cache/
+dados_tse_pesquisas/
 perfil_comparecimento_*.zip
 *.zip
+
+# Configuração local (chaves de API etc)
+.env
 
 # Materiais privados/clientes — não versionar
 briefing_*.docx

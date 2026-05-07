@@ -26,6 +26,7 @@ DIR_F2       = Path("outputs_fase2")
 DIR_F3       = Path("outputs_fase3")
 DIR_F3C      = Path("outputs_fase3c")
 CSV_GC       = Path("outputs_fase3c/votos_candidato_ra.csv")
+PESQUISAS_JSON = Path("outputs_pesquisas/pesquisas_df.json")
 
 MIN_VOTOS_GC = 50  # mínimo de votos pro candidato entrar em GC_DATA
 
@@ -667,6 +668,10 @@ def main():
     print("  [4/4] Aplicando placeholders...", end="", flush=True)
     template = TEMPLATE.read_text(encoding="utf-8")
     creds = json.loads(CRED.read_text(encoding="utf-8")) if CRED.exists() else {}
+    pesquisas = (json.loads(PESQUISAS_JSON.read_text(encoding="utf-8"))
+                 if PESQUISAS_JSON.exists()
+                 else {"pesquisas": [], "n_pesquisas": 0, "atualizado_em": None,
+                       "uf": "DF", "fonte": ""})
 
     out = (template
         .replace("__DADOS_B64__",         b64(ras))
@@ -677,12 +682,13 @@ def main():
         .replace("__METAS_CAMPO_B64__",   b64(calcular_metas_campo()))
         .replace("__GEO_B64__",           b64(geo))
         .replace("__CAND_B64__",          b64(cands_detalhados))
+        .replace("__PESQUISAS_B64__",     b64(pesquisas))
         .replace("__ESTRATEGOS_USERS__",  json.dumps(creds, ensure_ascii=False, separators=(",", ":")))
     )
 
     for ph in ("__DADOS_B64__","__PT_B64__","__PK_B64__","__CANDS_B64__",
                "__VOTOS_ELEITOS_B64__","__METAS_CAMPO_B64__","__GEO_B64__",
-               "__CAND_B64__","__ESTRATEGOS_USERS__"):
+               "__CAND_B64__","__PESQUISAS_B64__","__ESTRATEGOS_USERS__"):
         if ph in out:
             raise SystemExit(f"ERRO: placeholder {ph} não foi substituído")
 

@@ -13,9 +13,12 @@ Solução de Inteligência Política da **Opinião Informação Estratégica**.
 
 ```
 gerar_estrategos.py           # Build unificado: lê template, monta dados, escreve index.html
-estrategos_template.html      # Template com 9 placeholders preenchidos por gerar_estrategos
+estrategos_template.html      # Template com 10 placeholders preenchidos por gerar_estrategos
 gerar_credencial.py           # Helper para criar/atualizar usuários do login
 gerar_playbook_dados.py       # Gera JSON do playbook por candidato
+
+coletor_pesquisas.py          # Baixa pesquisas TSE Dados Abertos, filtra UF, gera JSON canônico
+extrair_pesquisas.py          # Claude Haiku lê os questionários PDF e extrai cenários
 
 fase3c_campo_politico.py      # Pipeline de cálculo do campo político por RA
 extrair_votos_candidato_ra.py # Extração de votação por candidato × RA
@@ -70,6 +73,33 @@ publicar a pasta diretamente.
 ### 3. Login
 
 Use as credenciais criadas no passo 1.
+
+### 4. (Opcional) Atualizar o catálogo de pesquisas
+
+A seção **Ferramentas › Clipping de Pesquisas** lê o catálogo TSE
+embarcado pelo `gerar_estrategos.py` a partir de
+`outputs_pesquisas/pesquisas_df.json`. Para atualizar:
+
+```bash
+# 1. Baixa o ZIP CKAN do TSE, filtra DF, atualiza o JSON
+python3 coletor_pesquisas.py --uf DF
+
+# Para baixar também os PDFs dos questionários (~377 MB → extrai só DF)
+python3 coletor_pesquisas.py --uf DF --baixar-pdfs
+
+# 2. (Opcional) Roda extração IA dos questionários PDF para extrair
+#    cargos, cenários e candidatos testados
+echo "ANTHROPIC_API_KEY=sk-ant-..." > .env
+python3 extrair_pesquisas.py --uf DF
+
+# 3. Re-gera o dashboard com o catálogo atualizado
+python3 gerar_estrategos.py
+```
+
+A extração IA (passo 2) é opcional. Sem ela, o catálogo mostra metadata
+das pesquisas (instituto, datas, cargos, plano amostral) e link pro
+PesqEle TSE; com ela, mostra também os cenários estruturados (lista de
+candidatos testados em cada cargo, tipo estimulada/espontânea/rejeição).
 
 ---
 
