@@ -1684,7 +1684,8 @@ document.addEventListener('keydown', function(e){
       <div class="pq-list" id="pq-list"></div>
 
       <script>
-      var PQ = (typeof PESQUISAS !== 'undefined') ? PESQUISAS : { pesquisas: [], n_pesquisas: 0, atualizado_em: null };
+      var PESQUISAS = JSON.parse(atob("__PESQUISAS_B64__"));
+      var PQ = PESQUISAS || { pesquisas: [], n_pesquisas: 0, atualizado_em: null };
 
       function pqFmtData(s){
         if(!s) return '—';
@@ -5941,7 +5942,6 @@ function geoSetCargo(c,btn){
 // GEOPOLITICA > CANDIDATO ================================================
 
 const GC_DATA = JSON.parse(atob("__CAND_B64__"));
-var PESQUISAS = JSON.parse(atob("__PESQUISAS_B64__"));
 
 // Marcar eleitos com base na LISTA OFICIAL TSE/CLDF 2022
 // Fonte: Câmara dos Deputados + CLDF. Sistema proporcional brasileiro
