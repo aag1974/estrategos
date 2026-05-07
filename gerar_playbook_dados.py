@@ -870,7 +870,12 @@ def gerar_html(apelido, dados):
         return None
     json_str = json.dumps(dados, ensure_ascii=False, indent=2)
     html = tpl.replace("__DADOS_JSON__", json_str)
-    html = html.replace("THIAGO MANZONI", dados["meta"]["nome_curto"])
+    nome = dados["meta"]["nome_curto"]
+    # Injeta nome no <title> da página
+    html = html.replace(
+        "<title>Playbook · Estrategos</title>",
+        f"<title>Playbook · {nome} · Estrategos</title>",
+    )
     out = ROOT / f"playbook_{apelido}.html"
     out.write_text(html, encoding="utf-8")
     return out

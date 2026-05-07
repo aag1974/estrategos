@@ -34,7 +34,7 @@ DIR_OUT = ROOT / "outputs_pesquisas"
 
 URL_PESQUISAS = "https://cdn.tse.jus.br/estatistica/sead/odsele/pesquisa_eleitoral/pesquisa_eleitoral_2026.zip"
 URL_QUESTIONARIOS = "https://cdn.tse.jus.br/estatistica/sead/odsele/pesquisa_eleitoral/questionario_pesquisa_2026.zip"
-URL_PESQELE = "https://pesqele-divulgacao.tse.jus.br/divulgacaopesqele/divulgacao/index.html"
+URL_PESQELE = "https://www.tse.jus.br/eleicoes/pesquisas-eleitorais"
 
 CARGOS_VALIDOS = {
     "Governador", "Senador",
@@ -129,8 +129,9 @@ def encontrar_pdf_local(protocolo: str) -> Path | None:
 
 
 def construir_url_pesqele(uf: str) -> str:
-    """Link genérico para o PesqEle (TSE não oferece deep-link por protocolo)."""
-    return f"{URL_PESQELE}#/divulgacao/2026/UF/{uf}"
+    """Link para a página oficial TSE de Pesquisas Eleitorais (catálogo público).
+    O TSE não oferece deep-link por protocolo no site institucional."""
+    return URL_PESQELE
 
 
 def carregar_existente(json_path: Path) -> dict[str, dict]:
