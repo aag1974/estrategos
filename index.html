@@ -1182,7 +1182,7 @@ document.addEventListener('keydown', function(e){
                        --qe-green:#0F6E56; --qe-green-bg:#E1F5EE; --qe-green-txt:#085041;
                        --qe-blue:#185FA5; --qe-blue-bg:#E6F1FB; --qe-blue-txt:#0C447C;
                        --qe-s3:#E8E4DC; }
-        #s-quociente .qe-layout { display:grid; grid-template-columns:360px 1fr; min-height:calc(100vh - 220px); border-top:0.5px solid var(--bd); }
+        #s-quociente .qe-layout { display:grid; grid-template-columns:360px 1fr; flex:1; min-height:0; border-top:0.5px solid var(--bd); }
         #s-quociente .qe-panel { background:var(--s1); border-right:0.5px solid var(--bd); padding:20px; overflow-y:auto; }
         #s-quociente .qe-results { padding:20px; overflow-y:auto; }
         #s-quociente .qe-section { margin-bottom:20px; }
@@ -1570,7 +1570,7 @@ document.addEventListener('keydown', function(e){
       </div>
 
       <style>
-        #s-pesquisas .pq-toolbar { display:flex; gap:12px; align-items:center; padding:10px 22px; border-bottom:0.5px solid var(--bd); background:var(--s1); flex-wrap:wrap; }
+        #s-pesquisas .pq-toolbar { display:flex; gap:12px; align-items:center; padding:10px 22px; border-bottom:0.5px solid var(--bd); background:var(--s1); flex-wrap:wrap; flex-shrink:0; }
         #s-pesquisas .pq-toolbar label { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
         #s-pesquisas .pq-toolbar select, #s-pesquisas .pq-toolbar input {
           padding:5px 10px; border:0.5px solid var(--bd2); border-radius:6px;
@@ -1579,7 +1579,7 @@ document.addEventListener('keydown', function(e){
         }
         #s-pesquisas .pq-toolbar input { min-width:180px; }
         #s-pesquisas .pq-stats { margin-left:auto; font-size:11px; color:var(--muted); }
-        #s-pesquisas .pq-list { padding:14px 22px; }
+        #s-pesquisas .pq-list { padding:14px 22px; flex:1; overflow-y:auto; min-height:0; }
         #s-pesquisas .pq-card {
           background:var(--s1); border:0.5px solid var(--bd); border-radius:10px;
           padding:14px 16px; margin-bottom:10px; transition:box-shadow .15s;
@@ -1652,6 +1652,7 @@ document.addEventListener('keydown', function(e){
           margin:14px 22px; padding:10px 14px;
           background:#FAEEDA; border-radius:6px;
           font-size:11px; color:#633806; line-height:1.5;
+          flex-shrink:0;
         }
         #s-pesquisas .pq-aviso strong { color:#412402; }
       </style>
