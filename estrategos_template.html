@@ -186,12 +186,11 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
 }
 .cand-item.sel .cand-item-bar{display:none}
 .cand-clear-btn{
-  font-size:9px;padding:2px 7px;border-radius:10px;
-  background:var(--amber);color:#fff;cursor:pointer;border:none;
-  font-family:inherit;flex-shrink:0;
-  letter-spacing:.5px;text-transform:uppercase;font-weight:600;
+  font-size:14px;padding:0 4px;line-height:1;
+  background:transparent;color:var(--muted);cursor:pointer;border:none;
+  font-family:inherit;flex-shrink:0;opacity:.5;
 }
-.cand-clear-btn:hover{opacity:.85}
+.cand-clear-btn:hover{opacity:1;color:var(--amber)}
 .cand-item-bar{width:3px;flex-shrink:0;border-radius:0}
 .cand-item-inner{padding:9px 10px;flex:1}
 .cand-item-nome{font-size:12px;font-weight:500;color:var(--txt)}
@@ -3127,32 +3126,41 @@ function candRenderList() {
     if(!a.eleito && b.eleito) return 1;
     return (b.total||0)-(a.total||0);
   });
+  // Move o candidato selecionado pra primeira posição (acima de tudo)
+  var selObj = null;
+  if (candSelecionado) {
+    var idxSel = list.findIndex(function(c){ return c.nome === candSelecionado.nome; });
+    if (idxSel >= 0) {
+      selObj = list.splice(idxSel, 1)[0];
+    }
+  }
   var primeiroNaoEleito = list.findIndex(function(c){ return !c.eleito; });
-  var html="";
   var cl={GOVERNADOR:"Governador",SENADOR:"Senador",DEPUTADO_FEDERAL:"Dep. Federal",DEPUTADO_DISTRITAL:"Dep. Distrital"};
   var CC2={progressista:"#A32D2D",moderado:"#0F6E56",liberal_conservador:"#854F0B",outros:"#6B7280"};
-  list.forEach(function(c, i){
-    if(i===primeiroNaoEleito && primeiroNaoEleito>0){
-      html += "<div style='height:0.5px;background:var(--bd2);margin:6px 12px;opacity:0.6'></div>";
-    }
-    var isSel = candSelecionado && candSelecionado.nome===c.nome;
-    var sel = isSel ? " sel" : "";
+
+  function _itemHtml(c, isSel){
     var totalStr=c.total>0?(c.total>=1000?Math.round(c.total/1000)+"k":c.total.toLocaleString("pt-BR"))+" votos":"";
-    var badge;
-    if (isSel) {
-      badge = "<button class='cand-clear-btn' title='Limpar seleção'>× Limpar</button>";
-    } else if (c.eleito) {
-      badge = "<span style='font-size:9px;padding:1px 6px;border-radius:8px;background:#E1F5EE;color:#085041;font-weight:500;margin-left:auto;flex-shrink:0'>Eleito</span>";
-    } else {
-      badge = "";
-    }
-    html+="<div class='cand-item"+sel+"' data-nome='"+c.nome+"'>"
+    var badge = isSel
+      ? "<button class='cand-clear-btn' title='Limpar seleção'>×</button>"
+      : (c.eleito
+          ? "<span style='font-size:9px;padding:1px 6px;border-radius:8px;background:#E1F5EE;color:#085041;font-weight:500;margin-left:auto;flex-shrink:0'>Eleito</span>"
+          : "");
+    return "<div class='cand-item"+(isSel?" sel":"")+"' data-nome='"+c.nome+"'>"
       +"<div class='cand-item-bar' style='background:"+(CC2[c.campo]||"#888")+"'></div>"
       +"<div class='cand-item-inner'>"
       +"<div class='cand-item-nome' style='display:flex;align-items:center;gap:6px'><span style='flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis'>"+c.nome+"</span>"+badge+"</div>"
       +"<div class='cand-item-sub'>"+(c.partido||"?")+" · "+(cl[c.cargo]||c.cargo)
       +(totalStr?" · "+totalStr:"")+"</div>"
       +"</div></div>";
+  }
+
+  var html = "";
+  if (selObj) html += _itemHtml(selObj, true);
+  list.forEach(function(c, i){
+    if(i===primeiroNaoEleito && primeiroNaoEleito>0){
+      html += "<div style='height:0.5px;background:var(--bd2);margin:6px 12px;opacity:0.6'></div>";
+    }
+    html += _itemHtml(c, false);
   });
   var listEl=document.getElementById("cand-list");
   listEl.innerHTML=html||"<div style='padding:16px;font-size:11px;color:var(--muted)'>Nenhum candidato encontrado</div>";
