@@ -6776,9 +6776,11 @@ function gcRenderLista(){
 function gcSelecionar(c, el){
   gcCandSel = c;
   gcStatusFiltro = null;
-  document.querySelectorAll('.gc-item').forEach(function(e){e.classList.remove('gc-sel');});
-  if(el) el.classList.add('gc-sel');
   document.getElementById('gc-candidato-ativo').textContent = c.nm;
+  // Re-renderiza a lista para mover o ego ao topo, aplicar sticky e
+  // esmaecer os outros (a classe .gc-sel é aplicada via gcRenderLista
+  // baseada em gcCandSel, sem precisar manipular el.classList aqui).
+  gcRenderLista();
   gcRenderMapa();
   gcRenderPanel();
 }
