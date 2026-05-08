@@ -172,8 +172,26 @@ thead th:nth-last-child(1) .tt-box,thead th:nth-last-child(2) .tt-box,thead th:n
 .cand-list{width:200px;flex-shrink:0;border-right:0.5px solid var(--bd);overflow-y:auto;display:flex;flex-direction:column}
 .cand-list::-webkit-scrollbar{width:3px}
 .cand-list::-webkit-scrollbar-thumb{background:var(--bd2)}
-.cand-item{display:flex;align-items:stretch;cursor:pointer;border-bottom:0.5px solid var(--bd);transition:background .1s}
+.cand-item{display:flex;align-items:stretch;cursor:pointer;border-bottom:0.5px solid var(--bd);transition:background .15s,opacity .15s}
 .cand-item:hover,.cand-item.sel{background:var(--s2)}
+/* Estado "tem candidato selecionado": esmaece os outros */
+.cand-list.has-selection .cand-item:not(.sel){opacity:.4}
+.cand-list.has-selection .cand-item:not(.sel):hover{opacity:.85}
+/* Card selecionado: sticky no topo, borda âmbar destacada */
+.cand-item.sel{
+  position:sticky;top:0;z-index:5;
+  background:var(--s1);
+  border-left:3px solid var(--amber);
+  box-shadow:0 1px 8px rgba(0,0,0,.06);
+}
+.cand-item.sel .cand-item-bar{display:none}
+.cand-clear-btn{
+  font-size:9px;padding:2px 7px;border-radius:10px;
+  background:var(--amber);color:#fff;cursor:pointer;border:none;
+  font-family:inherit;flex-shrink:0;
+  letter-spacing:.5px;text-transform:uppercase;font-weight:600;
+}
+.cand-clear-btn:hover{opacity:.85}
 .cand-item-bar{width:3px;flex-shrink:0;border-radius:0}
 .cand-item-inner{padding:9px 10px;flex:1}
 .cand-item-nome{font-size:12px;font-weight:500;color:var(--txt)}
@@ -3117,28 +3135,57 @@ function candRenderList() {
     if(i===primeiroNaoEleito && primeiroNaoEleito>0){
       html += "<div style='height:0.5px;background:var(--bd2);margin:6px 12px;opacity:0.6'></div>";
     }
-    var sel=candSelecionado&&candSelecionado.nome===c.nome?" sel":"";
+    var isSel = candSelecionado && candSelecionado.nome===c.nome;
+    var sel = isSel ? " sel" : "";
     var totalStr=c.total>0?(c.total>=1000?Math.round(c.total/1000)+"k":c.total.toLocaleString("pt-BR"))+" votos":"";
-    var eleitoBadge=c.eleito
-      ? "<span style='font-size:9px;padding:1px 6px;border-radius:8px;background:#E1F5EE;color:#085041;font-weight:500;margin-left:auto;flex-shrink:0'>Eleito</span>"
-      : "";
+    var badge;
+    if (isSel) {
+      badge = "<button class='cand-clear-btn' title='Limpar seleção'>× Limpar</button>";
+    } else if (c.eleito) {
+      badge = "<span style='font-size:9px;padding:1px 6px;border-radius:8px;background:#E1F5EE;color:#085041;font-weight:500;margin-left:auto;flex-shrink:0'>Eleito</span>";
+    } else {
+      badge = "";
+    }
     html+="<div class='cand-item"+sel+"' data-nome='"+c.nome+"'>"
       +"<div class='cand-item-bar' style='background:"+(CC2[c.campo]||"#888")+"'></div>"
       +"<div class='cand-item-inner'>"
-      +"<div class='cand-item-nome' style='display:flex;align-items:center;gap:6px'><span style='flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis'>"+c.nome+"</span>"+eleitoBadge+"</div>"
+      +"<div class='cand-item-nome' style='display:flex;align-items:center;gap:6px'><span style='flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis'>"+c.nome+"</span>"+badge+"</div>"
       +"<div class='cand-item-sub'>"+(c.partido||"?")+" · "+(cl[c.cargo]||c.cargo)
       +(totalStr?" · "+totalStr:"")+"</div>"
       +"</div></div>";
   });
   var listEl=document.getElementById("cand-list");
   listEl.innerHTML=html||"<div style='padding:16px;font-size:11px;color:var(--muted)'>Nenhum candidato encontrado</div>";
+  // Marca o estado "tem seleção" para esmaecer os outros via CSS
+  if (candSelecionado) listEl.classList.add('has-selection');
+  else listEl.classList.remove('has-selection');
+  // Click handler — toggle no já selecionado, e botão × limpa
   listEl.querySelectorAll(".cand-item").forEach(function(el){
-    el.onclick=function(){
+    el.onclick=function(ev){
+      // Botão × dentro do card: limpa
+      if (ev.target.classList && ev.target.classList.contains('cand-clear-btn')) {
+        ev.stopPropagation();
+        candLimparSelecao();
+        return;
+      }
       var nome=this.getAttribute("data-nome");
+      // Toggle: clicar no já selecionado limpa
+      if (candSelecionado && candSelecionado.nome === nome) {
+        candLimparSelecao();
+        return;
+      }
       var cand=A5_CANDS.find(function(c){return c.nome===nome;});
       if(cand)candSel(cand);
     };
   });
+}
+
+function candLimparSelecao(){
+  candSelecionado = null;
+  document.getElementById("cand-empty").style.display = "flex";
+  var dc = document.getElementById("cand-detail-content");
+  if (dc) dc.style.display = "none";
+  candRenderList();
 }
 
 function candFiltrar(){candRenderList();}
@@ -3146,10 +3193,18 @@ function candFiltrar(){candRenderList();}
 function candSetCargo(btn) {
   var cargo=btn.getAttribute("data-cargo");
   cargoCandAtivo=cargo;
-  document.querySelectorAll("#cf-cargo-all,#cf-gov,#cf-sen,#cf-df,#cf-dd").forEach(function(b){
-    b.className="cf-btn";
-  });
+  // Desativa todos os irmãos do mesmo grupo (cf-btn com data-cargo)
+  if (btn.parentNode) {
+    btn.parentNode.querySelectorAll(".cf-btn[data-cargo]").forEach(function(b){
+      b.className = "cf-btn";
+    });
+  }
   btn.className="cf-btn on";
+  // Mudar de cargo zera a seleção de candidato (evita estado inconsistente)
+  if (candSelecionado && cargo !== "all" && candSelecionado.cargo !== cargo) {
+    candLimparSelecao();
+    return;
+  }
   candRenderList();
   candRenderStats(cargo);
 }
