@@ -33,6 +33,7 @@ DIR_OUT.mkdir(exist_ok=True)
 CARGOS_VALIDOS = {
     "GOVERNADOR", "SENADOR",
     "DEPUTADO FEDERAL", "DEPUTADO DISTRITAL",
+    "PRESIDENTE",
 }
 
 CARGO_NORM = {
@@ -40,6 +41,7 @@ CARGO_NORM = {
     "SENADOR":            "SENADOR",
     "DEPUTADO FEDERAL":   "DEPUTADO_FEDERAL",
     "DEPUTADO DISTRITAL": "DEPUTADO_DISTRITAL",
+    "PRESIDENTE":         "PRESIDENTE",
 }
 
 NUMERO_CAMPO = {
@@ -72,6 +74,9 @@ NOME_CAMPO_MAJOR = {
     "ROGERIO CORREIA":        "progressista",
     "LEILA BARROS":           "moderado",
     "FABIO FELIX":            "progressista",
+    # Presidente 2022 (só 2º turno)
+    "LULA":                   "progressista",
+    "BOLSONARO":              "liberal_conservador",
 }
 
 MIN_VOTOS = 50
@@ -143,7 +148,10 @@ def main():
 
     # ── 2. Votação por seção ─────────────────────────────────
     print("\n[2/3] Lendo votação por seção (pode demorar)...")
-    votos_path = CACHE / "votacao_secao_2022_DF.csv"
+    # CSV combinado: 4 cargos DF (1T) + Presidente (2T)
+    votos_path = CACHE / "votacao_secao_2022_DF_completo.csv"
+    if not votos_path.exists():
+        votos_path = CACHE / "votacao_secao_2022_DF.csv"
     if not votos_path.exists():
         print(f"   ERRO: {votos_path} não encontrado.")
         return
@@ -164,9 +172,14 @@ def main():
         elif cu == "SG_PARTIDO":  col_map[c] = "SG_PARTIDO"
     df = df.rename(columns=col_map)
 
-    df = df[df["NR_TURNO"].astype(str).str.strip() == "1"].copy()
     df["DS_CARGO"] = df["DS_CARGO"].str.upper().str.strip()
+    df["NR_TURNO"] = df["NR_TURNO"].astype(str).str.strip()
     df = df[df["DS_CARGO"].isin(CARGOS_VALIDOS)].copy()
+    # Turno: 1T para todos os cargos, exceto Presidente (2T 2022 no DF)
+    df = df[
+        ((df["DS_CARGO"] != "PRESIDENTE") & (df["NR_TURNO"] == "1")) |
+        ((df["DS_CARGO"] == "PRESIDENTE") & (df["NR_TURNO"] == "2"))
+    ].copy()
     df["QT_VOTOS"]  = pd.to_numeric(df["QT_VOTOS"], errors="coerce").fillna(0)
     df["NR_ZONA"]   = df["NR_ZONA"].astype(str).str.strip()
     df["NR_SECAO"]  = df["NR_SECAO"].astype(str).str.strip()

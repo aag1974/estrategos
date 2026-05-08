@@ -1046,6 +1046,7 @@ document.addEventListener('keydown', function(e){
         </div>
       </div>
       <div class="cargo-bar"><span class="cargo-lbl">Cargo</span>
+        <button class="cargo-btn" data-cargo="PRESIDENTE" onclick="setCargo('PRESIDENTE',this)">Presidente</button>
         <button class="cargo-btn" data-cargo="GOVERNADOR" onclick="setCargo('GOVERNADOR',this)">Governador</button>
         <button class="cargo-btn" data-cargo="SENADOR" onclick="setCargo('SENADOR',this)">Senador</button>
         <button class="cargo-btn on" data-cargo="DEPUTADO_FEDERAL" onclick="setCargo('DEPUTADO_FEDERAL',this)">Dep. Federal</button>
@@ -1089,6 +1090,7 @@ document.addEventListener('keydown', function(e){
         <button id="cf-df" class="cf-btn" data-cargo="DEPUTADO_FEDERAL" onclick="candSetCargo(this)">Federal</button>
         <button id="cf-sen" class="cf-btn" data-cargo="SENADOR" onclick="candSetCargo(this)">Senador</button>
         <button id="cf-gov" class="cf-btn" data-cargo="GOVERNADOR" onclick="candSetCargo(this)">Governador</button>
+        <button id="cf-pres" class="cf-btn" data-cargo="PRESIDENTE" onclick="candSetCargo(this)">Presidente</button>
       </div>
 
       <div class="cand-body">
@@ -2475,6 +2477,7 @@ document.addEventListener('keydown', function(e){
             <button class="gc-cargo-pill" onclick="gcSetCargo('DEPUTADO_FEDERAL',this)">Federal</button>
             <button class="gc-cargo-pill" onclick="gcSetCargo('SENADOR',this)">Senador</button>
             <button class="gc-cargo-pill" onclick="gcSetCargo('GOVERNADOR',this)">Governador</button>
+            <button class="gc-cargo-pill" onclick="gcSetCargo('PRESIDENTE',this)">Presidente</button>
           </div>
           <input id="gc-search" placeholder="Buscar por nome ou partido..." oninput="gcFiltrarLista()">
         </div>

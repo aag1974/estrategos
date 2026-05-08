@@ -76,6 +76,9 @@ CANDIDATOS_MAJORITARIOS = {
     "ISRAEL":           "progressista",
     "CARLOS VIANA":     "liberal_conservador",
     "FAGUNDES":         "liberal_conservador",
+    # PRESIDENTE 2022 (2º turno)
+    "LULA":             "progressista",
+    "BOLSONARO":        "liberal_conservador",
 }
 
 
@@ -86,7 +89,7 @@ def classificar_campo(nr_votavel: str, nm_votavel: str, ds_cargo: str) -> str:
     if nm in ("BRANCO", "NULO", "#NULO#", "#BRANCO#"):
         return "invalido"
 
-    if cargo in ("GOVERNADOR", "SENADOR"):
+    if cargo in ("GOVERNADOR", "SENADOR", "PRESIDENTE"):
         # 1. Tentar match por nome
         for chave, campo in CANDIDATOS_MAJORITARIOS.items():
             if chave in nm:
@@ -115,9 +118,12 @@ def classificar_campo(nr_votavel: str, nm_votavel: str, ds_cargo: str) -> str:
 
 
 def processar():
-    cache_path = CACHE / "votacao_secao_2022_DF.csv"
+    # CSV combinado (4 cargos DF 1T + Presidente 2T) — fallback pro original
+    cache_path = CACHE / "votacao_secao_2022_DF_completo.csv"
     if not cache_path.exists():
-        print("Arquivo votacao_secao_2022_DF.csv nao encontrado.")
+        cache_path = CACHE / "votacao_secao_2022_DF.csv"
+    if not cache_path.exists():
+        print("Arquivo de votacao por secao DF nao encontrado.")
         return None
 
     print("   Lendo votos por secao...")
@@ -139,7 +145,12 @@ def processar():
     df["QT_VOTOS"] = pd.to_numeric(df["QT_VOTOS"], errors="coerce").fillna(0)
     df["NR_ZONA"]  = pd.to_numeric(df["NR_ZONA"],  errors="coerce").astype("Int64")
     df["NR_TURNO"] = df["NR_TURNO"].astype(str).str.strip()
-    df = df[df["NR_TURNO"] == "1"].copy()
+    df["DS_CARGO"] = df["DS_CARGO"].str.upper().str.strip()
+    # 1T para todos, exceto Presidente (2T 2022 no DF)
+    df = df[
+        ((df["DS_CARGO"] != "PRESIDENTE") & (df["NR_TURNO"] == "1")) |
+        ((df["DS_CARGO"] == "PRESIDENTE") & (df["NR_TURNO"] == "2"))
+    ].copy()
 
     # Mostrar DS_CARGO unicos para diagnostico
     print("   Cargos encontrados no CSV:")
@@ -197,12 +208,20 @@ def agregar_por_ra(df_votos):
         on=["NR_ZONA","NR_SECAO"], how="left"
     )
 
+    # Override CPP-SIA: zona 9 / seção 2022 (presídio, sem geo no enriched).
+    # Sem isso, perdemos os votos dessa seção no agregado por RA.
+    mask_cpp = (df_full["NR_ZONA"] == 9) & (df_full["NR_SECAO"] == "2022")
+    if mask_cpp.any():
+        df_full.loc[mask_cpp, "RA_NOME"] = "SIA"
+        df_full.loc[mask_cpp, "RA_COD"] = 29  # RA_COD da SIA
+
     # Normalizar DS_CARGO para chave consistente no CSV de saida
     cargo_norm = {
         "GOVERNADOR":         "GOVERNADOR",
         "SENADOR":            "SENADOR",
         "DEPUTADO FEDERAL":   "DEPUTADO_FEDERAL",
         "DEPUTADO DISTRITAL": "DEPUTADO_DISTRITAL",
+        "PRESIDENTE":         "PRESIDENTE",
         "1O SENADOR":         "SENADOR",
         "1 SENADOR":          "SENADOR",
     }

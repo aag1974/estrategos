@@ -54,6 +54,9 @@ NOME_CAMPO_MAJOR = {
     "ROGERIO CORREIA": "progressista",
     "LEILA BARROS":    "moderado",
     "FABIO FELIX":     "progressista",
+    # Presidente 2022 (só 2º turno)
+    "LULA":            "progressista",
+    "BOLSONARO":       "liberal_conservador",
 }
 
 NUMERO_PARTIDO = {
@@ -68,6 +71,7 @@ NUMERO_PARTIDO = {
 CARGOS_VALIDOS = {
     "GOVERNADOR", "SENADOR",
     "DEPUTADO FEDERAL", "DEPUTADO DISTRITAL",
+    "PRESIDENTE",
 }
 
 CARGO_NORM = {
@@ -75,6 +79,7 @@ CARGO_NORM = {
     "SENADOR":            "SENADOR",
     "DEPUTADO FEDERAL":   "DEPUTADO_FEDERAL",
     "DEPUTADO DISTRITAL": "DEPUTADO_DISTRITAL",
+    "PRESIDENTE":         "PRESIDENTE",
 }
 
 # Descontinuado em abr/2026 — todas as 33 RAs têm dado próprio (PIP).
@@ -202,7 +207,7 @@ def montar_dados(df_ipe, df_mestre, df_narr, df_campo, df_cand=None):
             aptos_df = {n: (ras[n].get("el_aptos") or 0) for n in ras}
             tot_aptos = sum(v for v in aptos_df.values() if v)
 
-            for cargo_str in ["GOVERNADOR","SENADOR","DEPUTADO_FEDERAL","DEPUTADO_DISTRITAL"]:
+            for cargo_str in ["GOVERNADOR","SENADOR","DEPUTADO_FEDERAL","DEPUTADO_DISTRITAL","PRESIDENTE"]:
                 sub = df_campo[df_campo["_cargo_norm"] == cargo_str]
                 if sub.empty:
                     cargo_alt = cargo_str.replace("_", " ")
@@ -239,7 +244,7 @@ def montar_dados(df_ipe, df_mestre, df_narr, df_campo, df_cand=None):
             df_cand["QT_VOTOS_RA"] = pd.to_numeric(df_cand["QT_VOTOS_RA"], errors="coerce").fillna(0)
             for n in ras:
                 ras[n]["margem"] = {}
-            for cargo_str in ["GOVERNADOR","SENADOR","DEPUTADO_FEDERAL","DEPUTADO_DISTRITAL"]:
+            for cargo_str in ["GOVERNADOR","SENADOR","DEPUTADO_FEDERAL","DEPUTADO_DISTRITAL","PRESIDENTE"]:
                 sub = df_cand[df_cand["DS_CARGO"] == cargo_str]
                 if sub.empty: continue
                 tot_ra = sub.groupby("RA_NOME")["QT_VOTOS_RA"].sum().to_dict()
@@ -284,7 +289,10 @@ def montar_candidatos():
     Fonte primária: dados_tse_cache/votacao_secao_2022_DF.csv (ROW por seção).
     Fallback:       candidatos_2022.csv (já agregado por RA).
     """
-    votos_path  = CACHE / "votacao_secao_2022_DF.csv"
+    # CSV combinado: 4 cargos DF (1T) + Presidente (2T)
+    votos_path  = CACHE / "votacao_secao_2022_DF_completo.csv"
+    if not votos_path.exists():
+        votos_path = CACHE / "votacao_secao_2022_DF.csv"  # fallback p/ ambiente sem presidente
     locais_path = CACHE / "locais_votacao_2022_enriched.csv"
 
     if not votos_path.exists() or not locais_path.exists():
@@ -332,9 +340,14 @@ def montar_candidatos():
         elif cu == "NR_SECAO":    col_map[c] = "NR_SECAO"
         elif cu == "SG_PARTIDO":  col_map[c] = "SG_PARTIDO"
     df = df.rename(columns=col_map)
-    df = df[df["NR_TURNO"].astype(str).str.strip() == "1"].copy()
+    # Turno: 1T para todos os cargos, exceto Presidente (2T) — DF teve 2T 2022 só pra presidente
     df["DS_CARGO"] = df["DS_CARGO"].str.upper().str.strip()
+    df["NR_TURNO"] = df["NR_TURNO"].astype(str).str.strip()
     df = df[df["DS_CARGO"].isin(CARGOS_VALIDOS)].copy()
+    df = df[
+        ((df["DS_CARGO"] != "PRESIDENTE") & (df["NR_TURNO"] == "1")) |
+        ((df["DS_CARGO"] == "PRESIDENTE") & (df["NR_TURNO"] == "2"))
+    ].copy()
     df["QT_VOTOS"] = pd.to_numeric(df["QT_VOTOS"], errors="coerce").fillna(0)
     df["NR_ZONA"]  = df["NR_ZONA"].astype(str).str.strip()
     df["NR_SECAO"] = df["NR_SECAO"].astype(str).str.strip()
