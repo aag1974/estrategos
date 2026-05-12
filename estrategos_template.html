@@ -67,6 +67,13 @@ body{background:var(--bg);color:var(--txt);display:flex;flex-direction:column;he
 .tablewrap table{border-collapse:separate;border-spacing:0;border:0.5px solid var(--bd);border-radius:10px;background:var(--bg);width:100%}
 .tablewrap::-webkit-scrollbar{width:3px;height:3px}
 .tablewrap::-webkit-scrollbar-thumb{background:var(--bd2)}
+/* Sticky thead em todas as tabelas com scroll (header fixo) */
+.tablewrap thead th,
+#cand-tbl-scroll thead th,
+#estr-tbl-scroll thead th,
+.a5-tablewrap thead th{
+  position:sticky;top:0;z-index:5;background:var(--s1);
+}
 table{width:100%;border-collapse:collapse;font-size:12px}
 thead th{position:sticky;top:0;background:var(--s1);text-align:left;padding:7px 8px 5px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:0.5px solid var(--bd);cursor:pointer;user-select:none;white-space:nowrap;z-index:10}
 
@@ -1743,6 +1750,7 @@ document.addEventListener('keydown', function(e){
           font-size:9px; padding:8px 6px; border-bottom:0.5px solid var(--bd);
           text-align:right; vertical-align:bottom;
           color:var(--muted); font-weight:500;
+          position:sticky; top:0; z-index:5; background:var(--s1);
         }
         #s-pesquisas .pq-pivot-tabela th:first-child {
           text-align:left; padding-left:14px;
@@ -2759,8 +2767,16 @@ document.addEventListener('keydown', function(e){
       <div style="font-size:11px;color:var(--muted);background:var(--s2);padding:8px 12px;border-radius:6px;margin-bottom:14px;line-height:1.5">
         <strong style="color:var(--txt)">Como ler:</strong> a Performance é normalizada pelo tamanho do candidato e da RA — diz se a região entrega <em>acima</em> ou <em>abaixo</em> do esperado pela proporção. <strong>Não confundir com volume absoluto</strong>: candidatos com totais muito diferentes podem ter Performance oposta na mesma RA mesmo com volumes similares — ou volumes muito distintos com Performance parecida.
       </div>
-      <!-- Tabela com coluna Padrão (scroll fica no #cmp-content pai) -->
-      <div style="overflow-x:auto;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px"><table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px"><thead id="cmp-thead" style="position:sticky;top:0;z-index:4;background:var(--s1)"></thead><tbody id="cmp-tbody"></tbody></table></div>
+      <!-- Tabela com coluna Padrão (scroll fica no #cmp-content pai; sticky thead funciona porque
+           o wrapper não tem overflow próprio que crie contexto de scroll concorrente) -->
+      <table style="width:100%;border-collapse:separate;border-spacing:0;font-size:12px;border:0.5px solid var(--bd);border-radius:8px;margin-bottom:14px">
+        <thead id="cmp-thead" style="background:var(--s1)"></thead>
+        <tbody id="cmp-tbody"></tbody>
+      </table>
+      <style>
+        /* sticky thead da tabela de Alianças — relativa ao #cmp-content que rola */
+        #cmp-thead th{position:sticky;top:0;z-index:5;background:var(--s1)}
+      </style>
     </div>
   </div>
 </div>
