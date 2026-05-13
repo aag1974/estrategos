@@ -283,6 +283,51 @@ def montar_dados(df_ipe, df_mestre, df_narr, df_campo, df_cand=None):
 # ──────────────────────────────────────────────────────────────────────────
 #  Candidatos compactos (A5_CANDS) — pipeline primário das seções de votação
 # ──────────────────────────────────────────────────────────────────────────
+def _nome_curto_fallback(nome):
+    """Fallback quando o nome de urna não é encontrado no cadastro TSE.
+    Pega primeiro + último sobrenome do nome civil (uppercase)."""
+    partes = str(nome).strip().split()
+    if len(partes) <= 2:
+        return str(nome).strip()
+    return partes[0] + " " + partes[-1]
+
+
+def _carregar_mapa_nome_urna():
+    """Lê outputs_tse_2022_DF/consulta_cand_DF.csv e retorna mapa
+    {(NM_CANDIDATO, DS_CARGO): NM_URNA_CANDIDATO}.
+    Também popula {(NM_CANDIDATO, None): NM_URNA} como fallback quando
+    o cargo não bate exatamente."""
+    paths = [
+        Path("outputs_tse_2022_DF/consulta_cand_DF.csv"),
+        CACHE / "consulta_cand_DF.csv",
+    ]
+    csv_path = next((p for p in paths if p.exists()), None)
+    if not csv_path:
+        return {}
+    mapa = {}
+    with open(csv_path, encoding="latin-1") as f:
+        rdr = csv.reader(f, delimiter=";")
+        header = [c.strip('"') for c in next(rdr)]
+        try:
+            i_nm   = header.index("NM_CANDIDATO")
+            i_urna = header.index("NM_URNA_CANDIDATO")
+            i_carg = header.index("DS_CARGO")
+        except ValueError:
+            return {}
+        for row in rdr:
+            try:
+                nm   = row[i_nm].strip('"').strip()
+                urna = row[i_urna].strip('"').strip()
+                carg = row[i_carg].strip('"').strip().upper()
+            except IndexError:
+                continue
+            if not nm or not urna:
+                continue
+            mapa[(nm, carg)] = urna
+            mapa.setdefault((nm, None), urna)
+    return mapa
+
+
 def montar_candidatos():
     """
     Extrai candidatos 2022 com votos por RA. Saída usada para A5_CANDS.
@@ -397,6 +442,9 @@ def montar_candidatos():
     total_cargo_ra = df.groupby(["DS_CARGO","RA_NOME"])["QT_VOTOS"].sum().to_dict()
     total_campo_ra = df.groupby(["DS_CARGO","RA_NOME","CAMPO"])["QT_VOTOS"].sum().to_dict()
 
+    # Mapa nome civil → nome de urna (cadastro TSE 2022 DF)
+    nomes_urna = _carregar_mapa_nome_urna()
+
     cands = {}
     for _, r in grp.iterrows():
         nome  = str(r["NM_VOTAVEL"]).strip()
@@ -410,7 +458,11 @@ def montar_candidatos():
         if total_c < 50:
             continue
         if key not in cands:
-            cands[key] = {"nome":nome,"cargo":cargo,"campo":campo,"partido":part,"total":total_c,"ras":{}}
+            cands[key] = {
+                "nome":nome,
+                "nome_urna": nomes_urna.get((nome, r["DS_CARGO"])) or nomes_urna.get((nome, None)) or _nome_curto_fallback(nome),
+                "cargo":cargo,"campo":campo,"partido":part,"total":total_c,"ras":{}
+            }
         vt_cargo = int(total_cargo_ra.get((r["DS_CARGO"], ra), 1) or 1)
         vt_campo = int(total_campo_ra.get((r["DS_CARGO"], ra, campo), 1) or 1)
         cands[key]["ras"][ra] = {
@@ -454,6 +506,8 @@ def _montar_candidatos_csv(csv_path):
     total_cargo_ra = df.groupby(["DS_CARGO","RA_NOME"])["QT_VOTOS"].sum().to_dict()
     total_campo_ra = df.groupby(["DS_CARGO","RA_NOME","CAMPO"])["QT_VOTOS"].sum().to_dict()
 
+    nomes_urna = _carregar_mapa_nome_urna()
+
     cands = {}
     for _, r in df.iterrows():
         nome  = str(r["NM_VOTAVEL"]).strip()
@@ -467,7 +521,11 @@ def _montar_candidatos_csv(csv_path):
             continue
         key = (nome, cargo)
         if key not in cands:
-            cands[key] = {"nome":nome,"cargo":cargo,"campo":campo,"partido":part,"total":total_c,"ras":{}}
+            cands[key] = {
+                "nome":nome,
+                "nome_urna": nomes_urna.get((nome, r["DS_CARGO"])) or nomes_urna.get((nome, None)) or _nome_curto_fallback(nome),
+                "cargo":cargo,"campo":campo,"partido":part,"total":total_c,"ras":{}
+            }
         vt_cargo = int(total_cargo_ra.get((r["DS_CARGO"], ra), 1) or 1)
         vt_campo = int(total_campo_ra.get((r["DS_CARGO"], ra, campo), 1) or 1)
         cands[key]["ras"][ra] = {
