@@ -1868,11 +1868,12 @@ function renderConcorrencia(){
     bloco += '<div class="conc2-block-head">' + zonaBadge(z) +
              '<span class="conc2-block-meta">'+nRAs+' RA'+(nRAs===1?'':'s')+'</span></div>';
 
+    var egoNome = META.nome_curto || META.nome || 'Você';
     bloco += '<div class="conc2-banner">' +
-             '<span class="conc2-you-badge">★ Você</span>' +
+             '<span class="conc2-you-badge">★ '+egoNome+'</span>' +
              '<span class="conc2-you-stat"><strong>'+fmt(vCand)+'</strong> votos</span>' +
              '<span class="conc2-you-stat"><strong>'+shareC.toFixed(1).replace('.',',')+'%</strong> da zona</span>' +
-             '<span class="conc2-you-stat"><strong>'+pctVotos.toFixed(0)+'%</strong> dos seus votos</span>' +
+             '<span class="conc2-you-stat"><strong>'+pctVotos.toFixed(0)+'%</strong> do total d'+(egoNome==='Você'?'os seus votos':'e '+egoNome)+'</span>' +
              '</div>';
 
     bloco += '<div class="conc2-cols">';
