@@ -1518,7 +1518,7 @@ function renderPg1(){
     bannerEl.style.display = 'block';
     bannerEl.style.cssText = 'display:block;background:#FEF3C7;border:0.5pt solid #D4A017;border-radius:5pt;padding:7pt 11pt;margin-bottom:8pt;font-size:9pt;line-height:1.4;color:#633806';
     bannerEl.innerHTML =
-      '<div style="font-size:8pt;letter-spacing:1pt;text-transform:uppercase;color:#A16207;font-weight:700;margin-bottom:3pt">⚠ Cenário simulado · '+(sim.tipo==='estreante'?'Novo candidato':'Eleição para outro cargo')+'</div>' +
+      '<div style="font-size:8pt;letter-spacing:1pt;text-transform:uppercase;color:#A16207;font-weight:700;margin-bottom:3pt">⚠ Cenário simulado · '+(sim.tipo==='estreante'?'Novo candidato':'Eleição para '+(CARGO_LBL[sim.cargo_destino]||'outro cargo'))+'</div>' +
       refTxt + ' Volume ajustado para o nível <strong>'+nivelLbl+'</strong> ('+fatorPct+'% do volume original).';
   }
 
