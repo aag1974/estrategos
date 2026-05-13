@@ -4892,6 +4892,9 @@ function computarPlaybookDados(cand){
     rivais_por_ra[raN].sort(function(a,b){return b.votos-a.votos;});
   });
 
+  // Espelha gerar_playbook_dados.py: agrega por (zona, campo, nome).
+  // Resultado por zona inclui `por_campo` com top 2 rivais por campo político.
+  var CAMPOS_OK = ['progressista', 'moderado', 'liberal_conservador'];
   var votos_cand_zona = {}, n_ras_zona = {}, total_zona = {}, acc = {};
   ras.forEach(function(r){
     var rivaisFull = rivais_por_ra[r.ra] || [];
@@ -4906,28 +4909,35 @@ function computarPlaybookDados(cand){
     acc[r.zona] = acc[r.zona] || {};
     rivaisFull.forEach(function(rv){
       total_zona[r.zona] += rv.votos;
-      if(!acc[r.zona][rv.nome]) acc[r.zona][rv.nome] = {votos:0, partido:rv.partido, campo:rv.campo};
-      acc[r.zona][rv.nome].votos += rv.votos;
+      if(CAMPOS_OK.indexOf(rv.campo) === -1) return;
+      acc[r.zona][rv.campo] = acc[r.zona][rv.campo] || {};
+      if(!acc[r.zona][rv.campo][rv.nome]) acc[r.zona][rv.campo][rv.nome] = {votos:0, partido:rv.partido};
+      acc[r.zona][rv.campo][rv.nome].votos += rv.votos;
     });
   });
   var rivais_por_zona = {};
-  Object.keys(acc).forEach(function(zona){
+  Object.keys(n_ras_zona).forEach(function(zona){
     var vCand = votos_cand_zona[zona]||0;
     var denom = total_zona[zona]||1;
-    var lista = Object.keys(acc[zona]).map(function(nome){
-      var m = acc[zona][nome];
-      return {
-        nome_urna: _pbNomeCurto(nome),
-        partido: m.partido, campo: m.campo, votos: m.votos,
-        share: +(m.votos/denom*100).toFixed(1)
-      };
-    }).sort(function(a,b){return b.votos-a.votos;}).slice(0,3);
+    var por_campo = {};
+    CAMPOS_OK.forEach(function(campo){
+      var mapa = (acc[zona]||{})[campo] || {};
+      por_campo[campo] = Object.keys(mapa).map(function(nome){
+        var m = mapa[nome];
+        return {
+          nome_urna: _pbNomeCurto(nome),
+          partido: m.partido, votos: m.votos,
+          share: +(m.votos/denom*100).toFixed(1)
+        };
+      }).sort(function(a,b){return b.votos-a.votos;}).slice(0,2);
+    });
     rivais_por_zona[zona] = {
       votos_cand: vCand,
       n_ras: n_ras_zona[zona]||0,
       pct_dos_votos: cand.total ? +(vCand/cand.total*100).toFixed(1) : 0,
       share_cand: +(vCand/denom*100).toFixed(1),
-      rivais: lista
+      total_zona: denom,
+      por_campo: por_campo
     };
   });
 
