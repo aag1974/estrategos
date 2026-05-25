@@ -2877,7 +2877,7 @@ document.addEventListener('keydown', function(e){
 // Para gerar/atualizar senhas: rode `python3 gerar_credencial.py`
 // Credenciais carregadas de credenciais.json (não versionado).
 // Para gerar/atualizar: rode `python3 gerar_credencial.py`
-var ESTRATEGOS_USERS = {"cliente@opiniao.inf.br":"82d25df8b75a6f8a7f8160496a20579e770327a406e00ef3815bee78566e2ec8"};
+var ESTRATEGOS_USERS = {"cliente@opiniao.inf.br":"82d25df8b75a6f8a7f8160496a20579e770327a406e00ef3815bee78566e2ec8","kim@santadica.com.br":"db47a9af4850f338a91c6bdc91994ef873d422a749c19342d232ac4374c8eb44"};
 async function _estrHash(s){
   var enc = new TextEncoder().encode(s||"");
   var buf = await crypto.subtle.digest('SHA-256', enc);
