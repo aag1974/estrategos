@@ -6,8 +6,9 @@ escreve `index.html`.
 
 Substitui o build chain antigo (fase4_v2 → injeta_geopolitica → injeta_candidato).
 """
-import json, base64, csv, time
+import json, base64, csv, time, secrets, unicodedata, re
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -708,6 +709,74 @@ def b64(obj) -> str:
     ).decode("ascii")
 
 
+# ──────────────────────────────────────────────────────────────────────────
+#  API de dados estática — arquivo único consumido por sistemas parceiros.
+#  Servida pelo GitHub Pages em https://estrategos.opiniao.inf.br/api/<token>/
+#  estrategos.json. O <token> é um caminho "secreto" (não é autenticação real:
+#  o repo é público e o dashboard já embute a mesma base; serve só pra tirar a
+#  URL da vitrine). O token fica em api_token.txt e é reusado entre builds.
+# ──────────────────────────────────────────────────────────────────────────
+API_BASE      = Path("api")
+API_TOKEN     = Path("api_token.txt")
+API_DESCRICAO = ("Estrategos — Inteligência Política da Opinião Informação "
+                 "Estratégica. Diagnóstico eleitoral por Região Administrativa "
+                 "do DF (ciclo 2026), cruzando PDAD 2021 (IPEDF) e TSE 2022.")
+
+
+def _api_slug(nm):
+    s = unicodedata.normalize("NFD", nm or "").encode("ascii", "ignore").decode("ascii")
+    s = re.sub(r"[^a-zA-Z0-9]+", "-", s).strip("-").lower()
+    return s or "candidato"
+
+
+def _api_token():
+    if API_TOKEN.exists():
+        t = API_TOKEN.read_text(encoding="utf-8").strip()
+        if t:
+            return t
+    t = secrets.token_hex(16)
+    API_TOKEN.write_text(t + "\n", encoding="utf-8")
+    return t
+
+
+def gerar_api(ras, cands_detalhados, votos_eleitos, metas_campo, pesquisas, geo):
+    """Grava api/<token>/estrategos.json com toda a base num arquivo único."""
+    token = _api_token()
+
+    # slug único por candidato (colisão → sufixo -2, -3, …; ordem = total desc)
+    vistos = {}
+    candidatos = []
+    for c in cands_detalhados:
+        base = _api_slug(c.get("nm"))
+        slug, n = base, 2
+        while slug in vistos:
+            slug = f"{base}-{n}"; n += 1
+        vistos[slug] = True
+        candidatos.append({"slug": slug, **c})
+
+    payload = {
+        "schema":     1,
+        "produto":    "Estrategos",
+        "descricao":  API_DESCRICAO,
+        "gerado_em":  datetime.now().isoformat(timespec="seconds"),
+        "fontes":     {"socioeconomico": "PDAD 2021 (IPEDF)", "eleitoral": "TSE 2022"},
+        "contagens":  {"candidatos": len(candidatos), "ras": len(ras)},
+        "candidatos": candidatos,
+        "ras":        ras,
+        "votos_eleitos": votos_eleitos,
+        "metas_campo":   metas_campo,
+        "pesquisas":     pesquisas,
+        "geo":           geo,
+    }
+
+    out_dir = API_BASE / token
+    out_dir.mkdir(parents=True, exist_ok=True)
+    destino = out_dir / "estrategos.json"
+    blob = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    destino.write_text(blob, encoding="utf-8")
+    return token, destino, len(blob.encode("utf-8"))
+
+
 def main():
     t0 = time.time()
     print()
@@ -715,42 +784,44 @@ def main():
     print("  " + "─" * 38)
 
     # 1. RAs (D)
-    print("  [1/4] Carregando dados das RAs...", end="", flush=True)
+    print("  [1/5] Carregando dados das RAs...", end="", flush=True)
     df_ipe, df_mestre, df_narr, df_campo, df_cand = carregar()
     ras = montar_dados(df_ipe, df_mestre, df_narr, df_campo, df_cand)
     n_votos = sum(1 for r in ras.values() if r["votos"])
-    print(f"\r  [1/4] RAs montadas           {len(ras)} regiões · votos em {n_votos}")
+    print(f"\r  [1/5] RAs montadas           {len(ras)} regiões · votos em {n_votos}")
 
     # 2. Candidatos (A5_CANDS compacto, GC_DATA detalhado)
-    print("  [2/4] Montando candidatos...", end="", flush=True)
+    print("  [2/5] Montando candidatos...", end="", flush=True)
     cands_compactos  = montar_candidatos()
     cands_detalhados = carregar_gc()
-    print(f"\r  [2/4] Candidatos             A5={len(cands_compactos)} · GC={len(cands_detalhados)}")
+    print(f"\r  [2/5] Candidatos             A5={len(cands_compactos)} · GC={len(cands_detalhados)}")
 
     # 3. GeoJSON com dados acoplados em cada feature
-    print("  [3/4] Processando GeoJSON...", end="", flush=True)
+    print("  [3/5] Processando GeoJSON...", end="", flush=True)
     geo = processar_geojson()
     for feat in geo["features"]:
         feat["properties"]["dados"] = ras.get(feat["properties"]["RA_PIPE"], {})
     n_inj = sum(1 for f in geo["features"] if f["properties"]["dados"])
-    print(f"\r  [3/4] GeoJSON processado     {len(geo['features'])} features · dados em {n_inj}")
+    print(f"\r  [3/5] GeoJSON processado     {len(geo['features'])} features · dados em {n_inj}")
 
     # 4. Substituições no template
-    print("  [4/4] Aplicando placeholders...", end="", flush=True)
+    print("  [4/5] Aplicando placeholders...", end="", flush=True)
     template = TEMPLATE.read_text(encoding="utf-8")
     creds = json.loads(CRED.read_text(encoding="utf-8")) if CRED.exists() else {}
     pesquisas = (json.loads(PESQUISAS_JSON.read_text(encoding="utf-8"))
                  if PESQUISAS_JSON.exists()
                  else {"pesquisas": [], "n_pesquisas": 0, "atualizado_em": None,
                        "uf": "DF", "fonte": ""})
+    votos_eleitos = calcular_votos_eleitos()
+    metas_campo   = calcular_metas_campo()
 
     out = (template
         .replace("__DADOS_B64__",         b64(ras))
         .replace("__PT_B64__",            b64(PERSONA_TERRITORIOS))
         .replace("__PK_B64__",            b64(PERSONA_IPE_KEY))
         .replace("__CANDS_B64__",         b64(cands_compactos))
-        .replace("__VOTOS_ELEITOS_B64__", b64(calcular_votos_eleitos()))
-        .replace("__METAS_CAMPO_B64__",   b64(calcular_metas_campo()))
+        .replace("__VOTOS_ELEITOS_B64__", b64(votos_eleitos))
+        .replace("__METAS_CAMPO_B64__",   b64(metas_campo))
         .replace("__GEO_B64__",           b64(geo))
         .replace("__CAND_B64__",          b64(cands_detalhados))
         .replace("__PESQUISAS_B64__",     b64(pesquisas))
@@ -765,8 +836,16 @@ def main():
 
     OUTPUT.write_text(out, encoding="utf-8")
     kb = len(out.encode()) // 1024
+    print(f"\r  [4/5] {OUTPUT} gerado        ({kb} KB)")
+
+    # 5. API de dados estática (arquivo único pra sistemas parceiros)
+    print("  [5/5] Gerando API de dados...", end="", flush=True)
+    token, destino, nbytes = gerar_api(ras, cands_detalhados, votos_eleitos,
+                                       metas_campo, pesquisas, geo)
+    print(f"\r  [5/5] API gerada             {destino} ({nbytes // 1024} KB)")
+    print(f"        URL: https://estrategos.opiniao.inf.br/{destino.as_posix()}")
+
     elapsed = time.time() - t0
-    print(f"\r  [4/4] {OUTPUT} gerado        ({kb} KB)")
     print()
     print(f"  ✅ Concluído em {elapsed:.1f}s")
     print()
